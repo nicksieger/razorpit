@@ -30,7 +30,7 @@ module Tokenizer
       const_set(name, token_class)
     end
 
-    define_token(:NUMBER, /(?<value>\d+)/) { |value| value.to_f }
+    # punctuators
     define_token(:PLUS, '+')
     define_token(:MINUS, '-')
     define_token(:TIMES, '*')
@@ -39,9 +39,30 @@ module Tokenizer
     define_token(:SEMICOLON, ';')
     define_token(:PERIOD, '.')
     define_token(:COMMA, ',')
+    define_token(:OBRACE, '{')
+    define_token(:CBRACE, '}')
+    define_token(:OBRACKET, '[')
+    define_token(:CBRACKET, ']')
+    define_token(:OPAREN, '(')
+    define_token(:CPAREN, ')')
+    define_token(:GT, '>')
+    define_token(:LT, '<')
+
+    define_token(:BITWISE_XOR, '^')
+    define_token(:BITWISE_AND, '&')
+    define_token(:BITWISE_OR, '|')
+
+    define_token(:NEQUAL, '!=')
+    define_token(:EQUAL, '==')
+    define_token(:GTE, '>=')
+    define_token(:LTE, '<=')
+
+    # complex tokens
+    define_token(:NUMBER, /(?<value>\d+)/) { |value| value.to_f }
   end
 
-  TOKEN_NAMES = Tokens.constants
+  # reverse to give later tokens higher priority
+  TOKEN_NAMES = Tokens.constants.reverse
   subexpressions = TOKEN_NAMES.map { |token_name|
     token_class = Tokens.const_get(token_name)
     "(?<#{token_name}>#{token_class.re})"

@@ -1,30 +1,53 @@
 module RazorPit
 
 module Tokenizer
-  BaseToken = Struct.new :value
+  extend self
 
-  module Tokens
-    NUMBER = Class.new BaseToken
-    PLUS = Class.new BaseToken
+  BaseToken = Struct.new :value do
+    class << self
+      attr_accessor :re, :value_fn
+
+      def build(value)
+        new(@value_fn.call(value))
+      end
+    end
   end
 
-  TOKENS_REGEXP = %r{
-    (?<number>(?<value>\d+)) |
-    (?<plus>\+)
-  }x
+  IDENTITY_FN = lambda { |v| v }
 
-  def self.tokenize(string)
+  module Tokens
+    extend self
+
+  private
+    def define_token(name, re, &value_fn)
+      token_class = Class.new BaseToken
+      token_class.re = re
+      token_class.value_fn = value_fn || IDENTITY_FN
+      const_set(name, token_class)
+    end
+
+    define_token(:NUMBER, /(?<value>\d+)/) { |value| value.to_f }
+    define_token(:PLUS, /\+/)
+  end
+
+  TOKEN_NAMES = Tokens.constants
+  subexpressions = TOKEN_NAMES.map { |token_name|
+    token_class = Tokens.const_get(token_name)
+    "(?<#{token_name}>#{token_class.re.source})"
+  }
+  TOKENS_REGEXP = Regexp.compile(subexpressions.join("|"))
+
+  def tokenize(string)
     tokens = []
 
     m = TOKENS_REGEXP.match(string)
     if m
+      token_name = TOKEN_NAMES[TOKEN_NAMES.index { |n| m[n] }]
+      token_class = Tokens.const_get(token_name)
+
       value = m['value']
-      case
-      when m['number']
-        token = Tokens::NUMBER[value.to_f]
-      when m['plus']
-        token = Tokens::PLUS[]
-      end
+      token = token_class.build(value)
+
       tokens << token
     end
 

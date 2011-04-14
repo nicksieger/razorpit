@@ -5,15 +5,13 @@ require 'razorpit/tokenizer'
 describe RazorPit::Tokenizer do
   Tokens = RazorPit::Tokenizer::Tokens
 
-  it "tokenizes an empty string" do
-    RazorPit::Tokenizer.tokenize("").should == []
-  end
+  CASES = [["an empty string", "", []],
+           ["a number", "3", [Tokens::NUMBER[3]]],
+           ["a plus sign", "+", [Tokens::PLUS[]]]]
 
-  it "tokenizes a number" do
-    RazorPit::Tokenizer.tokenize("3").should == [Tokens::NUMBER[3]]
-  end
-
-  it "tokenizes a plus sign" do
-    RazorPit::Tokenizer.tokenize("+").should == [Tokens::PLUS[]]
+  CASES.each do |name, string, output|
+    it "tokenizes #{name}" do
+      RazorPit::Tokenizer.tokenize(string).should == output
+    end
   end
 end

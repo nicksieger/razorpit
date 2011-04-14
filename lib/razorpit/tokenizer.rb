@@ -28,6 +28,7 @@ module Tokenizer
 
     define_token(:NUMBER, /(?<value>\d+)/) { |value| value.to_f }
     define_token(:PLUS, /\+/)
+    define_token(:MINUS, /-/)
   end
 
   TOKEN_NAMES = Tokens.constants

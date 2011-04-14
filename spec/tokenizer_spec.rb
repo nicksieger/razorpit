@@ -8,6 +8,7 @@ describe RazorPit::Tokenizer do
   CASES = [["an empty string", "", []],
            ["a number", "3", [Tokens::NUMBER[3]]],
            ["a plus sign", "+", [Tokens::PLUS[]]],
+           ["a minus sign", "-", [Tokens::MINUS[]]],
            ["a simple expression", "1+1",
             [Tokens::NUMBER[1], Tokens::PLUS[], Tokens::NUMBER[1]]]]
 

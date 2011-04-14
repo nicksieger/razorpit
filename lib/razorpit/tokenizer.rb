@@ -33,7 +33,7 @@ module Tokenizer
   TOKEN_NAMES = Tokens.constants
   subexpressions = TOKEN_NAMES.map { |token_name|
     token_class = Tokens.const_get(token_name)
-    "(?<#{token_name}>#{token_class.re.source})"
+    "(?<#{token_name}>#{token_class.re})"
   }
   TOKENS_REGEXP = Regexp.compile(subexpressions.join("|"))
 

@@ -9,6 +9,8 @@ describe RazorPit::Tokenizer do
            ["a number", "3", [Tokens::NUMBER[3]]],
            ["a plus sign", "+", [Tokens::PLUS[]]],
            ["a minus sign", "-", [Tokens::MINUS[]]],
+           ["a star", "*", [Tokens::TIMES[]]],
+           ["a slash", "/", [Tokens::DIVISION[]]],
            ["a simple expression", "1+1",
             [Tokens::NUMBER[1], Tokens::PLUS[], Tokens::NUMBER[1]]]]
 

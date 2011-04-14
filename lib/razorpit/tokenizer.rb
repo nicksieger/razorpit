@@ -39,9 +39,11 @@ module Tokenizer
 
   def tokenize(string)
     tokens = []
+    offset = 0
 
-    m = TOKENS_REGEXP.match(string)
-    if m
+    until offset == string.length
+      m = TOKENS_REGEXP.match(string, offset)
+
       token_name = TOKEN_NAMES[TOKEN_NAMES.index { |n| m[n] }]
       token_class = Tokens.const_get(token_name)
 
@@ -49,6 +51,7 @@ module Tokenizer
       token = token_class.build(value)
 
       tokens << token
+      offset = m.end(0)
     end
 
     tokens

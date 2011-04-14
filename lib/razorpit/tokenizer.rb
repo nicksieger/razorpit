@@ -21,16 +21,24 @@ module Tokenizer
   private
     def define_token(name, re, &value_fn)
       token_class = Class.new BaseToken
-      token_class.re = re
+      
+      token_class.re = case re
+                       when String; Regexp.quote(re)
+                       else; re
+                       end
       token_class.value_fn = value_fn || IDENTITY_FN
       const_set(name, token_class)
     end
 
     define_token(:NUMBER, /(?<value>\d+)/) { |value| value.to_f }
-    define_token(:PLUS, /\+/)
-    define_token(:MINUS, /-/)
-    define_token(:TIMES, /\*/)
-    define_token(:DIVISION, /\//)
+    define_token(:PLUS, '+')
+    define_token(:MINUS, '-')
+    define_token(:TIMES, '*')
+    define_token(:DIVISION, '/')
+    define_token(:COLON, ':')
+    define_token(:SEMICOLON, ';')
+    define_token(:PERIOD, '.')
+    define_token(:COMMA, ',')
   end
 
   TOKEN_NAMES = Tokens.constants

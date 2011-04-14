@@ -11,6 +11,10 @@ describe RazorPit::Tokenizer do
            ["a minus sign", "-", [Tokens::MINUS[]]],
            ["a star", "*", [Tokens::TIMES[]]],
            ["a slash", "/", [Tokens::DIVISION[]]],
+           ["a semicolon", ";", [Tokens::SEMICOLON[]]],
+           ["a colon", ":", [Tokens::COLON[]]],
+           ["a period", ".", [Tokens::PERIOD[]]],
+           ["a comma", ",", [Tokens::COMMA[]]],
            ["a simple expression", "1+1",
             [Tokens::NUMBER[1], Tokens::PLUS[], Tokens::NUMBER[1]]]]
 

@@ -1,13 +1,11 @@
 module RazorPit
 
 module Tokenizer
-  extend self
-
-  BaseTokens = Struct.new :value
+  BaseToken = Struct.new :value
 
   module Tokens
-    NUMBER = Class.new BaseTokens
-    PLUS = Class.new BaseTokens
+    NUMBER = Class.new BaseToken
+    PLUS = Class.new BaseToken
   end
 
   TOKENS_REGEXP = %r{
@@ -15,7 +13,7 @@ module Tokenizer
     (?<plus>\+)
   }x
 
-  def tokenize(string)
+  def self.tokenize(string)
     tokens = []
 
     m = TOKENS_REGEXP.match(string)

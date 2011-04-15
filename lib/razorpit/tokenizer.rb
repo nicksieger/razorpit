@@ -23,9 +23,11 @@ module Tokenizer
   end
 
   class SingletonToken
-    attr_accessor :re
+    attr_reader :re
+    attr_reader :value
 
     def initialize(re)
+      @value = re
       @re = Regexp.quote(re)
     end
 
@@ -33,7 +35,6 @@ module Tokenizer
       self
     end
   end
-
 
   module Tokens
     extend self
@@ -54,7 +55,7 @@ module Tokenizer
     define_token(:PLUS, '+')
     define_token(:MINUS, '-')
     define_token(:TIMES, '*')
-    define_token(:DIVISION, '/')
+    define_token(:DIV, '/')
     define_token(:COLON, ':')
     define_token(:SEMICOLON, ';')
     define_token(:PERIOD, '.')
@@ -67,7 +68,12 @@ module Tokenizer
     define_token(:CLOSE_PAREN, ')')
     define_token(:GT, '>')
     define_token(:LT, '<')
+    define_token(:MODULUS, '%')
+    define_token(:NOT, '!')
+    define_token(:ASSIGN, '=')
+    define_token(:QUESTION, '?')
 
+    define_token(:BITWISE_NOT, '~')
     define_token(:BITWISE_XOR, '^')
     define_token(:BITWISE_AND, '&')
     define_token(:BITWISE_OR, '|')
@@ -76,14 +82,39 @@ module Tokenizer
     define_token(:EQUAL, '==')
     define_token(:GTE, '>=')
     define_token(:LTE, '<=')
+    define_token(:STRICT_EQUAL, '===')
+    define_token(:STRICT_NOT_EQUAL, '!===')
+
+    define_token(:SHIFT_LEFT, '<<')
+    define_token(:SHIFT_RIGHT, '>>')
+    define_token(:SHIFT_RIGHT_EXTEND, '>>>')
+
+    define_token(:INCREMENT, '++')
+    define_token(:DECREMENT, '--')
+
+    define_token(:AND, '&&')
+    define_token(:OR, '||')
+
+    define_token(:PLUS_ASSIGN, '+=')
+    define_token(:MINUS_ASSIGN, '-=')
+    define_token(:TIMES_ASSIGN, '*=')
+    define_token(:DIV_ASSIGN, '/=')
+    define_token(:MODULUS_ASSIGN, '%=')
+    define_token(:BITWISE_OR_ASSIGN, '|=')
+    define_token(:BITWISE_AND_ASSIGN, '&=')
+    define_token(:BITWISE_XOR_ASSIGN, '^=')
+    define_token(:SHIFT_LEFT_ASSIGN, '<<=')
+    define_token(:SHIFT_RIGHT_ASSIGN, '>>=')
+    define_token(:SHIFT_RIGHT_EXTEND_ASSIGN, '>>>=')
 
     # complex tokens
     define_token(:NUMBER, /(?<value>\d+)/) { |value| value.to_f }
+    define_token(:BOOLEAN, /(?<value>true|false)/) { |value| value == "true" }
   end
 
+  TOKEN_NAMES = Tokens.constants
   # reverse to give later tokens higher priority
-  TOKEN_NAMES = Tokens.constants.reverse
-  subexpressions = TOKEN_NAMES.map { |token_name|
+  subexpressions = TOKEN_NAMES.reverse.map { |token_name|
     token_class = Tokens.const_get(token_name)
     "(?<#{token_name}>#{token_class.re})"
   }

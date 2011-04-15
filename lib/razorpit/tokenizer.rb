@@ -107,8 +107,19 @@ module Tokenizer
     define_token(:SHIFT_RIGHT_ASSIGN, '>>=')
     define_token(:SHIFT_RIGHT_EXTEND_ASSIGN, '>>>=')
 
-    # complex tokens
-    define_token(:NUMBER, /(?<value>\d+)/) { |value| value.to_f }
+    decimal_literal = /(?:
+      (?: (?: 0 | [1-9][0-9]* ) (?: \.[0-9]* )? | \.[0-9]+ )
+      (?: e [+-]?[0-9]+ )?
+    )/xi
+    hex_integer_literal = /(?:0x[0-9a-f]+)/i
+    numeric_literal = "#{hex_integer_literal}|#{decimal_literal}"
+    define_token(:NUMBER, /(?<value>#{numeric_literal})/) do |value|
+      if value =~ /^0x/i
+        value[2..-1].to_i(16).to_f
+      else
+        value.to_f
+      end
+    end
 
     # keywords, etc.
     define_token(:BOOLEAN, /(?<value>true|false)/) { |value| value == "true" }
@@ -121,7 +132,7 @@ module Tokenizer
     token_class = Tokens.const_get(token_name)
     "(?<#{token_name}>#{token_class.re})"
   }
-  TOKENS_REGEXP = Regexp.compile(subexpressions.join("|"))
+  TOKENS_REGEXP = Regexp.compile("#{subexpressions.join("|")}")
 
   def tokenize(string)
     tokens = []

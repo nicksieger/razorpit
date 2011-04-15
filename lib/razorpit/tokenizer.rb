@@ -4,8 +4,17 @@ module Tokenizer
   extend self
 
   BaseToken = Struct.new :value do
+    IDENTITY_FN = lambda { |v| v }
+
     class << self
       attr_accessor :re, :value_fn
+
+      def derive(re, value_fn)
+        c = Class.new self
+        c.re = re
+        c.value_fn = value_fn || IDENTITY_FN
+        c
+      end
 
       def build(value)
         new(@value_fn.call(value))
@@ -13,21 +22,32 @@ module Tokenizer
     end
   end
 
-  IDENTITY_FN = lambda { |v| v }
+  class SingletonToken
+    attr_accessor :re
+
+    def initialize(re)
+      @re = Regexp.quote(re)
+    end
+
+    def build(value)
+      self
+    end
+  end
+
 
   module Tokens
     extend self
 
   private
     def define_token(name, re, &value_fn)
-      token_class = Class.new BaseToken
       
-      token_class.re = case re
-                       when String; Regexp.quote(re)
-                       else; re
-                       end
-      token_class.value_fn = value_fn || IDENTITY_FN
-      const_set(name, token_class)
+      case re
+      when String
+        token_type = SingletonToken.new(re)
+      else
+        token_type = BaseToken.derive(re, value_fn)
+      end
+      const_set(name, token_type)
     end
 
     # punctuators
@@ -77,10 +97,8 @@ module Tokenizer
       m = TOKENS_REGEXP.match(string, offset)
 
       token_name = TOKEN_NAMES[TOKEN_NAMES.index { |n| m[n] }]
-      token_class = Tokens.const_get(token_name)
-
-      value = m['value']
-      token = token_class.build(value)
+      token_type = Tokens.const_get(token_name)
+      token = token_type.build(m['value'])
 
       tokens << token
       offset = m.end(0)

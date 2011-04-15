@@ -28,7 +28,7 @@ module Tokenizer
 
     def initialize(re)
       @value = re
-      @re = Regexp.quote(re)
+      @re = re
     end
 
     def build(value)
@@ -36,17 +36,23 @@ module Tokenizer
     end
   end
 
+  SIMPLE_TOKENS = {}
+  COMPLEX_TOKENS = {}
+
   module Tokens
     extend self
 
   private
-    def define_token(name, re, &value_fn)
-      
-      case re
+    def define_token(name, pattern, &value_fn)
+      case pattern
       when String
+        re = /(?:#{Regexp.quote(pattern)})/
         token_type = SingletonToken.new(re)
+        SIMPLE_TOKENS[pattern] = token_type
       else
+        re = /(?<#{name}>#{pattern})/
         token_type = BaseToken.derive(re, value_fn)
+        COMPLEX_TOKENS[name] = token_type
       end
       const_set(name, token_type)
     end
@@ -126,9 +132,8 @@ module Tokenizer
     define_token(:NULL, 'null')
   end
 
-  TOKEN_NAMES = Tokens.constants
   # reverse to give later tokens higher priority
-  subexpressions = TOKEN_NAMES.reverse.map { |token_name|
+  subexpressions = Tokens.constants.reverse.map { |token_name|
     token_class = Tokens.const_get(token_name)
     "(?<#{token_name}>#{token_class.re})"
   }
@@ -141,9 +146,15 @@ module Tokenizer
     until offset == string.length
       m = TOKENS_REGEXP.match(string, offset)
 
-      token_name = TOKEN_NAMES[TOKEN_NAMES.index { |n| m[n] }]
-      token_type = Tokens.const_get(token_name)
-      token = token_type.build(m['value'])
+      token = SIMPLE_TOKENS[m[0]]
+      unless token
+        COMPLEX_TOKENS.each do |name, token_class|
+          if m[name]
+            token = token_class.build(m['value'])
+            break
+          end
+        end
+      end
 
       tokens << token
       offset = m.end(0)

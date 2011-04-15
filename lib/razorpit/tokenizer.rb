@@ -109,7 +109,10 @@ module Tokenizer
 
     # complex tokens
     define_token(:NUMBER, /(?<value>\d+)/) { |value| value.to_f }
+
+    # keywords, etc.
     define_token(:BOOLEAN, /(?<value>true|false)/) { |value| value == "true" }
+    define_token(:NULL, 'null')
   end
 
   TOKEN_NAMES = Tokens.constants

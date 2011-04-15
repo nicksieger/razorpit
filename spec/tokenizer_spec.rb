@@ -58,6 +58,7 @@ describe RazorPit::Tokenizer do
            ["shift right assign", ">>=", [Tokens::SHIFT_RIGHT_ASSIGN]],
            ["shift right extend assign", ">>>=",
             [Tokens::SHIFT_RIGHT_EXTEND_ASSIGN]],
+           ["null", "null", [Tokens::NULL]],
            ["a simple expression", "1+1",
             [Tokens::NUMBER[1], Tokens::PLUS, Tokens::NUMBER[1]]]]
 

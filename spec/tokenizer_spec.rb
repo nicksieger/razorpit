@@ -5,7 +5,7 @@ require 'razorpit/tokenizer'
 describe RazorPit::Tokenizer do
   Tokens = RazorPit::Tokenizer::Tokens
 
-  CASES = [["an empty string", "", []],
+  cases = [["an empty string", "", []],
            ["an integer", "3", [Tokens::NUMBER[3]]],
            ["a hex number", "0xf0", [Tokens::NUMBER[0xf0.to_f]]],
            ["a decimal number", "1.3", [Tokens::NUMBER[1.3]]],
@@ -76,7 +76,20 @@ describe RazorPit::Tokenizer do
            ["a simple expression", "1+1",
             [Tokens::NUMBER[1], Tokens::PLUS, Tokens::NUMBER[1]]]]
 
-  CASES.each do |name, string, output|
+  cases += %w(break case catch continue debugger default delete do else
+              finally for function if in instanceof new return switch this
+              throw try typeof var void while with).map { |keyword|
+                symbol = keyword.upcase.intern
+                ["keyword #{keyword}", keyword, [Tokens.const_get(symbol)]]
+              }
+
+  cases += %w(class const enum export extends import super).map { |keyword|
+                symbol = keyword.upcase.intern
+                ["reserved word #{keyword}", keyword,
+                 [Tokens.const_get(symbol)]]
+              }
+
+  cases.each do |name, string, output|
     it "tokenizes #{name}" do
       RazorPit::Tokenizer.tokenize(string).should == output
     end

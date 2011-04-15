@@ -57,6 +57,13 @@ module Tokenizer
       const_set(name, token_type)
     end
 
+    def define_keyword(*keywords)
+      keywords.each do |keyword|
+        name = keyword.upcase.intern
+        define_token(name, keyword)
+      end
+    end
+
     # punctuators
     define_token(:PLUS, '+')
     define_token(:MINUS, '-')
@@ -130,6 +137,12 @@ module Tokenizer
     # keywords, etc.
     define_token(:BOOLEAN, /(?<value>true|false)/) { |value| value == "true" }
     define_token(:NULL, 'null')
+    define_keyword *%w(break case catch continue debugger default delete do
+                       else finally for function if in instanceof new return
+                       switch this throw try typeof var void while with)
+
+    # reserved words
+    define_keyword *%w(class const enum export extends import super)
   end
 
   # reverse to give later tokens higher priority

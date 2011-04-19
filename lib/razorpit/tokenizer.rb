@@ -133,6 +133,7 @@ module Tokenizer
         value.to_f
       end
     end
+    define_token(:IDENTIFIER, /(?<value>[a-z_$][a-z0-9_$]*)/i)
 
     # keywords, etc.
     define_token(:BOOLEAN, /(?<value>true|false)/) { |value| value == "true" }

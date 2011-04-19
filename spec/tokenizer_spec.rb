@@ -118,3 +118,22 @@ describe RazorPit::Tokenizer do
     end
   end
 end
+
+describe "#{RazorPit::Tokenizer}.tokenize" do
+  Tokens = RazorPit::Tokenizer::Tokens
+
+  it "returns an enumerator if no block given" do
+    returned = RazorPit::Tokenizer.tokenize("1")
+    returned.should be_a_kind_of(Enumerator)
+    returned.to_a.should == [Tokens::NUMBER[1]]
+  end
+
+  it "yields each token if block given" do
+    tokens = []
+    returned = RazorPit::Tokenizer.tokenize("1") do |token|
+      tokens << token
+    end
+    returned.should == RazorPit::Tokenizer
+    tokens.should == [Tokens::NUMBER[1]]
+  end
+end

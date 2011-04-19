@@ -155,7 +155,8 @@ module Tokenizer
   TOKENS_REGEXP = Regexp.compile("#{subexpressions.join("|")}")
 
   def tokenize(string)
-    tokens = []
+    return enum_for(:tokenize, string) unless block_given?
+
     offset = 0
 
     until offset == string.length
@@ -171,11 +172,11 @@ module Tokenizer
         end
       end
 
-      tokens << token
+      yield token
       offset = m.end(0)
     end
 
-    tokens
+    self
   end
 end
 

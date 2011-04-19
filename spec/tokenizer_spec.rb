@@ -114,7 +114,7 @@ describe RazorPit::Tokenizer do
 
   cases.each do |name, string, output|
     it "tokenizes #{name}" do
-      RazorPit::Tokenizer.tokenize(string).should == output
+      RazorPit::Tokenizer.tokenize(string).to_a.should == output
     end
   end
 end

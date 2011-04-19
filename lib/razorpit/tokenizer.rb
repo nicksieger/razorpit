@@ -138,7 +138,7 @@ module Tokenizer
 
     # keywords, etc.
     define_token(:BOOLEAN, /(?<value>true|false)/) { |value| value == "true" }
-    define_token(:NULL, 'null')
+    define_keyword('null')
     define_keyword *%w(break case catch continue debugger default delete do
                        else finally for function if in instanceof new return
                        switch this throw try typeof var void while with)

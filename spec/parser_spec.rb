@@ -60,6 +60,39 @@ describe RazorPit::Parser do
     ast = RazorPit::Parser.parse_expression("1+(2+3)")
     ast.should == N::Add[N::Number[1], N::Add[N::Number[2], N::Number[3]]]
   end
+
+  it "parses multiplication" do
+    ast = RazorPit::Parser.parse_expression("1 * 2")
+    ast.should == N::Multiply[N::Number[1], N::Number[2]]
+  end
+
+  it "parses division" do
+    ast = RazorPit::Parser.parse_expression("1 / 2")
+    ast.should == N::Divide[N::Number[1], N::Number[2]]
+  end
+
+  it "should give addition and subtraction the same precedence" do
+    ast = RazorPit::Parser.parse_expression("1 + 2 - 3")
+    ast.should == N::Subtract[N::Add[N::Number[1], N::Number[2]],
+                              N::Number[3]]
+    ast = RazorPit::Parser.parse_expression("1 - 2 + 3")
+    ast.should == N::Add[N::Subtract[N::Number[1], N::Number[2]],
+                         N::Number[3]]
+  end
+
+  it "should give multiplication higher precedence than addition" do
+    ast = RazorPit::Parser.parse_expression("1 + 2 * 3")
+    ast.should == N::Add[N::Number[1], N::Multiply[N::Number[2], N::Number[3]]]
+  end
+
+  it "should give multiplication and division the same precedence" do
+    ast = RazorPit::Parser.parse_expression("1 * 2 / 3")
+    ast.should == N::Divide[N::Multiply[N::Number[1], N::Number[2]],
+                            N::Number[3]]
+    ast = RazorPit::Parser.parse_expression("1 / 2 * 3")
+    ast.should == N::Multiply[N::Divide[N::Number[1], N::Number[2]],
+                              N::Number[3]]
+  end
 end
 
 end

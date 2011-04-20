@@ -69,6 +69,12 @@ module Nodes
   class Subtract < BinaryOpNode
   end
 
+  class Multiply < BinaryOpNode
+  end
+
+  class Divide < BinaryOpNode
+  end
+
   class UnaryPlus < UnaryOpNode
   end
 

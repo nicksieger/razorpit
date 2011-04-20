@@ -92,6 +92,8 @@ module Parser
     define_prefix(Tokens::MINUS, Nodes::UnaryMinus, 100)
     define_infix(Tokens::PLUS, Nodes::Add, 10)
     define_infix(Tokens::MINUS, Nodes::Subtract, 10)
+    define_infix(Tokens::TIMES, Nodes::Multiply, 20)
+    define_infix(Tokens::DIV, Nodes::Divide, 20)
 
     # done with these
     undef define_literal

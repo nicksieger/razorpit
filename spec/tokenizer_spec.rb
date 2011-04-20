@@ -2,116 +2,118 @@ require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
 require 'razorpit/tokenizer'
 
+Module.new do
+
+T = RazorPit::Tokens
+
 describe RazorPit::Tokenizer do
-  Tokens = RazorPit::Tokenizer::Tokens
 
   cases = [["an empty string", "", []],
-           ["an integer", "3", [Tokens::NUMBER[3]]],
-           ["a hex number", "0xf0", [Tokens::NUMBER[0xf0.to_f]]],
-           ["a simple identifier", "foobar", [Tokens::IDENTIFIER["foobar"]]],
+           ["an integer", "3", [T::NUMBER[3]]],
+           ["a hex number", "0xf0", [T::NUMBER[0xf0.to_f]]],
+           ["a simple identifier", "foobar", [T::IDENTIFIER["foobar"]]],
            ["a camel-case identifier", "fooBar",
-            [Tokens::IDENTIFIER["fooBar"]]],
+            [T::IDENTIFIER["fooBar"]]],
            ["a caps-case identifier", "FooBar",
-            [Tokens::IDENTIFIER["FooBar"]]],
+            [T::IDENTIFIER["FooBar"]]],
            ["a constant-case identifier", "FOOBAR",
-            [Tokens::IDENTIFIER["FOOBAR"]]],
+            [T::IDENTIFIER["FOOBAR"]]],
            ["an identifier with underscores", "foo_bar",
-            [Tokens::IDENTIFIER["foo_bar"]]],
+            [T::IDENTIFIER["foo_bar"]]],
            ["an identifier with trailing numbers", "foo64",
-            [Tokens::IDENTIFIER["foo64"]]],
+            [T::IDENTIFIER["foo64"]]],
            ["an identifier with a leading underscore", "_foo",
-            [Tokens::IDENTIFIER["_foo"]]],
-           ["just a dollar sign", "$", [Tokens::IDENTIFIER["$"]]],
-           ["two dollar signs", "$$", [Tokens::IDENTIFIER["$$"]]],
-           ["an empty single-quoted string", "''", [Tokens::STRING[""]]],
-           ["an empty double-quoted string", "\"\"", [Tokens::STRING[""]]],
+            [T::IDENTIFIER["_foo"]]],
+           ["just a dollar sign", "$", [T::IDENTIFIER["$"]]],
+           ["two dollar signs", "$$", [T::IDENTIFIER["$$"]]],
+           ["an empty single-quoted string", "''", [T::STRING[""]]],
+           ["an empty double-quoted string", "\"\"", [T::STRING[""]]],
            ["a simple single-quoted string", "'foo bar'",
-            [Tokens::STRING["foo bar"]]],
+            [T::STRING["foo bar"]]],
            ["a simple double-quoted string", "\"foo bar\"",
-            [Tokens::STRING["foo bar"]]],
+            [T::STRING["foo bar"]]],
            ["a token ending with a dollar sign", "foo$",
-            [Tokens::IDENTIFIER["foo$"]]],
-           ["a decimal number", "1.3", [Tokens::NUMBER[1.3]]],
+            [T::IDENTIFIER["foo$"]]],
+           ["a decimal number", "1.3", [T::NUMBER[1.3]]],
            ["a decimal number with no leading digits",
-            ".25", [Tokens::NUMBER[0.25]]],
+            ".25", [T::NUMBER[0.25]]],
            ["a decimal number with no trailing digits",
-            "123.", [Tokens::NUMBER[123]]],
+            "123.", [T::NUMBER[123]]],
            ["a decimal number with an exponent",
-            "1.0e10", [Tokens::NUMBER[1.0e10]]],
+            "1.0e10", [T::NUMBER[1.0e10]]],
            ["a decimal number with a signed positive exponent",
-            "1.0e+10", [Tokens::NUMBER[1.0e10]]],
+            "1.0e+10", [T::NUMBER[1.0e10]]],
            ["a decimal number with a signed negative exponent",
-            "1.0e-10", [Tokens::NUMBER[1.0e-10]]],
+            "1.0e-10", [T::NUMBER[1.0e-10]]],
            ["a number with a leading sign",
-            "-3", [Tokens::MINUS, Tokens::NUMBER[3]]],
-           ["a plus sign", "+", [Tokens::PLUS]],
-           ["a minus sign", "-", [Tokens::MINUS]],
-           ["a star", "*", [Tokens::TIMES]],
-           ["a slash", "/", [Tokens::DIV]],
-           ["a semicolon", ";", [Tokens::SEMICOLON]],
-           ["a colon", ":", [Tokens::COLON]],
-           ["a period", ".", [Tokens::PERIOD]],
-           ["a comma", ",", [Tokens::COMMA]],
-           ["open brace", "{", [Tokens::OPEN_BRACE]],
-           ["close brace", "}", [Tokens::CLOSE_BRACE]],
-           ["open bracket", "[", [Tokens::OPEN_BRACKET]],
-           ["close bracket", "]", [Tokens::CLOSE_BRACKET]],
-           ["open parenthesis", "(", [Tokens::OPEN_PAREN]],
-           ["close parenthesis", ")", [Tokens::CLOSE_PAREN]],
-           ["less than", "<", [Tokens::LT]],
-           ["greater than", ">", [Tokens::GT]],
-           ["carat", "^", [Tokens::BITWISE_XOR]],
-           ["less than or equal", "<=", [Tokens::LTE]],
-           ["greater than or equal", ">=", [Tokens::GTE]],
-           ["equal", "==", [Tokens::EQUAL]],
-           ["not equal", "!=", [Tokens::NOT_EQUAL]],
-           ["ampersand", "&", [Tokens::BITWISE_AND]],
-           ["pipe", "|", [Tokens::BITWISE_OR]],
-           ["increment", "++", [Tokens::INCREMENT]],
-           ["decrement", "--", [Tokens::DECREMENT]],
-           ["modulus", "%", [Tokens::MODULUS]],
-           ["tilde", "~", [Tokens::BITWISE_NOT]],
-           ["bang", "!", [Tokens::NOT]],
-           ["assignment", "=", [Tokens::ASSIGN]],
-           ["question", "?", [Tokens::QUESTION]],
-           ["shift left", "<<", [Tokens::SHIFT_LEFT]],
-           ["shift right", ">>", [Tokens::SHIFT_RIGHT]],
-           ["shift right (extended)", ">>>", [Tokens::SHIFT_RIGHT_EXTEND]],
-           ["and", "&&", [Tokens::AND]],
-           ["or", "||", [Tokens::OR]],
+            "-3", [T::MINUS, T::NUMBER[3]]],
+           ["a plus sign", "+", [T::PLUS]],
+           ["a minus sign", "-", [T::MINUS]],
+           ["a star", "*", [T::TIMES]],
+           ["a slash", "/", [T::DIV]],
+           ["a semicolon", ";", [T::SEMICOLON]],
+           ["a colon", ":", [T::COLON]],
+           ["a period", ".", [T::PERIOD]],
+           ["a comma", ",", [T::COMMA]],
+           ["open brace", "{", [T::OPEN_BRACE]],
+           ["close brace", "}", [T::CLOSE_BRACE]],
+           ["open bracket", "[", [T::OPEN_BRACKET]],
+           ["close bracket", "]", [T::CLOSE_BRACKET]],
+           ["open parenthesis", "(", [T::OPEN_PAREN]],
+           ["close parenthesis", ")", [T::CLOSE_PAREN]],
+           ["less than", "<", [T::LT]],
+           ["greater than", ">", [T::GT]],
+           ["carat", "^", [T::BITWISE_XOR]],
+           ["less than or equal", "<=", [T::LTE]],
+           ["greater than or equal", ">=", [T::GTE]],
+           ["equal", "==", [T::EQUAL]],
+           ["not equal", "!=", [T::NOT_EQUAL]],
+           ["ampersand", "&", [T::BITWISE_AND]],
+           ["pipe", "|", [T::BITWISE_OR]],
+           ["increment", "++", [T::INCREMENT]],
+           ["decrement", "--", [T::DECREMENT]],
+           ["modulus", "%", [T::MODULUS]],
+           ["tilde", "~", [T::BITWISE_NOT]],
+           ["bang", "!", [T::NOT]],
+           ["assignment", "=", [T::ASSIGN]],
+           ["question", "?", [T::QUESTION]],
+           ["shift left", "<<", [T::SHIFT_LEFT]],
+           ["shift right", ">>", [T::SHIFT_RIGHT]],
+           ["shift right (extended)", ">>>", [T::SHIFT_RIGHT_EXTEND]],
+           ["and", "&&", [T::AND]],
+           ["or", "||", [T::OR]],
            ["booleans", "true false",
-            [Tokens::BOOLEAN[true], Tokens::BOOLEAN[false]]],
-           ["strict equal", "===", [Tokens::STRICT_EQUAL]],
-           ["strict not equal", "!===", [Tokens::STRICT_NOT_EQUAL]],
-           ["plus assign", "+=", [Tokens::PLUS_ASSIGN]],
-           ["minus assign", "-=", [Tokens::MINUS_ASSIGN]],
-           ["times assign", "*=", [Tokens::TIMES_ASSIGN]],
-           ["division assign", "/=", [Tokens::DIV_ASSIGN]],
-           ["modulus assign", "%=", [Tokens::MODULUS_ASSIGN]],
-           ["bitwise or assign", "|=", [Tokens::BITWISE_OR_ASSIGN]],
-           ["bitwise and assign", "&=", [Tokens::BITWISE_AND_ASSIGN]],
-           ["bitwise xor assign", "^=", [Tokens::BITWISE_XOR_ASSIGN]],
-           ["shift left assign", "<<=", [Tokens::SHIFT_LEFT_ASSIGN]],
-           ["shift right assign", ">>=", [Tokens::SHIFT_RIGHT_ASSIGN]],
+            [T::BOOLEAN[true], T::BOOLEAN[false]]],
+           ["strict equal", "===", [T::STRICT_EQUAL]],
+           ["strict not equal", "!===", [T::STRICT_NOT_EQUAL]],
+           ["plus assign", "+=", [T::PLUS_ASSIGN]],
+           ["minus assign", "-=", [T::MINUS_ASSIGN]],
+           ["times assign", "*=", [T::TIMES_ASSIGN]],
+           ["division assign", "/=", [T::DIV_ASSIGN]],
+           ["modulus assign", "%=", [T::MODULUS_ASSIGN]],
+           ["bitwise or assign", "|=", [T::BITWISE_OR_ASSIGN]],
+           ["bitwise and assign", "&=", [T::BITWISE_AND_ASSIGN]],
+           ["bitwise xor assign", "^=", [T::BITWISE_XOR_ASSIGN]],
+           ["shift left assign", "<<=", [T::SHIFT_LEFT_ASSIGN]],
+           ["shift right assign", ">>=", [T::SHIFT_RIGHT_ASSIGN]],
            ["shift right extend assign", ">>>=",
-            [Tokens::SHIFT_RIGHT_EXTEND_ASSIGN]],
-           ["null", "null", [Tokens::NULL]],
+            [T::SHIFT_RIGHT_EXTEND_ASSIGN]],
+           ["null", "null", [T::NULL]],
            ["a simple expression", "1+1",
-            [Tokens::NUMBER[1], Tokens::PLUS, Tokens::NUMBER[1]]],
+            [T::NUMBER[1], T::PLUS, T::NUMBER[1]]],
            ["a simple expression with whitespace", "1 + 1",
-            [Tokens::NUMBER[1], Tokens::PLUS, Tokens::NUMBER[1]]]]
+            [T::NUMBER[1], T::PLUS, T::NUMBER[1]]]]
 
   cases += %w(break case catch continue debugger default delete do else
               finally for function if in instanceof new return switch this
               throw try typeof var void while with).map { |keyword|
                 symbol = keyword.upcase.intern
-                ["keyword #{keyword}", keyword, [Tokens.const_get(symbol)]]
+                ["keyword #{keyword}", keyword, [T.const_get(symbol)]]
               }
 
   cases += %w(class const enum export extends import super).map { |keyword|
                 symbol = keyword.upcase.intern
-                ["reserved word #{keyword}", keyword,
-                 [Tokens.const_get(symbol)]]
+                ["reserved word #{keyword}", keyword, [T.const_get(symbol)]]
               }
 
   cases.each do |name, string, output|
@@ -122,8 +124,6 @@ describe RazorPit::Tokenizer do
 end
 
 describe "#{RazorPit::Tokenizer}.tokenize" do
-  Tokens = RazorPit::Tokenizer::Tokens
-
   it "raises an exception when it encounters an invalid token" do
     lambda {
       RazorPit::Tokenizer.tokenize("@").to_a
@@ -133,7 +133,7 @@ describe "#{RazorPit::Tokenizer}.tokenize" do
   it "returns an enumerator if no block given" do
     returned = RazorPit::Tokenizer.tokenize("1")
     returned.should be_a_kind_of(Enumerator)
-    returned.to_a.should == [Tokens::NUMBER[1]]
+    returned.to_a.should == [T::NUMBER[1]]
   end
 
   it "yields each token if block given" do
@@ -142,6 +142,8 @@ describe "#{RazorPit::Tokenizer}.tokenize" do
       tokens << token
     end
     returned.should == RazorPit::Tokenizer
-    tokens.should == [Tokens::NUMBER[1]]
+    tokens.should == [T::NUMBER[1]]
   end
+end
+
 end

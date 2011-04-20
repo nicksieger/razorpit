@@ -1,3 +1,4 @@
+require 'razorpit/tokens'
 require 'razorpit/lexer'
 require 'razorpit/nodes'
 
@@ -9,19 +10,32 @@ module Parser
   module Grammar
     extend self
 
+    TokenType.module_eval do
+      attr_accessor :left_binding_power
+    end
+
+    Token.module_eval do
+      def prefix(tokens)
+        raise "Parse error"
+      end
+
+      def suffix(tokens, lhs)
+        raise "Parse error"
+      end
+    end
+
     MAX_BINDING_POWER = 1.0/0.0 # +Infinity
     MIN_BINDING_POWER = -1.0/0.0 # -Infinity
 
+    Tokens::NUMBER.left_binding_power = MAX_BINDING_POWER
     Tokens::NUMBER.token_class_eval do
-      def left_binding_power; MAX_BINDING_POWER; end
       def prefix(tokens)
         Nodes::Number[value]
       end
     end
 
+    Tokens::PLUS.left_binding_power = 10
     Tokens::PLUS.token_class_eval do
-      def left_binding_power; 10; end
-
       def prefix(tokens)
         expr = Grammar.expression(tokens, 100)
         Nodes::UnaryPlus[expr]
@@ -33,8 +47,8 @@ module Parser
       end
     end
 
+    Tokens::EOF.left_binding_power = MIN_BINDING_POWER
     Tokens::EOF.token_class_eval do
-      def left_binding_power; MIN_BINDING_POWER; end
       def suffix(tokens, lhs)
         lhs
       end

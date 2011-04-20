@@ -2,15 +2,36 @@ module RazorPit
 
 module TokenType
   attr_reader :re
+
+  def build(value)
+    raise NotImplementedError, "#{self.class}#build not implemented"
+  end
+
+  def token_class_eval(&block)
+    raise NotImplementedError, "#{self.class}#token_class_eval not implemented"
+  end
+end
+
+module Token
+  def type
+    raise NotImplementedError, "#{self.class}#type not implemented"
+  end
+
+  def left_binding_power
+    raise NotImplementedError, "#{self.class}#left_binding_power not implemented"
+  end
 end
 
 ValueToken = Struct.new :value do
-  IDENTITY_FN = lambda { |v| v }
+  include Token
 
   class << self
+    include TokenType
+
+    IDENTITY_FN = lambda { |v| v }
+
     def derive(re, value_fn)
       Class.new self do
-        extend TokenType
         @re = re
         @value_fn = value_fn || IDENTITY_FN
       end
@@ -23,12 +44,17 @@ ValueToken = Struct.new :value do
     alias_method :token_class_eval, :class_eval
   end
 
+  def left_binding_power
+    self.class.left_binding_power
+  end
+
   def type
     self.class
   end
 end
 
 class SingletonToken
+  include Token
   include TokenType
 
   def initialize(name, re)

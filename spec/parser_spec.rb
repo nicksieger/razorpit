@@ -17,7 +17,7 @@ describe RazorPit::Parser do
     ast.should == N::Number[1]
   end
 
-  xit "parses an addition expression" do
+  it "parses an addition expression" do
     ast = RazorPit::Parser.parse_expression("1 + 2")
     ast.should == N::Add[N::Number[1], N::Number[2]]
   end

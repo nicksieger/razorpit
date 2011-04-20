@@ -43,6 +43,11 @@ describe RazorPit::Parser do
     ast = RazorPit::Parser.parse_expression("2 - 1")
     ast.should == N::Subtract[N::Number[2], N::Number[1]]
   end
+
+  it "parses unary minus" do
+    ast = RazorPit::Parser.parse_expression("-1")
+    ast.should == N::UnaryMinus[N::Number[1]]
+  end
 end
 
 end

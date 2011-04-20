@@ -79,6 +79,7 @@ module Parser
     define_literal(Tokens::NUMBER, Nodes::Number)
     define_literal(Tokens::BOOLEAN, Nodes::Boolean)
     define_prefix(Tokens::PLUS, Nodes::UnaryPlus, 100)
+    define_prefix(Tokens::MINUS, Nodes::UnaryMinus, 100)
     define_infix(Tokens::PLUS, Nodes::Add, 10)
     define_infix(Tokens::MINUS, Nodes::Subtract, 10)
 

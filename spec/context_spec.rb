@@ -40,6 +40,10 @@ describe "#{RazorPit::Context}#eval" do
   it "can do subtraction" do
     @ctx.eval("2 - 1").should == 1.0
   end
+
+  it "understands unary minus" do
+    @ctx.eval("-1").should == -1.0
+  end
 end
 
 end

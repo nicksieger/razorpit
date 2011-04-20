@@ -22,6 +22,19 @@ class LiteralNode < Node
   end
 end
 
+class UnaryOpNode < Node
+  attr_reader :expr
+
+  def initialize(expr)
+    @expr = expr
+  end
+
+  def ==(other)
+    self.class == other.class &&
+    self.expr == other.expr
+  end
+end
+
 class BinaryOpNode < Node
   attr_reader :lhs, :rhs
 
@@ -56,17 +69,10 @@ module Nodes
   class Subtract < BinaryOpNode
   end
 
-  class UnaryPlus < Node
-    attr_reader :expr
+  class UnaryPlus < UnaryOpNode
+  end
 
-    def initialize(expr)
-      @expr = expr
-    end
-
-    def ==(other)
-      self.class == other.class &&
-      self.expr == other.expr
-    end
+  class UnaryMinus < UnaryOpNode
   end
 
   NULL = Node.new

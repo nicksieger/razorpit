@@ -2,14 +2,14 @@ require 'razorpit/tokens'
 
 module RazorPit
 
-module Tokenizer
+module Lexer
   extend self
 
   class InvalidToken < Exception
   end
 
-  def tokenize(string)
-    return enum_for(:tokenize, string) unless block_given?
+  def scan(string)
+    return enum_for(:scan, string) unless block_given?
 
     offset = 0
 

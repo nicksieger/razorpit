@@ -1,12 +1,12 @@
 require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
-require 'razorpit/tokenizer'
+require 'razorpit/lexer'
 
 Module.new do
 
 T = RazorPit::Tokens
 
-describe RazorPit::Tokenizer do
+describe RazorPit::Lexer do
 
   cases = [["an empty string", "", []],
            ["an integer", "3", [T::NUMBER[3]]],
@@ -118,30 +118,30 @@ describe RazorPit::Tokenizer do
 
   cases.each do |name, string, output|
     it "tokenizes #{name}" do
-      RazorPit::Tokenizer.tokenize(string).to_a.should == output
+      RazorPit::Lexer.scan(string).to_a.should == output
     end
   end
 end
 
-describe "#{RazorPit::Tokenizer}.tokenize" do
+describe "#{RazorPit::Lexer}.scan" do
   it "raises an exception when it encounters an invalid token" do
     lambda {
-      RazorPit::Tokenizer.tokenize("@").to_a
-    }.should raise_error(RazorPit::Tokenizer::InvalidToken)
+      RazorPit::Lexer.scan("@").to_a
+    }.should raise_error(RazorPit::Lexer::InvalidToken)
   end
 
   it "returns an enumerator if no block given" do
-    returned = RazorPit::Tokenizer.tokenize("1")
+    returned = RazorPit::Lexer.scan("1")
     returned.should be_a_kind_of(Enumerator)
     returned.to_a.should == [T::NUMBER[1]]
   end
 
   it "yields each token if block given" do
     tokens = []
-    returned = RazorPit::Tokenizer.tokenize("1") do |token|
+    returned = RazorPit::Lexer.scan("1") do |token|
       tokens << token
     end
-    returned.should == RazorPit::Tokenizer
+    returned.should == RazorPit::Lexer
     tokens.should == [T::NUMBER[1]]
   end
 end

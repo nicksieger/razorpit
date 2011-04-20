@@ -1,4 +1,4 @@
-require 'razorpit/tokenizer'
+require 'razorpit/lexer'
 require 'razorpit/nodes'
 
 module RazorPit
@@ -11,7 +11,7 @@ module Parser
   end
 
   def parse_expression(string)
-    Tokenizer.tokenize(string) do |token|
+    Lexer.scan(string) do |token|
       case token
       when Tokens::NUMBER
         return Nodes::Number[token.value]

@@ -64,6 +64,8 @@ module Tokenizer
       end
     end
 
+    define_token(:INVALID, /(?<value>.)/)
+
     # punctuators
     define_token(:PLUS, '+')
     define_token(:MINUS, '-')
@@ -165,7 +167,7 @@ module Tokenizer
 
     until offset == string.length
       m = TOKENS_REGEXP.match(string, offset)
-      raise InvalidToken, "invalid token at offset #{offset}" unless m
+      raise InvalidToken, "invalid token at offset #{offset}" if m['INVALID']
 
       token = SIMPLE_TOKENS[m[0]]
       unless token

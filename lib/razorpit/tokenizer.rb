@@ -152,7 +152,11 @@ module Tokenizer
     token_class = Tokens.const_get(token_name)
     "(?<#{token_name}>#{token_class.re})"
   }
+  #subexpressions << "(?<wsp>\s+)" # whitespace
   TOKENS_REGEXP = Regexp.compile("#{subexpressions.join("|")}")
+
+  class InvalidToken < Exception
+  end
 
   def tokenize(string)
     return enum_for(:tokenize, string) unless block_given?
@@ -161,6 +165,7 @@ module Tokenizer
 
     until offset == string.length
       m = TOKENS_REGEXP.match(string, offset)
+      raise InvalidToken, "invalid token at offset #{offset}" unless m
 
       token = SIMPLE_TOKENS[m[0]]
       unless token

@@ -97,6 +97,8 @@ describe RazorPit::Tokenizer do
             [Tokens::SHIFT_RIGHT_EXTEND_ASSIGN]],
            ["null", "null", [Tokens::NULL]],
            ["a simple expression", "1+1",
+            [Tokens::NUMBER[1], Tokens::PLUS, Tokens::NUMBER[1]]],
+           ["a simple expression with whitespace", "1 + 1",
             [Tokens::NUMBER[1], Tokens::PLUS, Tokens::NUMBER[1]]]]
 
   cases += %w(break case catch continue debugger default delete do else
@@ -121,6 +123,12 @@ end
 
 describe "#{RazorPit::Tokenizer}.tokenize" do
   Tokens = RazorPit::Tokenizer::Tokens
+
+  it "raises an exception when it encounters an invalid token" do
+    lambda {
+      RazorPit::Tokenizer.tokenize("@").to_a
+    }.should raise_error(RazorPit::Tokenizer::InvalidToken)
+  end
 
   it "returns an enumerator if no block given" do
     returned = RazorPit::Tokenizer.tokenize("1")

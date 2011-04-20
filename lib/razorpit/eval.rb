@@ -10,8 +10,6 @@ class << NULL
   alias_method :inspect, :to_s
 end
 
-module Eval
-
 LiteralNode.class_eval do
   def evaluate
     value
@@ -32,7 +30,13 @@ end
 
 Nodes::Add.class_eval do
   def evaluate
-    lhs.evaluate + rhs.evaluate
+    lresult = lhs.evaluate
+    rresult = rhs.evaluate
+    if String === lresult or String === rresult
+      "#{Eval.stringify(lresult)}#{Eval.stringify(rresult)}"
+    else
+      lresult + rresult
+    end
   end
 end
 
@@ -103,6 +107,23 @@ end
 class << Nodes::NULL
   def evaluate
     RazorPit::NULL
+  end
+end
+
+module Eval
+extend self
+
+def stringify(obj)
+  case obj
+  when Numeric
+    as_int = obj.to_i
+    if as_int == obj
+      as_int.to_s
+    else
+      obj.to_s
+    end
+  else
+    obj.to_s
   end
 end
 

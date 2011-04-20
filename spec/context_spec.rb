@@ -83,6 +83,12 @@ describe "#{RazorPit::Context}#eval" do
     @ctx.eval("!'0'").should == false
     @ctx.eval("!'foobar'").should == false
   end
+
+  it "implements string concatenation with coercion" do
+    @ctx.eval("'foo' + 'bar'").should == "foobar"
+    @ctx.eval("1 + 'bar'").should == "1bar"
+    @ctx.eval("'foo' + 1").should == "foo1"
+  end
 end
 
 end

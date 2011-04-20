@@ -22,6 +22,10 @@ module Parser
       def suffix(tokens, lhs)
         raise "Parse error"
       end
+
+      def left_binding_power
+        token_type.left_binding_power
+      end
     end
 
     %w(MIN ADD MULT UNARY MAX).each_with_index do |name, i|
@@ -101,7 +105,7 @@ module Parser
     undef define_infix
 
     def left_binding_power(token)
-      token.token_type.left_binding_power || MIN_BINDING_POWER
+      token.left_binding_power || MIN_BINDING_POWER
     end
 
     def expression(tokens, right_binding_power)

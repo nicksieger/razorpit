@@ -69,6 +69,13 @@ module Parser
       end
     end
 
+    Tokens::NULL.left_binding_power = MAX_BINDING_POWER
+    Tokens::NULL.token_class_eval do
+      def prefix(tokens)
+        Nodes::NULL
+      end
+    end
+
     define_literal(Tokens::NUMBER, Nodes::Number)
     define_literal(Tokens::BOOLEAN, Nodes::Boolean)
     define_prefix(Tokens::PLUS, Nodes::UnaryPlus, 100)

@@ -62,6 +62,18 @@ module Nodes
       self.expr == other.expr
     end
   end
+
+  NULL = Node.new
+  class << NULL
+    def ==(other)
+      self.equal? other
+    end
+
+    def to_s
+      "RazorPit::Nodes::NULL"
+    end
+    alias_method :inspect, :to_s
+  end
 end
 
 end

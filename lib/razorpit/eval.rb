@@ -21,6 +21,12 @@ module Eval
         lhs.evaluate + rhs.evaluate
       end
     end
+
+    class << Nodes::NULL
+      def evaluate
+        nil
+      end
+    end
   end
 end
 

@@ -38,6 +38,14 @@ describe "#{RazorPit::Node}#==" do
   it "considers two booleans with different parameters to be different" do
     N::Boolean[false].should_not == N::Boolean[true]
   end
+
+  it "considers null equal to itself" do
+    N::NULL.should == N::NULL
+  end
+
+  it "considers null not equal to other types" do
+    N::NULL.should_not == N::Boolean[true]
+  end
 end
 
 end

@@ -33,6 +33,11 @@ describe RazorPit::Parser do
     ast = RazorPit::Parser.parse_expression("false")
     ast.should == N::Boolean[false]
   end
+
+  it "parses nulls" do
+    ast = RazorPit::Parser.parse_expression("null")
+    ast.should == N::NULL
+  end
 end
 
 end

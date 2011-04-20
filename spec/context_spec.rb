@@ -32,6 +32,10 @@ describe "#{RazorPit::Context}#eval" do
     @ctx.eval("true").should == true
     @ctx.eval("false").should == false
   end
+
+  it "can evaluate null" do
+    @ctx.eval("null").should == nil
+  end
 end
 
 end

@@ -21,6 +21,11 @@ describe RazorPit::Parser do
     ast = RazorPit::Parser.parse_expression("1 + 2")
     ast.should == N::Add[N::Number[1], N::Number[2]]
   end
+
+  it "parses unary plus" do
+    ast = RazorPit::Parser.parse_expression("+2")
+    ast.should == N::UnaryPlus[N::Number[2]]
+  end
 end
 
 end

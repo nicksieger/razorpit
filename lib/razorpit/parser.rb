@@ -21,6 +21,12 @@ module Parser
 
     Tokens::PLUS.token_class_eval do
       def left_binding_power; 10; end
+
+      def prefix(tokens)
+        expr = Grammar.expression(tokens, 100)
+        Nodes::UnaryPlus[expr]
+      end
+
       def suffix(tokens, lhs)
         rhs = Grammar.expression(tokens, left_binding_power)
         Nodes::Add[lhs, rhs]

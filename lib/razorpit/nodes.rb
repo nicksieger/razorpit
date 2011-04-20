@@ -43,6 +43,19 @@ module Nodes
       self.rhs == other.rhs
     end
   end
+
+  class UnaryPlus < Node
+    attr_reader :expr
+
+    def initialize(expr)
+      @expr = expr
+    end
+
+    def ==(other)
+      self.class == other.class &&
+      self.expr == other.expr
+    end
+  end
 end
 
 end

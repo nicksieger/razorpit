@@ -48,6 +48,11 @@ describe RazorPit::Parser do
     ast = RazorPit::Parser.parse_expression("-1")
     ast.should == N::UnaryMinus[N::Number[1]]
   end
+
+  it "handles precedence correctly for unary versus binary +-" do
+    ast = RazorPit::Parser.parse_expression("-1+-+2")
+    ast.should == N::Add[N::UnaryMinus[N::Number[1]], N::UnaryMinus[N::UnaryPlus[N::Number[2]]]]
+  end
 end
 
 end

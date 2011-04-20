@@ -24,8 +24,10 @@ module Parser
       end
     end
 
-    MAX_BINDING_POWER = 1.0/0.0 # +Infinity
-    MIN_BINDING_POWER = -1.0/0.0 # -Infinity
+    %w(MIN ADD MULT UNARY MAX).each_with_index do |name, i|
+      # use intervals of two to allow for right associativity adjustment
+      const_set("#{name}_BINDING_POWER", i * 2)
+    end
 
     def define_literal(token_type, ast_class)
       token_type.left_binding_power = MAX_BINDING_POWER
@@ -85,12 +87,12 @@ module Parser
 
     define_literal(Tokens::NUMBER, Nodes::Number)
     define_literal(Tokens::BOOLEAN, Nodes::Boolean)
-    define_prefix(Tokens::PLUS, Nodes::UnaryPlus, 100)
-    define_prefix(Tokens::MINUS, Nodes::UnaryMinus, 100)
-    define_infix(Tokens::PLUS, Nodes::Add, 10)
-    define_infix(Tokens::MINUS, Nodes::Subtract, 10)
-    define_infix(Tokens::TIMES, Nodes::Multiply, 20)
-    define_infix(Tokens::DIV, Nodes::Divide, 20)
+    define_prefix(Tokens::PLUS, Nodes::UnaryPlus, UNARY_BINDING_POWER)
+    define_prefix(Tokens::MINUS, Nodes::UnaryMinus, UNARY_BINDING_POWER)
+    define_infix(Tokens::TIMES, Nodes::Multiply, MULT_BINDING_POWER)
+    define_infix(Tokens::DIV, Nodes::Divide, MULT_BINDING_POWER)
+    define_infix(Tokens::PLUS, Nodes::Add, ADD_BINDING_POWER)
+    define_infix(Tokens::MINUS, Nodes::Subtract, ADD_BINDING_POWER)
 
     # done with these
     undef define_literal

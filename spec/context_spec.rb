@@ -66,6 +66,15 @@ describe "#{RazorPit::Context}#eval" do
     @ctx.eval("typeof null").should == "object"
     @ctx.eval("typeof void 0").should == "undefined"
   end
+
+  it "implements logical not" do
+    @ctx.eval("!true").should == false
+    @ctx.eval("!false").should == true
+    @ctx.eval("!0").should == true
+    @ctx.eval("!1").should == false
+    @ctx.eval("!void(0)").should == true
+    @ctx.eval("!null").should == true
+  end
 end
 
 end

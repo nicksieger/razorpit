@@ -90,6 +90,9 @@ module Nodes
   class Void < UnaryOpNode
   end
 
+  class Not < UnaryOpNode
+  end
+
   NULL = Node.new
   class << NULL
     def ==(other)

@@ -74,6 +74,22 @@ Nodes::TypeOf.class_eval do
   end
 end
 
+Nodes::Not.class_eval do
+  def evaluate
+    result = expr.evaluate
+    case result
+    when true, false, nil
+      !result
+    when Numeric
+      result == 0
+    when RazorPit::NULL
+      true
+    else
+      false
+    end
+  end
+end
+
 Nodes::Void.class_eval do
   def evaluate
     nil

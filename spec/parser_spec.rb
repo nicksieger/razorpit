@@ -117,6 +117,11 @@ describe RazorPit::Parser do
     ast = RazorPit::Parser.parse_expression("void 0")
     ast.should == N::Void[N::Number[0]]
   end
+
+  it "should parse logical negation" do
+    ast = RazorPit::Parser.parse_expression("!true")
+    ast.should == N::Not[N::Boolean[true]]
+  end
 end
 
 end

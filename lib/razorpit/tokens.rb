@@ -13,12 +13,8 @@ module TokenType
 end
 
 module Token
-  def type
-    raise NotImplementedError, "#{self.class}#type not implemented"
-  end
-
-  def left_binding_power
-    raise NotImplementedError, "#{self.class}#left_binding_power not implemented"
+  def token_type
+    raise NotImplementedError, "#{self.class}#token_type not implemented"
   end
 end
 
@@ -44,13 +40,7 @@ ValueToken = Struct.new :value do
     alias_method :token_class_eval, :class_eval
   end
 
-  def left_binding_power
-    self.class.left_binding_power
-  end
-
-  def type
-    self.class
-  end
+  alias_method :token_type, :class
 end
 
 class SingletonToken
@@ -66,7 +56,7 @@ class SingletonToken
     self
   end
 
-  def type
+  def token_type
     self
   end
 

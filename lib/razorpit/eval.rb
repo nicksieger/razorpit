@@ -66,6 +66,8 @@ Nodes::TypeOf.class_eval do
     case result
     when Numeric
       "number"
+    when String
+      "string"
     when nil
       "undefined"
     else
@@ -82,6 +84,8 @@ Nodes::Not.class_eval do
       !result
     when Numeric
       result == 0
+    when String
+      result.empty?
     when RazorPit::NULL
       true
     else

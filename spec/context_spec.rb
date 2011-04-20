@@ -69,6 +69,7 @@ describe "#{RazorPit::Context}#eval" do
     @ctx.eval("typeof 3").should == "number"
     @ctx.eval("typeof null").should == "object"
     @ctx.eval("typeof void 0").should == "undefined"
+    @ctx.eval("typeof 'foobar'").should == "string"
   end
 
   it "implements logical not" do
@@ -78,6 +79,9 @@ describe "#{RazorPit::Context}#eval" do
     @ctx.eval("!1").should == false
     @ctx.eval("!void(0)").should == true
     @ctx.eval("!null").should == true
+    @ctx.eval("!''").should == true
+    @ctx.eval("!'0'").should == false
+    @ctx.eval("!'foobar'").should == false
   end
 end
 

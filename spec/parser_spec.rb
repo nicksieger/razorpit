@@ -71,6 +71,11 @@ describe RazorPit::Parser do
     ast.should == N::Divide[N::Number[1], N::Number[2]]
   end
 
+  it "parses the modulus operator" do
+    ast = RazorPit::Parser.parse_expression("1 % 2")
+    ast.should == N::Modulus[N::Number[1], N::Number[2]]
+  end
+
   it "should give addition and subtraction the same precedence" do
     ast = RazorPit::Parser.parse_expression("1 + 2 - 3")
     ast.should == N::Subtract[N::Add[N::Number[1], N::Number[2]],
@@ -91,6 +96,15 @@ describe RazorPit::Parser do
                             N::Number[3]]
     ast = RazorPit::Parser.parse_expression("1 / 2 * 3")
     ast.should == N::Multiply[N::Divide[N::Number[1], N::Number[2]],
+                              N::Number[3]]
+  end
+
+  it "should give multiplication and modulus the same precedence" do
+    ast = RazorPit::Parser.parse_expression("1 * 2 % 3")
+    ast.should == N::Modulus[N::Multiply[N::Number[1], N::Number[2]],
+                             N::Number[3]]
+    ast = RazorPit::Parser.parse_expression("1 % 2 * 3")
+    ast.should == N::Multiply[N::Modulus[N::Number[1], N::Number[2]],
                               N::Number[3]]
   end
 end

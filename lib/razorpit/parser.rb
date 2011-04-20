@@ -91,6 +91,7 @@ module Parser
     define_prefix(Tokens::MINUS, Nodes::UnaryMinus, UNARY_BINDING_POWER)
     define_infix(Tokens::TIMES, Nodes::Multiply, MULT_BINDING_POWER)
     define_infix(Tokens::DIV, Nodes::Divide, MULT_BINDING_POWER)
+    define_infix(Tokens::MODULUS, Nodes::Modulus, MULT_BINDING_POWER)
     define_infix(Tokens::PLUS, Nodes::Add, ADD_BINDING_POWER)
     define_infix(Tokens::MINUS, Nodes::Subtract, ADD_BINDING_POWER)
 

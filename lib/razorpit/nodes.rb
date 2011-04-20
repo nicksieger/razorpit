@@ -75,6 +75,9 @@ module Nodes
   class Divide < BinaryOpNode
   end
 
+  class Modulus < BinaryOpNode
+  end
+
   class UnaryPlus < UnaryOpNode
   end
 

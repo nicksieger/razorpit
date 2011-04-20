@@ -27,6 +27,11 @@ describe "#{RazorPit::Context}#eval" do
   it "can do trivial arithmetic" do
     @ctx.eval("1 + 2").should == 3.0
   end
+
+  it "can evaluate true and false" do
+    @ctx.eval("true").should == true
+    @ctx.eval("false").should == false
+  end
 end
 
 end

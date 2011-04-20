@@ -4,7 +4,7 @@ module RazorPit
 
 module Eval
   module Semantics
-    Nodes::Number.class_eval do
+    LiteralNode.class_eval do
       def evaluate
         value
       end

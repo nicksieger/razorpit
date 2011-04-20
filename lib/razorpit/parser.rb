@@ -62,6 +62,16 @@ module Parser
       end
     end
 
+    Tokens::OPEN_PAREN.left_binding_power = MIN_BINDING_POWER
+    Tokens::OPEN_PAREN.token_class_eval do
+      def prefix(tokens)
+        expr = Grammar.expression(tokens, MIN_BINDING_POWER)
+        raise "syntax error" unless Tokens::CLOSE_PAREN === tokens.next
+        expr
+      end
+    end
+    Tokens::CLOSE_PAREN.left_binding_power = MIN_BINDING_POWER
+
     Tokens::EOF.left_binding_power = MIN_BINDING_POWER
     Tokens::EOF.token_class_eval do
       def suffix(tokens, lhs)

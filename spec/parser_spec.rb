@@ -53,6 +53,13 @@ describe RazorPit::Parser do
     ast = RazorPit::Parser.parse_expression("-1+-+2")
     ast.should == N::Add[N::UnaryMinus[N::Number[1]], N::UnaryMinus[N::UnaryPlus[N::Number[2]]]]
   end
+
+  it "parses parenthesised subexpressions" do
+    ast = RazorPit::Parser.parse_expression("(1+2)+3")
+    ast.should == N::Add[N::Add[N::Number[1], N::Number[2]], N::Number[3]]
+    ast = RazorPit::Parser.parse_expression("1+(2+3)")
+    ast.should == N::Add[N::Number[1], N::Add[N::Number[2], N::Number[3]]]
+  end
 end
 
 end

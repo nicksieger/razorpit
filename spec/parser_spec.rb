@@ -122,6 +122,11 @@ describe RazorPit::Parser do
     ast = RazorPit::Parser.parse_expression("!true")
     ast.should == N::Not[N::Boolean[true]]
   end
+
+  it "should parse string literals" do
+    ast = RazorPit::Parser.parse_expression("'foobar'")
+    ast.should == N::String["foobar"]
+  end
 end
 
 end

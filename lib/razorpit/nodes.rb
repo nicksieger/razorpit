@@ -57,6 +57,9 @@ module Nodes
   class Boolean < LiteralNode
   end
 
+  class String < LiteralNode
+  end
+
   class Program < Node
     def ==(other)
       self.class == other.class

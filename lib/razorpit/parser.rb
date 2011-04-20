@@ -11,11 +11,12 @@ module Parser
   end
 
   def parse_expression(string)
-    Lexer.scan(string) do |token|
-      case token
-      when Tokens::NUMBER
-        return Nodes::Number[token.value]
-      end
+    tokens = Lexer.scan(string)
+
+    token = tokens.next
+    case token
+    when Tokens::NUMBER
+      Nodes::Number[token.value]
     end
   end
 end

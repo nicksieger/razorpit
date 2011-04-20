@@ -65,6 +65,7 @@ module Tokenizer
     end
 
     define_token(:INVALID, /(?<value>.)/)
+    define_token(:WHITESPACE, /\s+/)
 
     # punctuators
     define_token(:PLUS, '+')
@@ -154,7 +155,6 @@ module Tokenizer
     token_class = Tokens.const_get(token_name)
     "(?<#{token_name}>#{token_class.re})"
   }
-  #subexpressions << "(?<wsp>\s+)" # whitespace
   TOKENS_REGEXP = Regexp.compile("#{subexpressions.join("|")}")
 
   class InvalidToken < Exception
@@ -179,7 +179,7 @@ module Tokenizer
         end
       end
 
-      yield token
+      yield token unless Tokens::WHITESPACE === token
       offset = m.end(0)
     end
 

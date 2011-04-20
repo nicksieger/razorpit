@@ -16,6 +16,11 @@ describe RazorPit::Parser do
     ast = RazorPit::Parser.parse_expression("1")
     ast.should == N::Number[1]
   end
+
+  it "parses an addition expression" do
+    ast = RazorPit::Parser.parse_expression("1 + 2")
+    ast.should == N::Add[N::Number[1], N::Number[2]]
+  end
 end
 
 describe "#{RazorPit::Node}#==" do
@@ -33,6 +38,14 @@ describe "#{RazorPit::Node}#==" do
 
   it "has a == method which distinguishes node classes" do
     N::Program[].should_not == N::Number[1]
+  end
+
+  it "should consider two additions with equal parameters to be equal" do
+    N::Add[N::Number[1], N::Number[2]].should == N::Add[N::Number[1], N::Number[2]]
+  end
+
+  it "should consider two additions with different parameters to be different" do
+    N::Add[N::Number[1], N::Number[2]].should_not == N::Add[N::Number[2], N::Number[1]]
   end
 end
 

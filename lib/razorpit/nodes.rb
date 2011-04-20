@@ -30,15 +30,17 @@ module Nodes
   end
 
   class Add < Node
-    attr_reader :a, :b
+    attr_reader :lhs, :rhs
 
-    def initialize(a, b)
-      @a = a
-      @b = b
+    def initialize(lhs, rhs)
+      @lhs = lhs
+      @rhs = rhs
     end
 
     def ==(other)
-      self.class == other.class && self.a == other.a && self.b == other.b
+      self.class == other.class &&
+      self.lhs == other.lhs &&
+      self.rhs == other.rhs
     end
   end
 end

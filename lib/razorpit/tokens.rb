@@ -38,7 +38,6 @@ COMPLEX_TOKENS = {} # variable tokens by name
 module Tokens
   extend self
 
-private
   def define_token(name, pattern, &value_fn)
     re = case pattern
          when String
@@ -154,6 +153,9 @@ private
 
   # reserved words
   define_keyword *%w(class const enum export extends import super)
+
+  undef define_token
+  undef define_keyword
 end
 
 # reverse to put later-defined tokens first (i.e. higher priority)

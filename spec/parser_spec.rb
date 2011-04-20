@@ -26,6 +26,13 @@ describe RazorPit::Parser do
     ast = RazorPit::Parser.parse_expression("+2")
     ast.should == N::UnaryPlus[N::Number[2]]
   end
+
+  it "parses boolean literals" do
+    ast = RazorPit::Parser.parse_expression("true")
+    ast.should == N::Boolean[true]
+    ast = RazorPit::Parser.parse_expression("false")
+    ast.should == N::Boolean[false]
+  end
 end
 
 end

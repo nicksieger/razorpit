@@ -23,12 +23,20 @@ describe "#{RazorPit::Node}#==" do
     N::Program[].should_not == N::Number[1]
   end
 
-  it "should consider two additions with equal parameters to be equal" do
+  it "considers two additions with equal parameters to be equal" do
     N::Add[N::Number[1], N::Number[2]].should == N::Add[N::Number[1], N::Number[2]]
   end
 
-  it "should consider two additions with different parameters to be different" do
+  it "considers two additions with different parameters to be different" do
     N::Add[N::Number[1], N::Number[2]].should_not == N::Add[N::Number[2], N::Number[1]]
+  end
+
+  it "considers two booleans with the same value to be equal" do
+    N::Boolean[true].should == N::Boolean[true]
+  end
+
+  it "considers two booleans with different parameters to be different" do
+    N::Boolean[false].should_not == N::Boolean[true]
   end
 end
 

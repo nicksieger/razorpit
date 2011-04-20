@@ -10,17 +10,23 @@ class Node
   end
 end
 
+class LiteralNode < Node
+  attr_reader :value
+
+  def initialize(value)
+    @value = value
+  end
+
+  def ==(other)
+    self.class == other.class && self.value == other.value
+  end
+end
+
 module Nodes
-  class Number < Node
-    attr_reader :value
+  class Number < LiteralNode
+  end
 
-    def initialize(value)
-      @value = value
-    end
-
-    def ==(other)
-      self.class == other.class && self.value == other.value
-    end
+  class Boolean < LiteralNode
   end
 
   class Program < Node

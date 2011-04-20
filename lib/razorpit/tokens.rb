@@ -27,10 +27,6 @@ class SingletonToken
     @re = re
   end
 
-  def value
-    nil
-  end
-
   def build(value)
     self
   end

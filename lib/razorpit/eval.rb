@@ -10,6 +10,12 @@ module Eval
       end
     end
 
+    Nodes::UnaryPlus.class_eval do
+      def evaluate
+        expr.evaluate
+      end
+    end
+
     Nodes::Add.class_eval do
       def evaluate
         lhs.evaluate + rhs.evaluate

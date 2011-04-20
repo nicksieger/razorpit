@@ -8,10 +8,9 @@ ValueToken = Struct.new :value do
   IDENTITY_FN = lambda { |v| v }
 
   class << self
-    include TokenType
-
     def derive(re, value_fn)
       Class.new self do
+        extend TokenType
         @re = re
         @value_fn = value_fn || IDENTITY_FN
       end

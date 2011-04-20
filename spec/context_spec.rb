@@ -34,7 +34,7 @@ describe "#{RazorPit::Context}#eval" do
   end
 
   it "can evaluate null" do
-    @ctx.eval("null").should == nil
+    @ctx.eval("null").should == RazorPit::NULL
   end
 
   it "can do subtraction" do

@@ -1,6 +1,15 @@
 require 'razorpit/nodes'
 
 module RazorPit
+
+NULL = Object.new
+class << NULL
+  def to_s
+    RazorPit::NULL
+  end
+  alias_method :inspect, :to_s
+end
+
 module Eval
 
 LiteralNode.class_eval do
@@ -53,7 +62,7 @@ end
 
 class << Nodes::NULL
   def evaluate
-    nil
+    RazorPit::NULL
   end
 end
 

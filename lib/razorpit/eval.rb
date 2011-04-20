@@ -34,6 +34,24 @@ module Eval
       end
     end
 
+    Nodes::Multiply.class_eval do
+      def evaluate
+        lhs.evaluate * rhs.evaluate
+      end
+    end
+
+    Nodes::Divide.class_eval do
+      def evaluate
+        lhs.evaluate / rhs.evaluate
+      end
+    end
+
+    Nodes::Modulus.class_eval do
+      def evaluate
+        lhs.evaluate % rhs.evaluate
+      end
+    end
+
     class << Nodes::NULL
       def evaluate
         nil

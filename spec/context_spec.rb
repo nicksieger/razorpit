@@ -44,6 +44,18 @@ describe "#{RazorPit::Context}#eval" do
   it "understands unary minus" do
     @ctx.eval("-1").should == -1.0
   end
+
+  it "can do multiplication" do
+    @ctx.eval("2 * 3").should == 6.0
+  end
+
+  it "can do division" do
+    @ctx.eval("1 / 2").should == 0.5
+  end
+
+  it "understands modulus" do
+    @ctx.eval("8 % 3").should == 2.0
+  end
 end
 
 end

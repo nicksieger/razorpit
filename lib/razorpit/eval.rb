@@ -22,6 +22,12 @@ module Eval
       end
     end
 
+    Nodes::Subtract.class_eval do
+      def evaluate
+        lhs.evaluate - rhs.evaluate
+      end
+    end
+
     class << Nodes::NULL
       def evaluate
         nil

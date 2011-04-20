@@ -80,6 +80,7 @@ module Parser
     define_literal(Tokens::BOOLEAN, Nodes::Boolean)
     define_prefix(Tokens::PLUS, Nodes::UnaryPlus, 100)
     define_infix(Tokens::PLUS, Nodes::Add, 10)
+    define_infix(Tokens::MINUS, Nodes::Subtract, 10)
 
     # done with these
     undef define_literal

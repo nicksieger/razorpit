@@ -22,6 +22,21 @@ class LiteralNode < Node
   end
 end
 
+class BinaryOpNode < Node
+  attr_reader :lhs, :rhs
+
+  def initialize(lhs, rhs)
+    @lhs = lhs
+    @rhs = rhs
+  end
+
+  def ==(other)
+    self.class == other.class &&
+    self.lhs == other.lhs &&
+    self.rhs == other.rhs
+  end
+end
+
 module Nodes
   class Number < LiteralNode
   end
@@ -35,19 +50,10 @@ module Nodes
     end
   end
 
-  class Add < Node
-    attr_reader :lhs, :rhs
+  class Add < BinaryOpNode
+  end
 
-    def initialize(lhs, rhs)
-      @lhs = lhs
-      @rhs = rhs
-    end
-
-    def ==(other)
-      self.class == other.class &&
-      self.lhs == other.lhs &&
-      self.rhs == other.rhs
-    end
+  class Subtract < BinaryOpNode
   end
 
   class UnaryPlus < Node

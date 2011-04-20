@@ -38,6 +38,11 @@ describe RazorPit::Parser do
     ast = RazorPit::Parser.parse_expression("null")
     ast.should == N::NULL
   end
+
+  it "parses subtraction" do
+    ast = RazorPit::Parser.parse_expression("2 - 1")
+    ast.should == N::Subtract[N::Number[2], N::Number[1]]
+  end
 end
 
 end

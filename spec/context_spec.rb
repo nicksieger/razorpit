@@ -61,6 +61,10 @@ describe "#{RazorPit::Context}#eval" do
     @ctx.eval("void 0").should == nil
   end
 
+  it "understands string literals" do
+    @ctx.eval("'foobar'").should == "foobar"
+  end
+
   it "implements typeof" do
     @ctx.eval("typeof 3").should == "number"
     @ctx.eval("typeof null").should == "object"

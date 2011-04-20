@@ -28,6 +28,8 @@ module Lexer
       offset = new_offset
     end
 
+    yield Tokens::EOF
+
     self
   end
 end

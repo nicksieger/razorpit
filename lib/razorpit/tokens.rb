@@ -91,6 +91,7 @@ module Tokens
 
   define_token(:INVALID, /(?<value>.)/)
   define_token(:WHITESPACE, /\s+/)
+  define_token(:EOF, /\Z/)
 
   # punctuators
   define_token(:PLUS, '+')

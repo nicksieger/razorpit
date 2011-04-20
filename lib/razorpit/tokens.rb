@@ -1,10 +1,14 @@
 module RazorPit
 
+module TokenType
+  attr_reader :re
+end
+
 ValueToken = Struct.new :value do
   IDENTITY_FN = lambda { |v| v }
 
   class << self
-    attr_reader :re, :value_fn
+    include TokenType
 
     def derive(re, value_fn)
       Class.new self do
@@ -17,10 +21,14 @@ ValueToken = Struct.new :value do
       new(@value_fn.call(value))
     end
   end
+
+  def type
+    self.class
+  end
 end
 
 class SingletonToken
-  attr_reader :re
+  include TokenType
 
   def initialize(name, re)
     @name = name
@@ -28,6 +36,10 @@ class SingletonToken
   end
 
   def build(value)
+    self
+  end
+
+  def type
     self
   end
 end

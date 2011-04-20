@@ -14,21 +14,18 @@ module Lexer
     offset = 0
 
     until offset == string.length
-      m = TOKENS_REGEXP.match(string, offset)
-      raise InvalidToken, "invalid token at offset #{offset}" if m['INVALID']
+      token, new_offset = Tokens.match_token(string, offset)
 
-      token = SIMPLE_TOKENS[m[0]]
-      unless token
-        COMPLEX_TOKENS.each do |name, token_class|
-          if m[name]
-            token = token_class.build(m['value'])
-            break
-          end
-        end
+      case token
+      when Tokens::INVALID
+        raise InvalidToken, "invalid token at offset #{offset}"
+      when Tokens::WHITESPACE
+        # ignore
+      else
+        yield token
       end
 
-      yield token unless Tokens::WHITESPACE === token
-      offset = m.end(0)
+      offset = new_offset
     end
 
     self

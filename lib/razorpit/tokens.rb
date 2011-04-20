@@ -32,11 +32,13 @@ class SingletonToken
   end
 end
 
-SIMPLE_TOKENS = {} # constant tokens by string
-COMPLEX_TOKENS = {} # variable tokens by name
-
 module Tokens
   extend self
+
+  # tokens which are identified by value
+  @simple_tokens = {}
+  # tokens which are identified by named capture
+  @complex_tokens = {}
 
   def define_token(name, pattern, &value_fn)
     re = case pattern
@@ -54,9 +56,9 @@ module Tokens
 
     case pattern
     when String
-      SIMPLE_TOKENS[pattern] = token_type
+      @simple_tokens[pattern] = token_type
     else
-      COMPLEX_TOKENS[name] = token_type
+      @complex_tokens[name] = token_type
     end
 
     const_set(name, token_type)
@@ -154,15 +156,32 @@ module Tokens
   # reserved words
   define_keyword *%w(class const enum export extends import super)
 
+  # we're done with these now
   undef define_token
   undef define_keyword
+
+  # reverse to put later-defined tokens first (i.e. higher priority)
+  subexpressions = constants.reverse.map { |token_name|
+    const_get(token_name).re
+  }
+  @tokens_regexp = Regexp.compile("#{subexpressions.join("|")}")
+
+  def match_token(string, offset)
+    m = @tokens_regexp.match(string, offset)
+    new_offset = m.end(0)
+    token = @simple_tokens[m[0]]
+    unless token
+      @complex_tokens.each do |name, token_type|
+        if m[name]
+          token_value = m['value']
+          token = token_type.build(token_value)
+          break
+        end
+      end
+    end
+    return token, new_offset
+  end
 end
 
-# reverse to put later-defined tokens first (i.e. higher priority)
-subexpressions = Tokens.constants.reverse.map { |token_name|
-  token_class = Tokens.const_get(token_name)
-  "(?<#{token_name}>#{token_class.re})"
-}
-TOKENS_REGEXP = Regexp.compile("#{subexpressions.join("|")}")
 
 end

@@ -19,6 +19,8 @@ ValueToken = Struct.new :value do
     def build(value)
       new(@value_fn.call(value))
     end
+
+    alias_method :token_class_eval, :class_eval
   end
 
   def type
@@ -40,6 +42,11 @@ class SingletonToken
 
   def type
     self
+  end
+
+  def token_class_eval(&block)
+    eigenclass = class << self; self; end
+    eigenclass.class_eval(&block)
   end
 end
 

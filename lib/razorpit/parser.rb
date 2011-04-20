@@ -27,23 +27,36 @@ module Parser
     MAX_BINDING_POWER = 1.0/0.0 # +Infinity
     MIN_BINDING_POWER = -1.0/0.0 # -Infinity
 
-    Tokens::NUMBER.left_binding_power = MAX_BINDING_POWER
-    Tokens::NUMBER.token_class_eval do
-      def prefix(tokens)
-        Nodes::Number[value]
+    def define_literal(token_type, ast_class)
+      token_type.left_binding_power = MAX_BINDING_POWER
+      token_type.token_class_eval do
+        const_set :LITERAL_AST_CLASS, ast_class
+        def prefix(tokens)
+          LITERAL_AST_CLASS[value]
+        end
+      end
+      self
+    end
+
+    def define_infix(token_type, ast_class, binding_power)
+      token_type.left_binding_power = binding_power
+      token_type.token_class_eval do
+        const_set :INFIX_AST_CLASS, ast_class
+        def suffix(tokens, lhs)
+          rhs = Grammar.expression(tokens, left_binding_power)
+          INFIX_AST_CLASS[lhs, rhs]
+        end
       end
     end
 
-    Tokens::PLUS.left_binding_power = 10
-    Tokens::PLUS.token_class_eval do
-      def prefix(tokens)
-        expr = Grammar.expression(tokens, 100)
-        Nodes::UnaryPlus[expr]
-      end
-
-      def suffix(tokens, lhs)
-        rhs = Grammar.expression(tokens, left_binding_power)
-        Nodes::Add[lhs, rhs]
+    def define_prefix(token_type, ast_class, binding_power)
+      token_type.token_class_eval do
+        const_set :PREFIX_AST_CLASS, ast_class
+        const_set :PREFIX_BINDING_POWER, binding_power
+        def prefix(tokens)
+          expr = Grammar.expression(tokens, PREFIX_BINDING_POWER)
+          PREFIX_AST_CLASS[expr]
+        end
       end
     end
 
@@ -53,6 +66,10 @@ module Parser
         lhs
       end
     end
+
+    define_literal(Tokens::NUMBER, Nodes::Number)
+    define_prefix(Tokens::PLUS, Nodes::UnaryPlus, 100)
+    define_infix(Tokens::PLUS, Nodes::Add, 10)
 
     def expression(tokens, right_binding_power)
       token = tokens.next

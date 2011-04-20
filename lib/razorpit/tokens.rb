@@ -19,11 +19,10 @@ ValueToken = Struct.new :value do
   end
 end
 
-class SingletonToken
+class SingletonToken < Module
   attr_reader :re
 
-  def initialize(name, re)
-    @name = name
+  def initialize(re)
     @re = re
   end
 
@@ -43,7 +42,7 @@ private
     case pattern
     when String
       re = /(?:#{Regexp.quote(pattern)})/
-      token_type = SingletonToken.new(name, re)
+      token_type = SingletonToken.new(re)
       SIMPLE_TOKENS[pattern] = token_type
     else
       re = /(?<#{name}>#{pattern})/

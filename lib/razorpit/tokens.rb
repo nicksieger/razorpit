@@ -4,13 +4,13 @@ ValueToken = Struct.new :value do
   IDENTITY_FN = lambda { |v| v }
 
   class << self
-    attr_accessor :re, :value_fn
+    attr_reader :re, :value_fn
 
     def derive(re, value_fn)
-      c = Class.new self
-      c.re = re
-      c.value_fn = value_fn || IDENTITY_FN
-      c
+      Class.new self do
+        @re = re
+        @value_fn = value_fn || IDENTITY_FN
+      end
     end
 
     def build(value)
@@ -19,10 +19,11 @@ ValueToken = Struct.new :value do
   end
 end
 
-class SingletonToken < Module
+class SingletonToken
   attr_reader :re
 
-  def initialize(re)
+  def initialize(name, re)
+    @name = name
     @re = re
   end
 
@@ -39,16 +40,26 @@ module Tokens
 
 private
   def define_token(name, pattern, &value_fn)
+    re = case pattern
+         when String
+           /(?:#{Regexp.quote(pattern)})/
+         else
+           /(?<#{name}>#{pattern})/
+         end
+
+    token_type = if re.names.include? 'value'
+                   ValueToken.derive(re, value_fn)
+                 else
+                   SingletonToken.new(name, re)
+                 end
+
     case pattern
     when String
-      re = /(?:#{Regexp.quote(pattern)})/
-      token_type = SingletonToken.new(re)
       SIMPLE_TOKENS[pattern] = token_type
     else
-      re = /(?<#{name}>#{pattern})/
-      token_type = ValueToken.derive(re, value_fn)
       COMPLEX_TOKENS[name] = token_type
     end
+
     const_set(name, token_type)
   end
 

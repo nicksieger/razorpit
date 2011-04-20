@@ -1,6 +1,6 @@
 module RazorPit
 
-ComplexToken = Struct.new :value do
+ValueToken = Struct.new :value do
   IDENTITY_FN = lambda { |v| v }
 
   class << self
@@ -19,13 +19,16 @@ ComplexToken = Struct.new :value do
   end
 end
 
-class SimpleToken
+class SingletonToken
   attr_reader :re
-  attr_reader :value
 
-  def initialize(re)
-    @value = re
+  def initialize(name, re)
+    @name = name
     @re = re
+  end
+
+  def value
+    nil
   end
 
   def build(value)
@@ -44,11 +47,11 @@ private
     case pattern
     when String
       re = /(?:#{Regexp.quote(pattern)})/
-      token_type = SimpleToken.new(re)
+      token_type = SingletonToken.new(name, re)
       SIMPLE_TOKENS[pattern] = token_type
     else
       re = /(?<#{name}>#{pattern})/
-      token_type = ComplexToken.derive(re, value_fn)
+      token_type = ValueToken.derive(re, value_fn)
       COMPLEX_TOKENS[name] = token_type
     end
     const_set(name, token_type)

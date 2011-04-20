@@ -64,6 +64,11 @@ class SingletonToken
     eigenclass = class << self; self; end
     eigenclass.class_eval(&block)
   end
+
+  def to_s
+    "RazorPit::Tokens::#{@name}"
+  end
+  alias_method :inspect, :to_s
 end
 
 module Tokens

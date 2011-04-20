@@ -56,6 +56,10 @@ describe "#{RazorPit::Context}#eval" do
   it "understands modulus" do
     @ctx.eval("8 % 3").should == 2.0
   end
+
+  it "understands void" do
+    @ctx.eval("void 0").should == nil
+  end
 end
 
 end

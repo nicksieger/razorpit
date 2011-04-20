@@ -60,6 +60,12 @@ Nodes::Modulus.class_eval do
   end
 end
 
+Nodes::Void.class_eval do
+  def evaluate
+    nil
+  end
+end
+
 class << Nodes::NULL
   def evaluate
     RazorPit::NULL

@@ -107,6 +107,16 @@ describe RazorPit::Parser do
     ast.should == N::Multiply[N::Modulus[N::Number[1], N::Number[2]],
                               N::Number[3]]
   end
+
+  it "should parse typeof" do
+    ast = RazorPit::Parser.parse_expression("typeof 3")
+    ast.should == N::TypeOf[N::Number[3]]
+  end
+
+  it "should parse void" do
+    ast = RazorPit::Parser.parse_expression("void 0")
+    ast.should == N::Void[N::Number[0]]
+  end
 end
 
 end

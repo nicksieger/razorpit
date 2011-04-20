@@ -84,6 +84,12 @@ module Nodes
   class UnaryMinus < UnaryOpNode
   end
 
+  class TypeOf < UnaryOpNode
+  end
+
+  class Void < UnaryOpNode
+  end
+
   NULL = Node.new
   class << NULL
     def ==(other)

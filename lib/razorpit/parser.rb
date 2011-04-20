@@ -93,6 +93,8 @@ module Parser
     define_literal(Tokens::BOOLEAN, Nodes::Boolean)
     define_prefix(Tokens::PLUS, Nodes::UnaryPlus, UNARY_BINDING_POWER)
     define_prefix(Tokens::MINUS, Nodes::UnaryMinus, UNARY_BINDING_POWER)
+    define_prefix(Tokens::TYPEOF, Nodes::TypeOf, UNARY_BINDING_POWER)
+    define_prefix(Tokens::VOID, Nodes::Void, UNARY_BINDING_POWER)
     define_infix(Tokens::TIMES, Nodes::Multiply, MULT_BINDING_POWER)
     define_infix(Tokens::DIV, Nodes::Divide, MULT_BINDING_POWER)
     define_infix(Tokens::MODULUS, Nodes::Modulus, MULT_BINDING_POWER)

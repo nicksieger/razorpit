@@ -32,8 +32,8 @@ class SingletonToken
   end
 end
 
-SIMPLE_TOKENS = {}
-COMPLEX_TOKENS = {}
+SIMPLE_TOKENS = {} # constant tokens by string
+COMPLEX_TOKENS = {} # variable tokens by name
 
 module Tokens
   extend self
@@ -156,7 +156,7 @@ private
   define_keyword *%w(class const enum export extends import super)
 end
 
-# reverse to give later tokens higher priority
+# reverse to put later-defined tokens first (i.e. higher priority)
 subexpressions = Tokens.constants.reverse.map { |token_name|
   token_class = Tokens.const_get(token_name)
   "(?<#{token_name}>#{token_class.re})"

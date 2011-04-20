@@ -60,6 +60,12 @@ describe "#{RazorPit::Context}#eval" do
   it "understands void" do
     @ctx.eval("void 0").should == nil
   end
+
+  it "implements typeof" do
+    @ctx.eval("typeof 3").should == "number"
+    @ctx.eval("typeof null").should == "object"
+    @ctx.eval("typeof void 0").should == "undefined"
+  end
 end
 
 end

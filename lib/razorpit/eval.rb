@@ -60,6 +60,20 @@ Nodes::Modulus.class_eval do
   end
 end
 
+Nodes::TypeOf.class_eval do
+  def evaluate
+    result = expr.evaluate
+    case result
+    when Numeric
+      "number"
+    when nil
+      "undefined"
+    else
+      "object"
+    end
+  end
+end
+
 Nodes::Void.class_eval do
   def evaluate
     nil

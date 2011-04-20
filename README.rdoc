@@ -11,14 +11,14 @@ RazorPit is a pure-Ruby implementation of JavaScript (aka ECMAScript, ECMA-262).
 
 == Project Structure
 
-The interpreter is organized into roughly six layers:
+The interpreter is organized into roughly six layers, from the bottom up:
 
-* razorpit/context - the public API, modeled after therubyracer
-* razorpit/eval - the evaluator; augments classes from razorpit/nodes
-* razorpit/parser - the parser; augments classes from razorpit/tokens
-* razorpit/nodes - AST nodes and AST utilities
-* razorpit/lexer - the lexical analyzer
 * razorpit/tokens - lexical tokens and tokenizing utilities
+* razorpit/lexer - the lexical analyzer
+* razorpit/nodes - AST nodes and AST utilities
+* razorpit/parser - the parser; augments classes from razorpit/tokens
+* razorpit/eval - the evaluator; augments classes from razorpit/nodes
+* razorpit/context - the public API, modeled after therubyracer
 
 == Contributing to razorpit
  

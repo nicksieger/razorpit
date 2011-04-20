@@ -37,7 +37,7 @@ module Tokens
 
   # tokens which are identified by value
   @simple_tokens = {}
-  # tokens which are identified by named capture
+  # tokens which are identified by capture name
   @complex_tokens = {}
 
   def define_token(name, pattern, &value_fn)

@@ -125,4 +125,9 @@ describe RazorPit::Parser do
     ast = RazorPit::Parser.parse_expression("'foobar'")
     ast.should == N::String["foobar"]
   end
+
+  it "should parse regular expression literals" do
+    ast = RazorPit::Parser.parse_expression("/foobar/")
+    ast.should == N::RegEx["foobar"]
+  end
 end

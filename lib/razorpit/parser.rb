@@ -92,6 +92,7 @@ module Parser
     define_literal(Tokens::NUMBER, Nodes::Number)
     define_literal(Tokens::BOOLEAN, Nodes::Boolean)
     define_literal(Tokens::STRING, Nodes::String)
+    define_literal(Tokens::REGEX, Nodes::RegEx)
 
     define_prefix(Tokens::PLUS, Nodes::UnaryPlus, UNARY_BINDING_POWER)
     define_prefix(Tokens::MINUS, Nodes::UnaryMinus, UNARY_BINDING_POWER)

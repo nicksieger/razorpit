@@ -60,6 +60,9 @@ module Nodes
   class String < LiteralNode
   end
 
+  class RegEx < LiteralNode
+  end
+
   class Program < Node
     def ==(other)
       self.class == other.class

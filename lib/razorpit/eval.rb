@@ -127,5 +127,9 @@ def stringify(obj)
   end
 end
 
+def evaluate(ast)
+  ast.evaluate
+end
+
 end
 end

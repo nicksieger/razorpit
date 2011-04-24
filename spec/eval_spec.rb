@@ -118,3 +118,29 @@ describe "#{RazorPit::Eval}.to_boolean" do
     RazorPit::Eval.to_boolean("foobar").should be_true
   end
 end
+
+describe "#{RazorPit::Eval}.to_string" do
+  it "returns 'NaN' for NaN" do
+    RazorPit::Eval.to_string(0.0/0.0).should == "NaN"
+  end
+
+  it "returns +-Infinity for infinities" do
+    RazorPit::Eval.to_string(1.0/0.0).should == "Infinity"
+    RazorPit::Eval.to_string(-1.0/0.0).should == "-Infinity"
+  end
+
+  it "stringifies +-0 to '0'" do
+    RazorPit::Eval.to_string(0.0).should == "0"
+    RazorPit::Eval.to_string(-0.0).should == "0"
+  end
+
+  it "stringifies integers without decimal points" do
+    RazorPit::Eval.to_string(1.0).should == "1"
+    RazorPit::Eval.to_string(-1.0).should == "-1"
+  end
+
+  it "stringifies exact decimals exactly" do
+    RazorPit::Eval.to_string(1.25).should == "1.25"
+    RazorPit::Eval.to_string(-1.25).should == "-1.25"
+  end
+end

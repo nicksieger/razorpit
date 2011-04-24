@@ -33,7 +33,7 @@ Nodes::Add.class_eval do
     lresult = lhs.evaluate
     rresult = rhs.evaluate
     if String === lresult or String === rresult
-      "#{Eval.stringify(lresult)}#{Eval.stringify(rresult)}"
+      "#{Eval.to_string(lresult)}#{Eval.to_string(rresult)}"
     else
       lresult + rresult
     end
@@ -102,12 +102,16 @@ end
 module Eval
 extend self
 
-def stringify(obj)
+def to_string(obj)
   case obj
-  when Numeric
-    as_int = obj.to_i
-    if as_int == obj
-      as_int.to_s
+  when Float
+    if obj.finite?
+      as_int = obj.to_i
+      if as_int == obj
+        as_int.to_s
+      else
+        obj.to_s
+      end
     else
       obj.to_s
     end

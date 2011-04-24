@@ -83,18 +83,7 @@ end
 Nodes::Not.class_eval do
   def evaluate
     result = expr.evaluate
-    case result
-    when true, false, nil
-      !result
-    when Numeric
-      result == 0
-    when String
-      result.empty?
-    when RazorPit::NULL
-      true
-    else
-      false
-    end
+    !Eval.to_boolean(result)
   end
 end
 
@@ -124,6 +113,19 @@ def stringify(obj)
     end
   else
     obj.to_s
+  end
+end
+
+def to_boolean(obj)
+  case obj
+  when String
+    !obj.empty?
+  when Float
+    !(obj.zero? or obj.nan?)
+  when nil, false, RazorPit::NULL
+    false
+  else
+    true
   end
 end
 

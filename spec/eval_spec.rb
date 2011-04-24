@@ -83,3 +83,38 @@ describe "#{RazorPit::Eval}.evaluate" do
     evaluate("'foo' + 1").should == "foo1"
   end
 end
+
+describe "#{RazorPit::Eval}.to_boolean" do
+  it "considers undefined to be false" do
+    RazorPit::Eval.to_boolean(nil).should be_false
+  end
+
+  it "considers null to be false" do
+    RazorPit::Eval.to_boolean(RazorPit::NULL).should be_false
+  end
+
+  it "considers true to be true and false to be false" do
+    RazorPit::Eval.to_boolean(true).should be_true
+    RazorPit::Eval.to_boolean(false).should be_false
+  end
+
+  it "considers +-0 and NaN to be false" do
+    RazorPit::Eval.to_boolean(0.0).should be_false
+    RazorPit::Eval.to_boolean(-0.0).should be_false
+    RazorPit::Eval.to_boolean(0.0/0.0).should be_false # NaN
+  end
+
+  it "considers nonzero numbers to be true" do
+    RazorPit::Eval.to_boolean(1.0).should be_true
+    RazorPit::Eval.to_boolean(1.0/0.0).should be_true # +Infinity
+    RazorPit::Eval.to_boolean(-1.0/0.0).should be_true # -Infinity
+  end
+
+  it "considers empty strings to be false" do
+    RazorPit::Eval.to_boolean("").should be_false
+  end
+
+  it "considers non-empty strings to be true" do
+    RazorPit::Eval.to_boolean("foobar").should be_true
+  end
+end

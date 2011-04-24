@@ -2,11 +2,9 @@ require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
 require 'razorpit/parser'
 
-Module.new do
-
-N = RazorPit::Nodes
-
 describe RazorPit::Parser do
+  const_set :N, RazorPit::Nodes
+
   it "parses an empty program" do
     ast = RazorPit::Parser.parse("")
     ast.should == N::Program[]
@@ -127,6 +125,4 @@ describe RazorPit::Parser do
     ast = RazorPit::Parser.parse_expression("'foobar'")
     ast.should == N::String["foobar"]
   end
-end
-
 end

@@ -4,9 +4,9 @@ require 'razorpit/nodes'
 
 Module.new do
 
-N = RazorPit::Nodes
-
 describe "#{RazorPit::Node}#==" do
+  const_set :N, RazorPit::Nodes
+
   it "considers two equivalent program instances to be equal" do
     N::Program[].should == N::Program[]
   end

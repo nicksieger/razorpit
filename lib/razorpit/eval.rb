@@ -102,6 +102,44 @@ end
 module Eval
 extend self
 
+STRING_NUMERIC_LITERAL_RE = %r{^
+  \s*
+  (?: (?<dec>
+        (?<sign>[+-])?
+        (?:(?<int>\d+)(?:\.(?<frac>\d+)?)? | \.(?<frac>\d+))
+        (?<exp>e[+-]?\d+)? ) |
+      0x(?<hex>[\da-f]+) )?
+  \s*
+$}xi
+
+def to_number(obj)
+  case obj
+  when nil
+    0.0/0.0 # NaN
+  when true
+    1.0
+  when RazorPit::NULL, false
+    0.0
+  when Float
+    obj
+  when String
+    m = STRING_NUMERIC_LITERAL_RE.match(obj)
+    if m
+      if m['dec']
+        "#{m['sign']}#{m['int']||0}.#{m['frac']||0}#{m['exp']}".to_f
+      elsif m['hex']
+        m['hex'].to_i(16).to_f
+      else
+        0.0
+      end
+    else
+      0.0/0.0 # NaN
+    end
+  else
+    0.0/0.0 # NaN
+  end
+end
+
 def to_string(obj)
   case obj
   when Float

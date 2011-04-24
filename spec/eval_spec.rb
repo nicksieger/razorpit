@@ -144,3 +144,52 @@ describe "#{RazorPit::Eval}.to_string" do
     RazorPit::Eval.to_string(-1.25).should == "-1.25"
   end
 end
+
+describe "#{RazorPit::Eval}.to_number" do
+  it "converts undefined to NaN" do
+    RazorPit::Eval.to_number(nil).should be_nan
+  end
+
+  it "converts null to zero" do
+    RazorPit::Eval.to_number(RazorPit::NULL).should == 0.0
+  end
+
+  it "converts true to 1" do
+    RazorPit::Eval.to_number(true).should == 1.0
+  end
+
+  it "converts false to 0" do
+    RazorPit::Eval.to_number(false).should == 0.0
+  end
+
+  it "passes finite and infinite numbers through unchanged" do
+    RazorPit::Eval.to_number(1.0/0.0).should be_infinite
+    RazorPit::Eval.to_number(1.25).should == 1.25
+    RazorPit::Eval.to_number(-1.25).should == -1.25
+  end
+
+  it "handles empty strings" do
+    RazorPit::Eval.to_number("").should == 0.0
+  end
+
+  it "handles strings with only whitespace" do
+    RazorPit::Eval.to_number("    ").should == 0.0
+  end
+
+  it "handles strings with trailing garbage" do
+    RazorPit::Eval.to_number("0foo").should be_nan
+  end
+
+  it "handles decimal strings" do
+    RazorPit::Eval.to_number("1").should == 1.0
+    RazorPit::Eval.to_number("1.0").should == 1.0
+    RazorPit::Eval.to_number("1.0e10").should == 1.0e10
+    RazorPit::Eval.to_number(".1e10").should == 1.0e9
+    RazorPit::Eval.to_number("1.e10").should == 1.0e10
+    RazorPit::Eval.to_number("1e10").should == 1.0e10
+  end
+
+  it "handles hexadecimal strings" do
+    RazorPit::Eval.to_number("0xff").should == 255.0
+  end
+end

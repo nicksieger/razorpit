@@ -24,11 +24,11 @@ The interpreter is organized into roughly six layers, from the bottom up:
 
 The general plan is to implement the language in stages:
 
-# Expressions, arithmetic and comparison, primitive types
-# Statements, variables, assignment
-# Functions
-# Objects and Arrays
-# Regular expressions
+* Expressions, arithmetic and comparison, primitive types
+* Statements, variables, assignment
+* Functions
+* Objects and Arrays
+* Regular expressions
 
 == Contributing to razorpit
  

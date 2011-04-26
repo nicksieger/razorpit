@@ -20,6 +20,16 @@ The interpreter is organized into roughly six layers, from the bottom up:
 * razorpit/eval - the evaluator; augments classes from razorpit/nodes
 * razorpit/context - the public API, modeled after therubyracer
 
+== Master Plan
+
+The general plan is to implement the language in stages:
+
+# Expressions, arithmetic and comparison, primitive types
+# Statements, variables, assignment
+# Functions
+# Objects and Arrays
+# Regular expressions
+
 == Contributing to razorpit
  
 * Check out the latest master to make sure the feature hasn't been implemented or the bug hasn't been fixed yet

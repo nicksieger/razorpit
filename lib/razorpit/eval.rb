@@ -87,6 +87,22 @@ Nodes::Not.class_eval do
   end
 end
 
+Nodes::And.class_eval do
+  def evaluate
+    left = lhs.evaluate
+    return left unless Eval.to_boolean(left)
+    rhs.evaluate
+  end
+end
+
+Nodes::Or.class_eval do
+  def evaluate
+    left = lhs.evaluate
+    return left if Eval.to_boolean(left)
+    rhs.evaluate
+  end
+end
+
 Nodes::Void.class_eval do
   def evaluate
     nil

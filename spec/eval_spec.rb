@@ -82,6 +82,24 @@ describe "#{RazorPit::Eval}.evaluate" do
     evaluate("1 + 'bar'").should == "1bar"
     evaluate("'foo' + 1").should == "foo1"
   end
+
+  it "implements logical and" do
+    evaluate("false && false").should == false
+    evaluate("false && true").should == false
+    evaluate("true && false").should == false
+    evaluate("true && true").should == true
+    evaluate("0 && 1").should == 0.0
+    evaluate("1 && 0").should == 0.0
+  end
+
+  it "implements logical or" do
+    evaluate("false || false").should == false
+    evaluate("false || true").should == true
+    evaluate("true || false").should == true
+    evaluate("true || true").should == true
+    evaluate("0 || 1").should == 1.0
+    evaluate("1 || 0").should == 1.0
+  end
 end
 
 describe "#{RazorPit::Eval}.to_boolean" do

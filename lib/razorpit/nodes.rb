@@ -84,6 +84,12 @@ module Nodes
   class Modulus < BinaryOpNode
   end
 
+  class And < BinaryOpNode
+  end
+
+  class Or < BinaryOpNode
+  end
+
   class UnaryPlus < UnaryOpNode
   end
 

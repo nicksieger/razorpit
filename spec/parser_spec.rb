@@ -130,4 +130,32 @@ describe RazorPit::Parser do
     ast = RazorPit::Parser.parse_expression("/foobar/")
     ast.should == N::RegEx["foobar"]
   end
+
+  it "should parse logical and" do
+    ast = RazorPit::Parser.parse_expression("true && false")
+    ast.should == N::And[N::Boolean[true], N::Boolean[false]]
+  end
+
+  it "should parse logical or" do
+    ast = RazorPit::Parser.parse_expression("true || false")
+    ast.should == N::Or[N::Boolean[true], N::Boolean[false]]
+  end
+
+  it "should give logical and lower precedence than addition" do
+    ast = RazorPit::Parser.parse_expression("1 && 2 + 3")
+    ast.should == N::And[N::Number[1],
+                         N::Add[N::Number[2], N::Number[3]]]
+    ast = RazorPit::Parser.parse_expression("1 + 2 && 3")
+    ast.should == N::And[N::Add[N::Number[1], N::Number[2]],
+                         N::Number[3]]
+  end
+
+  it "should give logical or lower precedence than logical and" do
+    ast = RazorPit::Parser.parse_expression("1 || 2 && 3")
+    ast.should == N::Or[N::Number[1],
+                        N::And[N::Number[2], N::Number[3]]]
+    ast = RazorPit::Parser.parse_expression("1 && 2 || 3")
+    ast.should == N::Or[N::And[N::Number[1], N::Number[2]],
+                        N::Number[3]]
+  end
 end

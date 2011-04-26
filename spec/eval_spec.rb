@@ -21,6 +21,10 @@ describe "#{RazorPit::Eval}.evaluate" do
     evaluate("1 + 2").should == 3.0
   end
 
+  it "does ToNumber conversion for addition" do
+    evaluate("true + false").should == 1.0
+  end
+
   it "can evaluate true and false" do
     evaluate("true").should == true
     evaluate("false").should == false
@@ -32,6 +36,10 @@ describe "#{RazorPit::Eval}.evaluate" do
 
   it "can do subtraction" do
     evaluate("2 - 1").should == 1.0
+  end
+
+  it "does ToNumber conversion for subtraction" do
+    evaluate("false - true").should == -1.0
   end
 
   it "understands unary minus" do

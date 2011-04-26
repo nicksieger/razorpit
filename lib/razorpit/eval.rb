@@ -35,32 +35,32 @@ Nodes::Add.class_eval do
     if String === lresult or String === rresult
       "#{Eval.to_string(lresult)}#{Eval.to_string(rresult)}"
     else
-      lresult + rresult
+      Eval.to_number(lresult) + Eval.to_number(rresult)
     end
   end
 end
 
 Nodes::Subtract.class_eval do
   def evaluate
-    lhs.evaluate - rhs.evaluate
+    Eval.to_number(lhs.evaluate) - Eval.to_number(rhs.evaluate)
   end
 end
 
 Nodes::Multiply.class_eval do
   def evaluate
-    lhs.evaluate * rhs.evaluate
+    Eval.to_number(lhs.evaluate) * Eval.to_number(rhs.evaluate)
   end
 end
 
 Nodes::Divide.class_eval do
   def evaluate
-    lhs.evaluate / rhs.evaluate
+    Eval.to_number(lhs.evaluate) / Eval.to_number(rhs.evaluate)
   end
 end
 
 Nodes::Modulus.class_eval do
   def evaluate
-    lhs.evaluate % rhs.evaluate
+    Eval.to_number(lhs.evaluate) % Eval.to_number(rhs.evaluate)
   end
 end
 

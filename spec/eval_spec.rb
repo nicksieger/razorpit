@@ -113,6 +113,18 @@ describe "#{RazorPit::Eval}.evaluate" do
     evaluate("0 || 1").should == 1.0
     evaluate("1 || 0").should == 1.0
   end
+
+  it "implements bitwise and" do
+    evaluate("0xff00 & 0x0f0f").should == 0x0f00
+  end
+
+  it "implements bitwise xor" do
+    evaluate("0xff00 ^ 0x0f0f").should == 0xf00f
+  end
+
+  it "implements bitwise or" do
+    evaluate("0xff00 | 0x0f0f").should == 0xff0f
+  end
 end
 
 describe "#{RazorPit::Eval}.to_boolean" do

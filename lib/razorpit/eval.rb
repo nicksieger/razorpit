@@ -109,6 +109,30 @@ Nodes::Or.class_eval do
   end
 end
 
+Nodes::BitwiseAnd.class_eval do
+  def evaluate
+    left = Eval.to_int32(lhs.evaluate).to_i
+    right = Eval.to_int32(rhs.evaluate).to_i
+    (left & right).to_f
+  end
+end
+
+Nodes::BitwiseXOr.class_eval do
+  def evaluate
+    left = Eval.to_int32(lhs.evaluate).to_i
+    right = Eval.to_int32(rhs.evaluate).to_i
+    (left ^ right).to_f
+  end
+end
+
+Nodes::BitwiseOr.class_eval do
+  def evaluate
+    left = Eval.to_int32(lhs.evaluate).to_i
+    right = Eval.to_int32(rhs.evaluate).to_i
+    (left | right).to_f
+  end
+end
+
 Nodes::Void.class_eval do
   def evaluate
     nil

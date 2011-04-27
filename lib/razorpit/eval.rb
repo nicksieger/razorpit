@@ -157,8 +157,10 @@ def to_number(obj)
 end
 
 def to_int32(obj)
-  return 0 if obj.infinite?
-  obj
+  obj = to_number(obj)
+  return 0.0 if obj.infinite? || obj.nan? || obj.zero?
+  abs = obj.abs
+  (obj / abs) * abs.floor
 end
 
 def to_string(obj)

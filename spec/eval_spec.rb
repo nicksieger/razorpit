@@ -125,6 +125,24 @@ describe "#{RazorPit::Eval}.evaluate" do
   it "implements bitwise or" do
     evaluate("0xff00 | 0x0f0f").should == 0xff0f
   end
+
+  it "implements left shift" do
+    evaluate("0xffff0000 << 8").should == 0xff000000 - (1 << 32)
+    evaluate("1 << 33").should == 2
+    evaluate("1 << -31").should == 2
+  end
+
+  it "implements right shift" do
+    evaluate("0xff000000 >> 8").should == 0xffff0000 - (1 << 32)
+    evaluate("2 >> 33").should == 1
+    evaluate("2 >> -31").should == 1
+  end
+
+  it "implements unsigned right shift" do
+    evaluate("0xff000000 >>> 8").should == 0x00ff0000
+    evaluate("2 >>> 33").should == 1
+    evaluate("2 >>> -31").should == 1
+  end
 end
 
 describe "#{RazorPit::Eval}.to_boolean" do

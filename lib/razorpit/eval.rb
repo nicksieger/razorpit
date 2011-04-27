@@ -133,6 +133,32 @@ Nodes::BitwiseOr.class_eval do
   end
 end
 
+Nodes::LeftShift.class_eval do
+  def evaluate
+    value = Eval.to_int32(lhs.evaluate).to_i
+    shift = Eval.to_uint32(rhs.evaluate).to_i & 0x1f
+    value = ((value << shift) & 0xffffffff).to_f
+    value -= (1 << 32) if value >= (1 << 31)
+    value
+  end
+end
+
+Nodes::SignedRightShift.class_eval do
+  def evaluate
+    value = Eval.to_int32(lhs.evaluate).to_i
+    shift = Eval.to_uint32(rhs.evaluate).to_i & 0x1f
+    (value >> shift).to_f
+  end
+end
+
+Nodes::UnsignedRightShift.class_eval do
+  def evaluate
+    value = Eval.to_uint32(lhs.evaluate).to_i
+    shift = Eval.to_uint32(rhs.evaluate).to_i & 0x1f
+    (value >> shift).to_f
+  end
+end
+
 Nodes::Void.class_eval do
   def evaluate
     nil

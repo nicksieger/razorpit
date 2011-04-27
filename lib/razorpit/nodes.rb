@@ -63,6 +63,9 @@ module Nodes
   class RegEx < LiteralNode
   end
 
+  class Identifier < LiteralNode
+  end
+
   class Program < Node
     def ==(other)
       self.class == other.class
@@ -177,6 +180,18 @@ module Nodes
   end
 
   class UnaryMinus < UnaryOpNode
+  end
+
+  class PreIncrement < UnaryOpNode
+  end
+
+  class PostIncrement < UnaryOpNode
+  end
+
+  class PreDecrement < UnaryOpNode
+  end
+
+  class PostDecrement < UnaryOpNode
   end
 
   class TypeOf < UnaryOpNode

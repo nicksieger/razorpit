@@ -55,6 +55,26 @@ describe RazorPit::Parser do
     ast.should == N::Condition[N::Number[1], N::Number[2], N::Number[3]]
   end
 
+  it "parses preincrement" do
+    ast = RazorPit::Parser.parse_expression("++i")
+    ast.should == N::PreIncrement[N::Identifier["i"]]
+  end
+
+  it "parses postincrement" do
+    ast = RazorPit::Parser.parse_expression("i++")
+    ast.should == N::PostIncrement[N::Identifier["i"]]
+  end
+
+  it "parses predecrement" do
+    ast = RazorPit::Parser.parse_expression("--i")
+    ast.should == N::PreDecrement[N::Identifier["i"]]
+  end
+
+  it "parses postdecrement" do
+    ast = RazorPit::Parser.parse_expression("i--")
+    ast.should == N::PostDecrement[N::Identifier["i"]]
+  end
+
   def self.it_parses_prefix(op, node_class)
     it "parses prefix #{op}" do
       ast = RazorPit::Parser.parse_expression("#{op} 1")

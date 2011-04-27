@@ -31,7 +31,8 @@ module Parser
     %w(MIN ASSIGN CONDITION OR AND
        BITWISE_OR BITWISE_XOR BITWISE_AND
        EQUALITY SHIFT
-       ADD MULT UNARY MAX).each_with_index do |name, i|
+       ADD MULT UNARY
+       INCREMENT MAX).each_with_index do |name, i|
       # use intervals of two to allow for right associativity adjustment
       const_set("#{name}_BINDING_POWER", i * 2)
     end
@@ -71,6 +72,30 @@ module Parser
       end
     end
 
+    Tokens::INCREMENT.left_binding_power = INCREMENT_BINDING_POWER
+    Tokens::INCREMENT.token_class_eval do
+      def prefix(tokens)
+        expr = Grammar.expression(tokens, INCREMENT_BINDING_POWER)
+        Nodes::PreIncrement[expr]
+      end
+
+      def suffix(tokens, lhs)
+        Nodes::PostIncrement[lhs]
+      end
+    end
+
+    Tokens::DECREMENT.left_binding_power = INCREMENT_BINDING_POWER
+    Tokens::DECREMENT.token_class_eval do
+      def prefix(tokens)
+        expr = Grammar.expression(tokens, INCREMENT_BINDING_POWER)
+        Nodes::PreDecrement[expr]
+      end
+
+      def suffix(tokens, lhs)
+        Nodes::PostDecrement[lhs]
+      end
+    end
+
     Tokens::OPEN_PAREN.token_class_eval do
       def prefix(tokens)
         expr = Grammar.expression(tokens, MIN_BINDING_POWER)
@@ -106,6 +131,7 @@ module Parser
     define_literal(Tokens::BOOLEAN, Nodes::Boolean)
     define_literal(Tokens::STRING, Nodes::String)
     define_literal(Tokens::REGEX, Nodes::RegEx)
+    define_literal(Tokens::IDENTIFIER, Nodes::Identifier)
 
     define_prefix(Tokens::PLUS, Nodes::UnaryPlus, UNARY_BINDING_POWER)
     define_prefix(Tokens::MINUS, Nodes::UnaryMinus, UNARY_BINDING_POWER)

@@ -14,6 +14,15 @@ describe "#{RazorPit::Eval}.evaluate" do
     RazorPit::Eval.evaluate(RazorPit::Nodes::Or[RazorPit::Nodes::Boolean[true], nil])
   end
 
+  it "should short-circuit ?:" do
+    RazorPit::Eval.evaluate(RazorPit::Nodes::Condition[RazorPit::Nodes::Boolean[true],
+                                                       RazorPit::Nodes::Number[1],
+                                                       nil])
+    RazorPit::Eval.evaluate(RazorPit::Nodes::Condition[RazorPit::Nodes::Boolean[false],
+                                                       nil,
+                                                       RazorPit::Nodes::Number[1]])
+  end
+
   it "can evaluate a trivial expression" do
     evaluate("1").should == 1.0
   end
@@ -69,6 +78,13 @@ describe "#{RazorPit::Eval}.evaluate" do
 
   it "understands string literals" do
     evaluate("'foobar'").should == "foobar"
+  end
+
+  it "implements ternary conditions" do
+    evaluate("true ? 1 : 2").should == 1
+    evaluate("false ? 1 : 2").should == 2
+    evaluate("1 ? 1 : 2").should == 1
+    evaluate("0 ? 1 : 2").should == 2
   end
 
   it "understands bitwise not" do

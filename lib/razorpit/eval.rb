@@ -159,6 +159,16 @@ Nodes::UnsignedRightShift.class_eval do
   end
 end
 
+Nodes::Condition.class_eval do
+  def evaluate
+    if Eval.to_boolean(predicate.evaluate)
+      then_expr.evaluate
+    else
+      else_expr.evaluate
+    end
+  end
+end
+
 Nodes::Void.class_eval do
   def evaluate
     nil

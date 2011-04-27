@@ -82,9 +82,9 @@ module Parser
     Tokens::QUESTION.left_binding_power = CONDITION_BINDING_POWER
     Tokens::QUESTION.token_class_eval do
       def suffix(tokens, lhs)
-        this_expr = Grammar.expression(tokens, CONDITION_BINDING_POWER)
+        this_expr = Grammar.expression(tokens, MIN_BINDING_POWER)
         Grammar.consume_tokens(tokens, Tokens::COLON)
-        else_expr = Grammar.expression(tokens, CONDITION_BINDING_POWER)
+        else_expr = Grammar.expression(tokens, MIN_BINDING_POWER)
         Nodes::Condition[lhs, this_expr, else_expr]
       end
     end

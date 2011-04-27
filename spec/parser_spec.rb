@@ -149,4 +149,11 @@ describe RazorPit::Parser do
                                N::Or[N::Number[3], N::Number[4]],
                                N::Or[N::Number[5], N::Number[6]]]
   end
+
+  it "parses ?: with right-to-left associativity" do
+    ast = RazorPit::Parser.parse_expression("1 ? 2 : 3 ? 4 : 5")
+    ast.should == N::Condition[N::Number[1], N::Number[2],
+                               N::Condition[N::Number[3], N::Number[4],
+                                            N::Number[5]]]
+  end
 end

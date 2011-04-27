@@ -28,7 +28,7 @@ module Parser
       end
     end
 
-    %w(MIN OR AND
+    %w(MIN EQUALITY OR AND
        BITWISE_OR BITWISE_XOR BITWISE_AND
        ADD MULT UNARY MAX).each_with_index do |name, i|
       # use intervals of two to allow for right associativity adjustment
@@ -117,6 +117,12 @@ module Parser
                  BITWISE_OR_BINDING_POWER)
     define_infix(Tokens::BITWISE_XOR, Nodes::BitwiseXOr,
                  BITWISE_XOR_BINDING_POWER)
+    define_infix(Tokens::EQUAL, Nodes::Equal, EQUALITY_BINDING_POWER)
+    define_infix(Tokens::NOT_EQUAL, Nodes::NotEqual, EQUALITY_BINDING_POWER)
+    define_infix(Tokens::STRICT_EQUAL, Nodes::StrictlyEqual,
+                 EQUALITY_BINDING_POWER)
+    define_infix(Tokens::STRICT_NOT_EQUAL, Nodes::StrictlyNotEqual,
+                 EQUALITY_BINDING_POWER)
 
     # done with these
     undef define_literal

@@ -205,4 +205,24 @@ describe RazorPit::Parser do
     ast.should == N::BitwiseXOr[N::Number[1],
                                 N::BitwiseAnd[N::Number[2], N::Number[3]]]
   end
+
+  it "should parse equal" do
+    ast = RazorPit::Parser.parse_expression("1 == 2")
+    ast.should == N::Equal[N::Number[1], N::Number[2]]
+  end
+
+  it "should parse not equal" do
+    ast = RazorPit::Parser.parse_expression("1 != 2")
+    ast.should == N::NotEqual[N::Number[1], N::Number[2]]
+  end
+
+  it "should parse strictly equal" do
+    ast = RazorPit::Parser.parse_expression("1 === 2")
+    ast.should == N::StrictlyEqual[N::Number[1], N::Number[2]]
+  end
+
+  it "should parse strictly not equal" do
+    ast = RazorPit::Parser.parse_expression("1 !== 2")
+    ast.should == N::StrictlyNotEqual[N::Number[1], N::Number[2]]
+  end
 end

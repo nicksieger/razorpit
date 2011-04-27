@@ -92,7 +92,7 @@ describe RazorPit::Lexer do
            ["booleans", "true false",
             [T::BOOLEAN[true], T::BOOLEAN[false], T::EOF]],
            ["strict equal", "===", [T::STRICT_EQUAL, T::EOF]],
-           ["strict not equal", "!===", [T::STRICT_NOT_EQUAL, T::EOF]],
+           ["strict not equal", "!==", [T::STRICT_NOT_EQUAL, T::EOF]],
            ["plus assign", "+=", [T::PLUS_ASSIGN, T::EOF]],
            ["minus assign", "-=", [T::MINUS_ASSIGN, T::EOF]],
            ["times assign", "*=", [T::TIMES_ASSIGN, T::EOF]],

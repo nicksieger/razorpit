@@ -146,7 +146,7 @@ module Tokens
   define_token(:GTE, '>=')
   define_token(:LTE, '<=')
   define_token(:STRICT_EQUAL, '===')
-  define_token(:STRICT_NOT_EQUAL, '!===')
+  define_token(:STRICT_NOT_EQUAL, '!==')
 
   define_token(:SHIFT_LEFT, '<<')
   define_token(:SHIFT_RIGHT, '>>')

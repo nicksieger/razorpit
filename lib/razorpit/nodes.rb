@@ -99,6 +99,18 @@ module Nodes
   class BitwiseXOr < BinaryOpNode
   end
 
+  class Equal < BinaryOpNode
+  end
+
+  class NotEqual < BinaryOpNode
+  end
+
+  class StrictlyEqual < BinaryOpNode
+  end
+
+  class StrictlyNotEqual < BinaryOpNode
+  end
+
   class UnaryPlus < UnaryOpNode
   end
 

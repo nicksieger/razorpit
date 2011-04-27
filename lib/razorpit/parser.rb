@@ -28,7 +28,9 @@ module Parser
       end
     end
 
-    %w(MIN OR AND ADD MULT UNARY MAX).each_with_index do |name, i|
+    %w(MIN OR AND
+       BITWISE_OR BITWISE_XOR BITWISE_AND
+       ADD MULT UNARY MAX).each_with_index do |name, i|
       # use intervals of two to allow for right associativity adjustment
       const_set("#{name}_BINDING_POWER", i * 2)
     end
@@ -109,9 +111,12 @@ module Parser
     define_infix(Tokens::MINUS, Nodes::Subtract, ADD_BINDING_POWER)
     define_infix(Tokens::AND, Nodes::And, AND_BINDING_POWER)
     define_infix(Tokens::OR, Nodes::Or, OR_BINDING_POWER)
-    define_infix(Tokens::BITWISE_AND, Nodes::BitwiseAnd, AND_BINDING_POWER)
-    define_infix(Tokens::BITWISE_OR, Nodes::BitwiseOr, OR_BINDING_POWER)
-    define_infix(Tokens::BITWISE_XOR, Nodes::BitwiseXOr, OR_BINDING_POWER)
+    define_infix(Tokens::BITWISE_AND, Nodes::BitwiseAnd,
+                 BITWISE_AND_BINDING_POWER)
+    define_infix(Tokens::BITWISE_OR, Nodes::BitwiseOr,
+                 BITWISE_OR_BINDING_POWER)
+    define_infix(Tokens::BITWISE_XOR, Nodes::BitwiseXOr,
+                 BITWISE_XOR_BINDING_POWER)
 
     # done with these
     undef define_literal

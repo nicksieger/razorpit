@@ -161,13 +161,13 @@ describe RazorPit::Parser do
     ast.should == N::BitwiseNot[N::Number[1]]
   end
 
-  it "should give logical and lower precedence than addition" do
-    ast = RazorPit::Parser.parse_expression("1 && 2 + 3")
-    ast.should == N::And[N::Number[1],
-                         N::Add[N::Number[2], N::Number[3]]]
-    ast = RazorPit::Parser.parse_expression("1 + 2 && 3")
-    ast.should == N::And[N::Add[N::Number[1], N::Number[2]],
-                         N::Number[3]]
+  it "should give bitwise and lower precedence than addition" do
+    ast = RazorPit::Parser.parse_expression("1 & 2 + 3")
+    ast.should == N::BitwiseAnd[N::Number[1],
+                                N::Add[N::Number[2], N::Number[3]]]
+    ast = RazorPit::Parser.parse_expression("1 + 2 & 3")
+    ast.should == N::BitwiseAnd[N::Add[N::Number[1], N::Number[2]],
+                                N::Number[3]]
   end
 
   it "should give logical or lower precedence than logical and" do
@@ -177,5 +177,32 @@ describe RazorPit::Parser do
     ast = RazorPit::Parser.parse_expression("1 && 2 || 3")
     ast.should == N::Or[N::And[N::Number[1], N::Number[2]],
                         N::Number[3]]
+  end
+
+  it "should give bitwise or higher precedence than logical and" do
+    ast = RazorPit::Parser.parse_expression("1 | 2 && 3")
+    ast.should == N::And[N::BitwiseOr[N::Number[1], N::Number[2]],
+                         N::Number[3]]
+    ast = RazorPit::Parser.parse_expression("1 && 2 | 3")
+    ast.should == N::And[N::Number[1],
+                         N::BitwiseOr[N::Number[2], N::Number[3]]]
+  end
+
+  it "should give bitwise xor higher precedence than bitwise or" do
+    ast = RazorPit::Parser.parse_expression("1 ^ 2 | 3")
+    ast.should == N::BitwiseOr[N::BitwiseXOr[N::Number[1], N::Number[2]],
+                               N::Number[3]]
+    ast = RazorPit::Parser.parse_expression("1 | 2 ^ 3")
+    ast.should == N::BitwiseOr[N::Number[1],
+                               N::BitwiseXOr[N::Number[2], N::Number[3]]]
+  end
+
+  it "should give bitwise and higher precedence than bitwise xor" do
+    ast = RazorPit::Parser.parse_expression("1 & 2 ^ 3")
+    ast.should == N::BitwiseXOr[N::BitwiseAnd[N::Number[1], N::Number[2]],
+                                N::Number[3]]
+    ast = RazorPit::Parser.parse_expression("1 ^ 2 & 3")
+    ast.should == N::BitwiseXOr[N::Number[1],
+                                N::BitwiseAnd[N::Number[2], N::Number[3]]]
   end
 end

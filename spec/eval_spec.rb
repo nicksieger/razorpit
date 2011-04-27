@@ -219,3 +219,19 @@ describe "#{RazorPit::Eval}.to_number" do
     RazorPit::Eval.to_number("0xff").should == 255.0
   end
 end
+
+describe "#{RazorPit::Eval}.to_int32" do
+  it "passes through 0" do
+    RazorPit::Eval.to_int32(-0.0).should == 0.0
+    RazorPit::Eval.to_int32(0.0).should == 0.0
+  end
+
+  it "returns a float" do
+    RazorPit::Eval.to_int32(1.25).should == 1.25
+  end
+
+  it "returns 0 for infinite sides" do
+    RazorPit::Eval.to_int32(1.0 / 0.0).should == 0.0
+    RazorPit::Eval.to_int32(-1.0 / 0.0).should == 0.0
+  end
+end

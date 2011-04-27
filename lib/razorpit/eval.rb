@@ -156,6 +156,11 @@ def to_number(obj)
   end
 end
 
+def to_int32(obj)
+  return 0 if obj.infinite?
+  obj
+end
+
 def to_string(obj)
   case obj
   when Float

@@ -30,7 +30,7 @@ module Parser
 
     %w(MIN OR AND
        BITWISE_OR BITWISE_XOR BITWISE_AND
-       EQUALITY
+       EQUALITY SHIFT
        ADD MULT UNARY MAX).each_with_index do |name, i|
       # use intervals of two to allow for right associativity adjustment
       const_set("#{name}_BINDING_POWER", i * 2)
@@ -124,6 +124,11 @@ module Parser
                  EQUALITY_BINDING_POWER)
     define_infix(Tokens::STRICT_NOT_EQUAL, Nodes::StrictlyNotEqual,
                  EQUALITY_BINDING_POWER)
+    define_infix(Tokens::SHIFT_LEFT, Nodes::LeftShift, SHIFT_BINDING_POWER)
+    define_infix(Tokens::SHIFT_RIGHT_EXTEND, Nodes::SignedRightShift,
+                 SHIFT_BINDING_POWER)
+    define_infix(Tokens::SHIFT_RIGHT, Nodes::UnsignedRightShift,
+                 SHIFT_BINDING_POWER)
 
     # done with these
     undef define_literal

@@ -82,6 +82,10 @@ describe RazorPit::Parser do
   it_parses_infix "===", N::StrictlyEqual
   it_parses_infix "!==", N::StrictlyNotEqual
 
+  it_parses_infix "<<", N::LeftShift
+  it_parses_infix ">>", N::SignedRightShift
+  it_parses_infix ">>>", N::UnsignedRightShift
+
   it_parses_infix "&&", N::And
   it_parses_infix "||", N::Or
   it_parses_infix "&", N::BitwiseAnd
@@ -102,9 +106,11 @@ describe RazorPit::Parser do
     end
   end
 
-  it_gives_equal_infix_precedence_to "+", "-"
   it_gives_equal_infix_precedence_to "*", "/"
   it_gives_equal_infix_precedence_to "*", "%"
+  it_gives_equal_infix_precedence_to "+", "-"
+  it_gives_equal_infix_precedence_to "<<", ">>"
+  it_gives_equal_infix_precedence_to "<<", ">>>"
   it_gives_equal_infix_precedence_to "==", "!="
   it_gives_equal_infix_precedence_to "==", "==="
   it_gives_equal_infix_precedence_to "==", "!=="
@@ -124,7 +130,8 @@ describe RazorPit::Parser do
   end
 
   it_gives_higher_infix_precedence_to "*", "+"
-  it_gives_higher_infix_precedence_to "+", "=="
+  it_gives_higher_infix_precedence_to "+", ">>"
+  it_gives_higher_infix_precedence_to ">>", "=="
   it_gives_higher_infix_precedence_to "==", "&"
   it_gives_higher_infix_precedence_to "&", "^"
   it_gives_higher_infix_precedence_to "^", "|"

@@ -149,8 +149,8 @@ module Tokens
   define_token(:STRICT_NOT_EQUAL, '!==')
 
   define_token(:SHIFT_LEFT, '<<')
-  define_token(:SHIFT_RIGHT, '>>')
-  define_token(:SHIFT_RIGHT_EXTEND, '>>>')
+  define_token(:SHIFT_RIGHT_EXTEND, '>>')
+  define_token(:SHIFT_RIGHT, '>>>')
 
   define_token(:INCREMENT, '++')
   define_token(:DECREMENT, '--')

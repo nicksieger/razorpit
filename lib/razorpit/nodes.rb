@@ -111,6 +111,15 @@ module Nodes
   class StrictlyNotEqual < BinaryOpNode
   end
 
+  class LeftShift < BinaryOpNode
+  end
+
+  class SignedRightShift < BinaryOpNode
+  end
+
+  class UnsignedRightShift < BinaryOpNode
+  end
+
   class UnaryPlus < UnaryOpNode
   end
 

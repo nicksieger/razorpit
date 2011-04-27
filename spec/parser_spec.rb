@@ -141,6 +141,26 @@ describe RazorPit::Parser do
     ast.should == N::Or[N::Boolean[true], N::Boolean[false]]
   end
 
+  it "should parse bitwise and" do
+    ast = RazorPit::Parser.parse_expression("1 & 2")
+    ast.should == N::BitwiseAnd[N::Number[1], N::Number[2]]
+  end
+
+  it "should parse bitwise or" do
+    ast = RazorPit::Parser.parse_expression("1 | 2")
+    ast.should == N::BitwiseOr[N::Number[1], N::Number[2]]
+  end
+
+  it "should parse bitwise xor" do
+    ast = RazorPit::Parser.parse_expression("1 ^ 2")
+    ast.should == N::BitwiseXOr[N::Number[1], N::Number[2]]
+  end
+
+  it "should parse bitwise not" do
+    ast = RazorPit::Parser.parse_expression("~1")
+    ast.should == N::BitwiseNot[N::Number[1]]
+  end
+
   it "should give logical and lower precedence than addition" do
     ast = RazorPit::Parser.parse_expression("1 && 2 + 3")
     ast.should == N::And[N::Number[1],

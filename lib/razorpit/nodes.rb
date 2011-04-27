@@ -90,6 +90,15 @@ module Nodes
   class Or < BinaryOpNode
   end
 
+  class BitwiseAnd < BinaryOpNode
+  end
+
+  class BitwiseOr < BinaryOpNode
+  end
+
+  class BitwiseXOr < BinaryOpNode
+  end
+
   class UnaryPlus < UnaryOpNode
   end
 
@@ -103,6 +112,9 @@ module Nodes
   end
 
   class Not < UnaryOpNode
+  end
+
+  class BitwiseNot < UnaryOpNode
   end
 
   NULL = Node.new

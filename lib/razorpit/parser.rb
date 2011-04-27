@@ -99,6 +99,8 @@ module Parser
     define_prefix(Tokens::TYPEOF, Nodes::TypeOf, UNARY_BINDING_POWER)
     define_prefix(Tokens::VOID, Nodes::Void, UNARY_BINDING_POWER)
     define_prefix(Tokens::NOT, Nodes::Not, UNARY_BINDING_POWER)
+    define_prefix(Tokens::BITWISE_NOT, Nodes::BitwiseNot,
+                  UNARY_BINDING_POWER)
 
     define_infix(Tokens::TIMES, Nodes::Multiply, MULT_BINDING_POWER)
     define_infix(Tokens::DIV, Nodes::Divide, MULT_BINDING_POWER)
@@ -107,6 +109,9 @@ module Parser
     define_infix(Tokens::MINUS, Nodes::Subtract, ADD_BINDING_POWER)
     define_infix(Tokens::AND, Nodes::And, AND_BINDING_POWER)
     define_infix(Tokens::OR, Nodes::Or, OR_BINDING_POWER)
+    define_infix(Tokens::BITWISE_AND, Nodes::BitwiseAnd, AND_BINDING_POWER)
+    define_infix(Tokens::BITWISE_OR, Nodes::BitwiseOr, OR_BINDING_POWER)
+    define_infix(Tokens::BITWISE_XOR, Nodes::BitwiseXOr, OR_BINDING_POWER)
 
     # done with these
     undef define_literal

@@ -167,8 +167,8 @@ module Tokens
   define_token(:BITWISE_AND_ASSIGN, '&=')
   define_token(:BITWISE_XOR_ASSIGN, '^=')
   define_token(:SHIFT_LEFT_ASSIGN, '<<=')
-  define_token(:SHIFT_RIGHT_ASSIGN, '>>=')
-  define_token(:SHIFT_RIGHT_EXTEND_ASSIGN, '>>>=')
+  define_token(:SHIFT_RIGHT_EXTEND_ASSIGN, '>>=')
+  define_token(:SHIFT_RIGHT_ASSIGN, '>>>=')
 
   decimal_literal = /(?:
     (?: (?: 0 | [1-9][0-9]* ) (?: \.[0-9]* )? | \.[0-9]+ )

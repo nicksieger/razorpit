@@ -28,7 +28,7 @@ module Parser
       end
     end
 
-    %w(MIN CONDITION OR AND
+    %w(MIN ASSIGN CONDITION OR AND
        BITWISE_OR BITWISE_XOR BITWISE_AND
        EQUALITY SHIFT
        ADD MULT UNARY MAX).each_with_index do |name, i|
@@ -139,6 +139,19 @@ module Parser
                  SHIFT_BINDING_POWER)
     define_infix(Tokens::SHIFT_RIGHT, Nodes::UnsignedRightShift,
                  SHIFT_BINDING_POWER)
+
+    define_infix(Tokens::ASSIGN, Nodes::Assign, ASSIGN_BINDING_POWER)
+    define_infix(Tokens::PLUS_ASSIGN, Nodes::AddAssign, ASSIGN_BINDING_POWER)
+    define_infix(Tokens::MINUS_ASSIGN, Nodes::SubtractAssign, ASSIGN_BINDING_POWER)
+    define_infix(Tokens::TIMES_ASSIGN, Nodes::MultiplyAssign, ASSIGN_BINDING_POWER)
+    define_infix(Tokens::DIV_ASSIGN, Nodes::DivideAssign, ASSIGN_BINDING_POWER)
+    define_infix(Tokens::MODULUS_ASSIGN, Nodes::ModulusAssign, ASSIGN_BINDING_POWER)
+    define_infix(Tokens::BITWISE_AND_ASSIGN, Nodes::BitwiseAndAssign, ASSIGN_BINDING_POWER)
+    define_infix(Tokens::BITWISE_OR_ASSIGN, Nodes::BitwiseOrAssign, ASSIGN_BINDING_POWER)
+    define_infix(Tokens::BITWISE_XOR_ASSIGN, Nodes::BitwiseXOrAssign, ASSIGN_BINDING_POWER)
+    define_infix(Tokens::SHIFT_LEFT_ASSIGN, Nodes::LeftShiftAssign, ASSIGN_BINDING_POWER)
+    define_infix(Tokens::SHIFT_RIGHT_EXTEND_ASSIGN, Nodes::SignedRightShiftAssign, ASSIGN_BINDING_POWER)
+    define_infix(Tokens::SHIFT_RIGHT_ASSIGN, Nodes::UnsignedRightShiftAssign, ASSIGN_BINDING_POWER)
 
     # done with these
     undef define_literal

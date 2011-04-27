@@ -97,6 +97,19 @@ describe RazorPit::Parser do
   it_parses_infix "^", N::BitwiseXOr
   it_parses_infix "|", N::BitwiseOr
 
+  it_parses_infix "=", N::Assign
+  it_parses_infix "+=", N::AddAssign
+  it_parses_infix "-=", N::SubtractAssign
+  it_parses_infix "*=", N::MultiplyAssign
+  it_parses_infix "/=", N::DivideAssign
+  it_parses_infix "%=", N::ModulusAssign
+  it_parses_infix "<<=", N::LeftShiftAssign
+  it_parses_infix ">>=", N::SignedRightShiftAssign
+  it_parses_infix ">>>=", N::UnsignedRightShiftAssign
+  it_parses_infix "&=", N::BitwiseAndAssign
+  it_parses_infix "^=", N::BitwiseXOrAssign
+  it_parses_infix "|=", N::BitwiseOrAssign
+
   def self.it_gives_equal_infix_precedence_to(op_a, op_b)
     it "gives equal precedence to #{op_a} and #{op_b}" do
       ast_a = RazorPit::Parser.parse_expression("1 #{op_a} 2 #{op_b} 3")

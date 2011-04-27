@@ -137,6 +137,42 @@ module Nodes
   class UnsignedRightShift < BinaryOpNode
   end
 
+  class Assign < BinaryOpNode
+  end
+
+  class AddAssign < BinaryOpNode
+  end
+
+  class SubtractAssign < BinaryOpNode
+  end
+
+  class MultiplyAssign < BinaryOpNode
+  end
+
+  class DivideAssign < BinaryOpNode
+  end
+
+  class ModulusAssign < BinaryOpNode
+  end
+
+  class LeftShiftAssign < BinaryOpNode
+  end
+
+  class SignedRightShiftAssign < BinaryOpNode
+  end
+
+  class UnsignedRightShiftAssign < BinaryOpNode
+  end
+
+  class BitwiseAndAssign < BinaryOpNode
+  end
+
+  class BitwiseXOrAssign < BinaryOpNode
+  end
+
+  class BitwiseOrAssign < BinaryOpNode
+  end
+
   class UnaryPlus < UnaryOpNode
   end
 

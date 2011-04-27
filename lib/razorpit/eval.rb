@@ -163,7 +163,7 @@ def to_int32(obj)
   value = (float / abs).to_i * abs.floor
   value &= 0xffffffff
   value -= (1 << 32) if value >= (1 << 31)
-  value
+  value.to_f
 end
 
 def to_string(obj)

@@ -28,7 +28,7 @@ module Parser
       end
     end
 
-    %w(MIN OR AND CONDITION
+    %w(MIN CONDITION OR AND
        BITWISE_OR BITWISE_XOR BITWISE_AND
        EQUALITY SHIFT
        ADD MULT UNARY MAX).each_with_index do |name, i|

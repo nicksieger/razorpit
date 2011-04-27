@@ -142,4 +142,11 @@ describe RazorPit::Parser do
   it_gives_higher_infix_precedence_to "^", "|"
   it_gives_higher_infix_precedence_to "|", "&&"
   it_gives_higher_infix_precedence_to "&&", "||"
+
+  it "gives infix precedence to || over ?:" do
+    ast = RazorPit::Parser.parse_expression("1 || 2 ? 3 || 4 : 5 || 6")
+    ast.should == N::Condition[N::Or[N::Number[1], N::Number[2]],
+                               N::Or[N::Number[3], N::Number[4]],
+                               N::Or[N::Number[5], N::Number[6]]]
+  end
 end

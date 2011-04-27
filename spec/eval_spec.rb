@@ -9,6 +9,11 @@ describe "#{RazorPit::Eval}.evaluate" do
     RazorPit::Eval.evaluate(ast)
   end
 
+  it "should short-circuit && and ||" do
+    RazorPit::Eval.evaluate(RazorPit::Nodes::And[RazorPit::Nodes::Boolean[false], nil])
+    RazorPit::Eval.evaluate(RazorPit::Nodes::Or[RazorPit::Nodes::Boolean[true], nil])
+  end
+
   it "can evaluate a trivial expression" do
     evaluate("1").should == 1.0
   end

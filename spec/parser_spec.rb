@@ -74,38 +74,6 @@ describe RazorPit::Parser do
     ast.should == N::Modulus[N::Number[1], N::Number[2]]
   end
 
-  it "should give addition and subtraction the same precedence" do
-    ast = RazorPit::Parser.parse_expression("1 + 2 - 3")
-    ast.should == N::Subtract[N::Add[N::Number[1], N::Number[2]],
-                              N::Number[3]]
-    ast = RazorPit::Parser.parse_expression("1 - 2 + 3")
-    ast.should == N::Add[N::Subtract[N::Number[1], N::Number[2]],
-                         N::Number[3]]
-  end
-
-  it "should give multiplication higher precedence than addition" do
-    ast = RazorPit::Parser.parse_expression("1 + 2 * 3")
-    ast.should == N::Add[N::Number[1], N::Multiply[N::Number[2], N::Number[3]]]
-  end
-
-  it "should give multiplication and division the same precedence" do
-    ast = RazorPit::Parser.parse_expression("1 * 2 / 3")
-    ast.should == N::Divide[N::Multiply[N::Number[1], N::Number[2]],
-                            N::Number[3]]
-    ast = RazorPit::Parser.parse_expression("1 / 2 * 3")
-    ast.should == N::Multiply[N::Divide[N::Number[1], N::Number[2]],
-                              N::Number[3]]
-  end
-
-  it "should give multiplication and modulus the same precedence" do
-    ast = RazorPit::Parser.parse_expression("1 * 2 % 3")
-    ast.should == N::Modulus[N::Multiply[N::Number[1], N::Number[2]],
-                             N::Number[3]]
-    ast = RazorPit::Parser.parse_expression("1 % 2 * 3")
-    ast.should == N::Multiply[N::Modulus[N::Number[1], N::Number[2]],
-                              N::Number[3]]
-  end
-
   it "should parse typeof" do
     ast = RazorPit::Parser.parse_expression("typeof 3")
     ast.should == N::TypeOf[N::Number[3]]
@@ -161,51 +129,6 @@ describe RazorPit::Parser do
     ast.should == N::BitwiseNot[N::Number[1]]
   end
 
-  it "should give bitwise and lower precedence than addition" do
-    ast = RazorPit::Parser.parse_expression("1 & 2 + 3")
-    ast.should == N::BitwiseAnd[N::Number[1],
-                                N::Add[N::Number[2], N::Number[3]]]
-    ast = RazorPit::Parser.parse_expression("1 + 2 & 3")
-    ast.should == N::BitwiseAnd[N::Add[N::Number[1], N::Number[2]],
-                                N::Number[3]]
-  end
-
-  it "should give logical or lower precedence than logical and" do
-    ast = RazorPit::Parser.parse_expression("1 || 2 && 3")
-    ast.should == N::Or[N::Number[1],
-                        N::And[N::Number[2], N::Number[3]]]
-    ast = RazorPit::Parser.parse_expression("1 && 2 || 3")
-    ast.should == N::Or[N::And[N::Number[1], N::Number[2]],
-                        N::Number[3]]
-  end
-
-  it "should give bitwise or higher precedence than logical and" do
-    ast = RazorPit::Parser.parse_expression("1 | 2 && 3")
-    ast.should == N::And[N::BitwiseOr[N::Number[1], N::Number[2]],
-                         N::Number[3]]
-    ast = RazorPit::Parser.parse_expression("1 && 2 | 3")
-    ast.should == N::And[N::Number[1],
-                         N::BitwiseOr[N::Number[2], N::Number[3]]]
-  end
-
-  it "should give bitwise xor higher precedence than bitwise or" do
-    ast = RazorPit::Parser.parse_expression("1 ^ 2 | 3")
-    ast.should == N::BitwiseOr[N::BitwiseXOr[N::Number[1], N::Number[2]],
-                               N::Number[3]]
-    ast = RazorPit::Parser.parse_expression("1 | 2 ^ 3")
-    ast.should == N::BitwiseOr[N::Number[1],
-                               N::BitwiseXOr[N::Number[2], N::Number[3]]]
-  end
-
-  it "should give bitwise and higher precedence than bitwise xor" do
-    ast = RazorPit::Parser.parse_expression("1 & 2 ^ 3")
-    ast.should == N::BitwiseXOr[N::BitwiseAnd[N::Number[1], N::Number[2]],
-                                N::Number[3]]
-    ast = RazorPit::Parser.parse_expression("1 ^ 2 & 3")
-    ast.should == N::BitwiseXOr[N::Number[1],
-                                N::BitwiseAnd[N::Number[2], N::Number[3]]]
-  end
-
   it "should parse equal" do
     ast = RazorPit::Parser.parse_expression("1 == 2")
     ast.should == N::Equal[N::Number[1], N::Number[2]]
@@ -225,4 +148,47 @@ describe RazorPit::Parser do
     ast = RazorPit::Parser.parse_expression("1 !== 2")
     ast.should == N::StrictlyNotEqual[N::Number[1], N::Number[2]]
   end
+
+  def self.it_gives_higher_infix_precedence_to(op_a, op_b)
+    it "gives #{op_a} precedence over #{op_b}" do
+      ast_a = RazorPit::Parser.parse_expression("1 #{op_a} 2 #{op_b} 3")
+      ast_a.lhs.lhs.should == N::Number[1]
+      ast_a.lhs.rhs.should == N::Number[2]
+      ast_a.rhs.should == N::Number[3]
+
+      ast_b = RazorPit::Parser.parse_expression("1 #{op_b} 2 #{op_a} 3")
+      ast_b.lhs.should == N::Number[1]
+      ast_b.rhs.lhs.should == N::Number[2]
+      ast_b.rhs.rhs.should == N::Number[3]
+    end
+  end
+
+  def self.it_gives_equal_infix_precedence_to(op_a, op_b)
+    it "gives equal precedence to #{op_a} and #{op_b}" do
+      ast_a = RazorPit::Parser.parse_expression("1 #{op_a} 2 #{op_b} 3")
+      ast_a.lhs.lhs.should == N::Number[1]
+      ast_a.lhs.rhs.should == N::Number[2]
+      ast_a.rhs.should == N::Number[3]
+
+      ast_b = RazorPit::Parser.parse_expression("1 #{op_b} 2 #{op_a} 3")
+      ast_b.lhs.lhs.should == N::Number[1]
+      ast_b.lhs.rhs.should == N::Number[2]
+      ast_b.rhs.should == N::Number[3]
+    end
+  end
+
+  it_gives_equal_infix_precedence_to "+", "-"
+  it_gives_equal_infix_precedence_to "*", "/"
+  it_gives_equal_infix_precedence_to "*", "%"
+  it_gives_equal_infix_precedence_to "==", "!="
+  it_gives_equal_infix_precedence_to "==", "==="
+  it_gives_equal_infix_precedence_to "==", "!=="
+
+  it_gives_higher_infix_precedence_to "*", "+"
+  it_gives_higher_infix_precedence_to "+", "=="
+  it_gives_higher_infix_precedence_to "==", "&"
+  it_gives_higher_infix_precedence_to "&", "^"
+  it_gives_higher_infix_precedence_to "^", "|"
+  it_gives_higher_infix_precedence_to "|", "&&"
+  it_gives_higher_infix_precedence_to "&&", "||"
 end

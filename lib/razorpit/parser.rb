@@ -28,8 +28,9 @@ module Parser
       end
     end
 
-    %w(MIN EQUALITY OR AND
+    %w(MIN OR AND
        BITWISE_OR BITWISE_XOR BITWISE_AND
+       EQUALITY
        ADD MULT UNARY MAX).each_with_index do |name, i|
       # use intervals of two to allow for right associativity adjustment
       const_set("#{name}_BINDING_POWER", i * 2)

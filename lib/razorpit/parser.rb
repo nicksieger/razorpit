@@ -71,7 +71,7 @@ module Parser
     Tokens::OPEN_PAREN.token_class_eval do
       def prefix(tokens)
         expr = Grammar.expression(tokens, MIN_BINDING_POWER)
-        Grammar.consume(tokens, Tokens::CLOSE_PAREN)
+        Grammar.consume_tokens(tokens, Tokens::CLOSE_PAREN)
         expr
       end
     end
@@ -127,7 +127,7 @@ module Parser
       ast
     end
 
-    def consume(tokens, *expected)
+    def consume_tokens(tokens, *expected)
       expected.each do |kind|
         token = tokens.next
         raise "Parse error" unless kind === token

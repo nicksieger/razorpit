@@ -28,7 +28,7 @@ module Parser
       end
     end
 
-    %w(MIN OR AND
+    %w(MIN OR AND CONDITION
        BITWISE_OR BITWISE_XOR BITWISE_AND
        EQUALITY SHIFT
        ADD MULT UNARY MAX).each_with_index do |name, i|
@@ -76,6 +76,16 @@ module Parser
         expr = Grammar.expression(tokens, MIN_BINDING_POWER)
         Grammar.consume_tokens(tokens, Tokens::CLOSE_PAREN)
         expr
+      end
+    end
+
+    Tokens::QUESTION.left_binding_power = CONDITION_BINDING_POWER
+    Tokens::QUESTION.token_class_eval do
+      def suffix(tokens, lhs)
+        this_expr = Grammar.expression(tokens, CONDITION_BINDING_POWER)
+        Grammar.consume_tokens(tokens, Tokens::COLON)
+        else_expr = Grammar.expression(tokens, CONDITION_BINDING_POWER)
+        Nodes::Condition[lhs, this_expr, else_expr]
       end
     end
 

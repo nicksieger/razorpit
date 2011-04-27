@@ -50,6 +50,11 @@ describe RazorPit::Parser do
     ast.should == N::RegEx["foobar"]
   end
 
+  it "should parse the ternary conditional operator" do
+    ast = RazorPit::Parser.parse_expression("1 ? 2 : 3")
+    ast.should == N::Condition[N::Number[1], N::Number[2], N::Number[3]]
+  end
+
   def self.it_parses_prefix(op, node_class)
     it "parses prefix #{op}" do
       ast = RazorPit::Parser.parse_expression("#{op} 1")

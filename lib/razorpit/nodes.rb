@@ -69,6 +69,23 @@ module Nodes
     end
   end
 
+  class Condition < Node
+    attr_reader :predicate, :then_expr, :else_expr
+
+    def initialize(predicate, then_expr, else_expr)
+      @predicate = predicate
+      @then_expr = then_expr
+      @else_expr = else_expr
+    end
+
+    def ==(other)
+      self.class == other.class and
+      self.predicate == other.predicate and
+      self.then_expr == other.then_expr and
+      self.else_expr == other.else_expr
+    end
+  end
+
   class Add < BinaryOpNode
   end
 

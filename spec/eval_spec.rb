@@ -247,4 +247,11 @@ describe "#{RazorPit::Eval}.to_int32" do
     RazorPit::Eval.to_int32(-3.5).should == -3.0
     RazorPit::Eval.to_int32(3.5).should == 3.0
   end
+
+  #it "masks numbers that are out of range" do
+  #  RazorPit::Eval.to_int32(((1 << 32) - 1).to_f).should == -1
+  #  value = -(1 << 31).to_f
+  #  RazorPit::Eval.to_int32(value).should == value
+  #  RazorPit::Eval.to_int32(value - 1).should == value
+  #end
 end

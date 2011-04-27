@@ -28,6 +28,12 @@ Nodes::UnaryMinus.class_eval do
   end
 end
 
+Nodes::BitwiseNot.class_eval do
+  def evaluate
+    (~Eval.to_int32(expr.evaluate).to_i).to_f
+  end
+end
+
 Nodes::Add.class_eval do
   def evaluate
     lresult = lhs.evaluate

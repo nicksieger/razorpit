@@ -66,6 +66,11 @@ describe "#{RazorPit::Eval}.evaluate" do
     evaluate("'foobar'").should == "foobar"
   end
 
+  it "understands bitwise not" do
+    evaluate("~3").should == -4
+    evaluate("~-1").should == 0
+  end
+
   it "implements typeof" do
     evaluate("typeof 3").should == "number"
     evaluate("typeof null").should == "object"

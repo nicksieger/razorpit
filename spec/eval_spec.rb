@@ -272,3 +272,39 @@ describe "#{RazorPit::Eval}.to_int32" do
     RazorPit::Eval.to_int32((-(1 << 31) - 1).to_f).should == ((1 << 31) - 1)
   end
 end
+
+describe "#{RazorPit::Eval}.to_uint32" do
+  it "passes through 0" do
+    RazorPit::Eval.to_uint32(-0.0).should == 0.0
+    RazorPit::Eval.to_uint32(0.0).should == 0.0
+  end
+
+  it "returns a float" do
+    RazorPit::Eval.to_uint32(1.25).should == 1.0
+  end
+
+  it "returns 0 for infinite sides" do
+    RazorPit::Eval.to_uint32(1.0 / 0.0).should == 0.0
+    RazorPit::Eval.to_uint32(-1.0 / 0.0).should == 0.0
+  end
+
+  it "returns 0 for NaN" do
+    RazorPit::Eval.to_uint32(0.0 / 0.0).should == 0.0
+  end
+
+  it "calls to_number" do
+    RazorPit::Eval.to_uint32("1.0").should == 1.0
+  end
+
+  it "rounds numbers correctly" do
+    RazorPit::Eval.to_uint32(-3.5).should == (1 << 32) - 3
+    RazorPit::Eval.to_uint32(3.5).should == 3.0
+  end
+
+  it "wraps numbers correctly" do
+    RazorPit::Eval.to_uint32(((1 << 32) - 1).to_f).should == (1 << 32) - 1
+    RazorPit::Eval.to_uint32(((2 << 32) - 1).to_f).should == (1 << 32) - 1
+    RazorPit::Eval.to_uint32(((1 << 31)).to_f).should == (1 << 31)
+    RazorPit::Eval.to_uint32((-(1 << 31) - 1).to_f).should == ((1 << 31) - 1)
+  end
+end

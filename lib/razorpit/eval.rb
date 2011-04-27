@@ -186,14 +186,19 @@ def to_number(obj)
   end
 end
 
-def to_int32(obj)
+def to_uint32(obj)
   float = to_number(obj)
   return 0.0 if float.infinite? || float.nan? || float.zero?
   abs = float.abs
   value = (float / abs).to_i * abs.floor
   value &= 0xffffffff
-  value -= (1 << 32) if value >= (1 << 31)
   value.to_f
+end
+
+def to_int32(obj)
+  value = to_uint32(obj)
+  value -= (1 << 32) if value >= (1 << 31)
+  value
 end
 
 def to_string(obj)

@@ -175,6 +175,8 @@ describe "#{RazorPit::Eval}.evaluate" do
     evaluate("1.0 === 1.1").should be_false
     evaluate("'foo' === 'foo'").should be_true
     evaluate("'foo' === 'bar'").should be_false
+    evaluate("true === true").should be_true
+    evaluate("false === true").should be_false
 
     evaluate("1 !== 1").should be_false
     evaluate("1 !== 2").should be_true

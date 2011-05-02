@@ -293,10 +293,8 @@ def strictly_equal?(a, b)
     else
       a == b
     end
-  when String
-    a == b
   else
-    false
+    a == b
   end
 end
 

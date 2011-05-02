@@ -181,6 +181,18 @@ class << Nodes::NULL
   end
 end
 
+Nodes::StrictlyEqual.class_eval do
+  def evaluate
+    Eval.strictly_equal?(lhs.evaluate, rhs.evaluate)
+  end
+end
+
+Nodes::StrictlyNotEqual.class_eval do
+  def evaluate
+    not Eval.strictly_equal?(lhs.evaluate, rhs.evaluate)
+  end
+end
+
 module Eval
 extend self
 
@@ -265,6 +277,26 @@ def to_boolean(obj)
     false
   else
     true
+  end
+end
+
+def strictly_equal?(a, b)
+  return false if a.class != b.class
+  case a
+  when nil, NULL
+    true
+  when Float
+    if a.nan? or b.nan?
+      false
+    elsif a.zero? and b.zero?
+      true
+    else
+      a == b
+    end
+  when String
+    a == b
+  else
+    false
   end
 end
 

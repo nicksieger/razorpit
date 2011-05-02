@@ -119,6 +119,18 @@ module Nodes
   class BitwiseXOr < BinaryOpNode
   end
 
+  class GreaterThan < BinaryOpNode
+  end
+
+  class LessThan < BinaryOpNode
+  end
+
+  class GreaterThanOrEqual < BinaryOpNode
+  end
+
+  class LessThanOrEqual < BinaryOpNode
+  end
+
   class Equal < BinaryOpNode
   end
 

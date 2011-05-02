@@ -102,6 +102,11 @@ describe RazorPit::Parser do
   it_parses_infix "/", N::Divide
   it_parses_infix "%", N::Modulus
 
+  it_parses_infix ">", N::GreaterThan
+  it_parses_infix "<", N::LessThan
+  it_parses_infix ">=", N::GreaterThanOrEqual
+  it_parses_infix "<=", N::LessThanOrEqual
+
   it_parses_infix "==", N::Equal
   it_parses_infix "!=", N::NotEqual
   it_parses_infix "===", N::StrictlyEqual
@@ -149,6 +154,9 @@ describe RazorPit::Parser do
   it_gives_equal_infix_precedence_to "+", "-"
   it_gives_equal_infix_precedence_to "<<", ">>"
   it_gives_equal_infix_precedence_to "<<", ">>>"
+  it_gives_equal_infix_precedence_to ">", "<"
+  it_gives_equal_infix_precedence_to ">", ">="
+  it_gives_equal_infix_precedence_to ">", "<="
   it_gives_equal_infix_precedence_to "==", "!="
   it_gives_equal_infix_precedence_to "==", "==="
   it_gives_equal_infix_precedence_to "==", "!=="
@@ -169,7 +177,8 @@ describe RazorPit::Parser do
 
   it_gives_higher_infix_precedence_to "*", "+"
   it_gives_higher_infix_precedence_to "+", ">>"
-  it_gives_higher_infix_precedence_to ">>", "=="
+  it_gives_higher_infix_precedence_to ">>", ">"
+  it_gives_higher_infix_precedence_to ">", "=="
   it_gives_higher_infix_precedence_to "==", "&"
   it_gives_higher_infix_precedence_to "&", "^"
   it_gives_higher_infix_precedence_to "^", "|"

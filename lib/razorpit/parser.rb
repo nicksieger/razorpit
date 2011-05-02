@@ -30,7 +30,7 @@ module Parser
 
     %w(MIN ASSIGN CONDITION OR AND
        BITWISE_OR BITWISE_XOR BITWISE_AND
-       EQUALITY SHIFT
+       EQUALITY RELATIONAL SHIFT
        ADD MULT UNARY
        INCREMENT MAX).each_with_index do |name, i|
       # use intervals of two to allow for right associativity adjustment
@@ -154,6 +154,10 @@ module Parser
                  BITWISE_OR_BINDING_POWER)
     define_infix(Tokens::BITWISE_XOR, Nodes::BitwiseXOr,
                  BITWISE_XOR_BINDING_POWER)
+    define_infix(Tokens::GT, Nodes::GreaterThan, RELATIONAL_BINDING_POWER)
+    define_infix(Tokens::LT, Nodes::LessThan, RELATIONAL_BINDING_POWER)
+    define_infix(Tokens::GTE, Nodes::GreaterThanOrEqual, RELATIONAL_BINDING_POWER)
+    define_infix(Tokens::LTE, Nodes::LessThanOrEqual, RELATIONAL_BINDING_POWER)
     define_infix(Tokens::EQUAL, Nodes::Equal, EQUALITY_BINDING_POWER)
     define_infix(Tokens::NOT_EQUAL, Nodes::NotEqual, EQUALITY_BINDING_POWER)
     define_infix(Tokens::STRICT_EQUAL, Nodes::StrictlyEqual,

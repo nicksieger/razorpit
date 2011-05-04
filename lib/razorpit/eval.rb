@@ -181,6 +181,18 @@ class << Nodes::NULL
   end
 end
 
+Nodes::Equal.class_eval do
+  def evaluate
+    Eval.abstractly_equal?(lhs.evaluate, rhs.evaluate)
+  end
+end
+
+Nodes::NotEqual.class_eval do
+  def evaluate
+    not Eval.abstractly_equal?(lhs.evaluate, rhs.evaluate)
+  end
+end
+
 Nodes::StrictlyEqual.class_eval do
   def evaluate
     Eval.strictly_equal?(lhs.evaluate, rhs.evaluate)
@@ -296,6 +308,10 @@ def strictly_equal?(a, b)
   else
     a == b
   end
+end
+
+def abstractly_equal?(a, b)
+  strictly_equal?(a, b)
 end
 
 def evaluate(ast)

@@ -181,6 +181,23 @@ describe "#{RazorPit::Eval}.evaluate" do
     evaluate("1 !== 1").should be_false
     evaluate("1 !== 2").should be_true
   end
+
+  it "implements abstract equality" do
+    evaluate("true == void 0").should be_false
+    evaluate("void 0 == null").should be_false
+    evaluate("null == void 0").should be_false
+    evaluate("void 0 == void 0").should be_true
+    evaluate("null == null").should be_true
+    evaluate("1.0 == 1.0").should be_true
+    evaluate("1.0 == 1.1").should be_false
+    evaluate("'foo' == 'foo'").should be_true
+    evaluate("'foo' == 'bar'").should be_false
+    evaluate("true == true").should be_true
+    evaluate("false == true").should be_false
+
+    evaluate("1 != 1").should be_false
+    evaluate("1 != 2").should be_true
+  end
 end
 
 describe "#{RazorPit::Eval}.to_boolean" do

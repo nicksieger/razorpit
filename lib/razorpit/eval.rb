@@ -10,6 +10,12 @@ class << NULL
   alias_method :inspect, :to_s
 end
 
+Node.class_eval do
+  def evaluate
+    raise NotImplementedError, "#{self.class}#evaluate not implemented"
+  end
+end
+
 LiteralNode.class_eval do
   def evaluate
     value

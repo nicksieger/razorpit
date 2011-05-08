@@ -205,6 +205,22 @@ Nodes::StrictlyNotEqual.class_eval do
   end
 end
 
+Nodes::LessThan.class_eval do
+  def evaluate
+    left = lhs.evaluate
+    right = rhs.evaluate
+    Eval.less_than?(left, right)
+  end
+end
+
+Nodes::GreaterThan.class_eval do
+  def evaluate
+    left = lhs.evaluate
+    right = rhs.evaluate
+    Eval.less_than?(right, left)
+  end
+end
+
 module Eval
 extend self
 
@@ -308,6 +324,10 @@ def strictly_equal?(a, b)
   else
     a == b
   end
+end
+
+def less_than?(a, b)
+  a < b
 end
 
 def abstractly_equal?(a, b)

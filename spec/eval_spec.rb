@@ -210,6 +210,18 @@ describe "#{RazorPit::Eval}.evaluate" do
     evaluate("3 < 3").should be_false
     evaluate("3 < 2").should be_false
   end
+
+  it "implements the greater-than-or-equal operator" do
+    evaluate("2 >= 3").should be_false
+    evaluate("3 >= 3").should be_true
+    evaluate("3 >= 2").should be_true
+  end
+
+  it "implements the less-than-or-equal operator" do
+    evaluate("2 <= 3").should be_true
+    evaluate("3 <= 3").should be_true
+    evaluate("3 <= 2").should be_false
+  end
 end
 
 describe "#{RazorPit::Eval}.to_boolean" do

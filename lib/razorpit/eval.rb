@@ -221,6 +221,22 @@ Nodes::GreaterThan.class_eval do
   end
 end
 
+Nodes::LessThanOrEqual.class_eval do
+  def evaluate
+    left = lhs.evaluate
+    right = rhs.evaluate
+    not Eval.less_than?(right, left)
+  end
+end
+
+Nodes::GreaterThanOrEqual.class_eval do
+  def evaluate
+    left = lhs.evaluate
+    right = rhs.evaluate
+    not Eval.less_than?(left, right)
+  end
+end
+
 module Eval
 extend self
 

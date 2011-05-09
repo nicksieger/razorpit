@@ -213,33 +213,25 @@ end
 
 Nodes::LessThan.class_eval do
   def evaluate
-    left = lhs.evaluate
-    right = rhs.evaluate
-    Eval.less_than?(left, right)
+    Eval.less_than?(lhs.evaluate, rhs.evaluate)
   end
 end
 
 Nodes::GreaterThan.class_eval do
   def evaluate
-    left = lhs.evaluate
-    right = rhs.evaluate
-    Eval.less_than?(right, left)
+    Eval.greater_than?(lhs.evaluate, rhs.evaluate)
   end
 end
 
 Nodes::LessThanOrEqual.class_eval do
   def evaluate
-    left = lhs.evaluate
-    right = rhs.evaluate
-    not Eval.less_than?(right, left)
+    Eval.less_than_or_equal?(lhs.evaluate, rhs.evaluate)
   end
 end
 
 Nodes::GreaterThanOrEqual.class_eval do
   def evaluate
-    left = lhs.evaluate
-    right = rhs.evaluate
-    not Eval.less_than?(left, right)
+    Eval.greater_than_or_equal?(lhs.evaluate, rhs.evaluate)
   end
 end
 
@@ -350,6 +342,18 @@ end
 
 def less_than?(a, b)
   a < b
+end
+
+def greater_than?(a, b)
+  less_than?(b, a)
+end
+
+def less_than_or_equal?(a, b)
+  not greater_than?(a, b)
+end
+
+def greater_than_or_equal?(a, b)
+  not less_than?(a, b)
 end
 
 def abstractly_equal?(a, b)

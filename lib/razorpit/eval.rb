@@ -341,7 +341,13 @@ def strictly_equal?(a, b)
 end
 
 def less_than?(a, b)
-  a < b
+  if a.class == String and b.class == String
+    a < b
+  else
+    a = to_number(a)
+    b = to_number(b)
+    to_number(a) < to_number(b)
+  end
 end
 
 def greater_than?(a, b)

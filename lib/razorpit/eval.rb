@@ -49,6 +49,16 @@ LiteralNode.class_eval do
   end
 end
 
+StatementListNode.class_eval do
+  def evaluate(env)
+    result = nil
+    statements.each do |statement|
+      result = statement.evaluate(env)
+    end
+    result
+  end
+end
+
 Nodes::Identifier.class_eval do
   def evaluate(env)
     env[name]
@@ -572,8 +582,8 @@ def abstractly_equal?(a, b)
   strictly_equal?(a, b)
 end
 
-def evaluate(ast)
-  ast.evaluate(Environment.new)
+def evaluate(ast, env)
+  ast.evaluate(env)
 end
 
 end

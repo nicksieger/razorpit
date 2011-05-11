@@ -4,23 +4,28 @@ require 'razorpit/parser'
 require 'razorpit/eval'
 
 describe "#{RazorPit::Eval}.evaluate" do
+  def evaluate_ast(ast)
+    env = RazorPit::Environment.new
+    RazorPit::Eval.evaluate(ast, env)
+  end
+
   def evaluate(string)
-    ast = RazorPit::Parser.parse_expression(string)
-    RazorPit::Eval.evaluate(ast)
+    ast = RazorPit::Parser.parse("(#{string});")
+    evaluate_ast(ast)
   end
 
   it "should short-circuit && and ||" do
-    RazorPit::Eval.evaluate(RazorPit::Nodes::And[RazorPit::Nodes::Boolean[false], nil])
-    RazorPit::Eval.evaluate(RazorPit::Nodes::Or[RazorPit::Nodes::Boolean[true], nil])
+    evaluate_ast(RazorPit::Nodes::And[RazorPit::Nodes::Boolean[false], nil])
+    evaluate_ast(RazorPit::Nodes::Or[RazorPit::Nodes::Boolean[true], nil])
   end
 
   it "should short-circuit ?:" do
-    RazorPit::Eval.evaluate(RazorPit::Nodes::Condition[RazorPit::Nodes::Boolean[true],
-                                                       RazorPit::Nodes::Number[1],
-                                                       nil])
-    RazorPit::Eval.evaluate(RazorPit::Nodes::Condition[RazorPit::Nodes::Boolean[false],
-                                                       nil,
-                                                       RazorPit::Nodes::Number[1]])
+    evaluate_ast(RazorPit::Nodes::Condition[RazorPit::Nodes::Boolean[true],
+                                            RazorPit::Nodes::Number[1],
+                                            nil])
+    evaluate_ast(RazorPit::Nodes::Condition[
+                   RazorPit::Nodes::Boolean[false],
+                   nil, RazorPit::Nodes::Number[1]])
   end
 
   it "can evaluate a trivial expression" do

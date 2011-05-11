@@ -63,7 +63,16 @@ module Nodes
   class RegEx < LiteralNode
   end
 
-  class Identifier < LiteralNode
+  class Identifier < Node
+    attr_reader :name
+
+    def initialize(name)
+      @name = name
+    end
+
+    def ==(other)
+      self.class == other.class && self.name == other.name
+    end
   end
 
   class Program < Node

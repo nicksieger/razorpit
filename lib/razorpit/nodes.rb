@@ -22,6 +22,18 @@ class LiteralNode < Node
   end
 end
 
+class StatementListNode < Node
+  attr_reader :statements
+
+  def initialize(*statements)
+    @statements = statements
+  end
+
+  def ==(other)
+    self.class == other.class && self.statements == other.statements
+  end
+end
+
 class UnaryOpNode < Node
   attr_reader :expr
 
@@ -75,17 +87,10 @@ module Nodes
     end
   end
 
-  class Program < Node
-    attr_reader :statements
+  class Program < StatementListNode
+  end
 
-    def initialize(*statements)
-      @statements = statements
-    end
-
-    def ==(other)
-      self.class == other.class &&
-      self.statements == other.statements
-    end
+  class Block < StatementListNode
   end
 
   class EmptyStatement < Node

@@ -20,6 +20,15 @@ describe RazorPit::Parser do
     ast.should == N::Program[N::Void[N::Number[0]]]
   end
 
+  it "parses a program with a block" do
+    ast = RazorPit::Parser.parse <<-EOS
+      {
+        void 0;
+      }
+    EOS
+    ast.should == N::Program[N::Block[N::Void[N::Number[0]]]]
+  end
+
   it "parses a numeric literal" do
     ast = RazorPit::Parser.parse_expression("1")
     ast.should == N::Number[1]

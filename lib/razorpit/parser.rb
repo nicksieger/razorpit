@@ -236,11 +236,8 @@ module Parser
     end
 
     def empty_statement(tokens)
-      if try_consume_token(tokens, Tokens::SEMICOLON)
-        Nodes::EmptyStatement[]
-      else
-        nil
-      end
+      return nil unless try_consume_token(tokens, Tokens::SEMICOLON)
+      Nodes::EmptyStatement[]
     end
 
     def expression_statement(tokens)
@@ -249,8 +246,14 @@ module Parser
       ast
     end
 
+    def block_statement(tokens)
+      return nil unless try_consume_token(tokens, Tokens::OPEN_BRACE)
+      statement_list(tokens, Nodes::Block, Tokens::CLOSE_BRACE)
+    end
+
     def statement(tokens)
-      empty_statement(tokens) || expression_statement(tokens)
+      empty_statement(tokens) || block_statement(tokens) ||
+      expression_statement(tokens)
     end
 
     def statement_list(tokens, type, terminator)

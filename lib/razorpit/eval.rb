@@ -126,6 +126,40 @@ Nodes::BitwiseOrAssign.class_eval do
   end
 end
 
+Nodes::PreIncrement.class_eval do
+  def evaluate(env)
+    expr.update(env) { |value| Eval.add(value, 1.0) }
+  end
+end
+
+Nodes::PostIncrement.class_eval do
+  def evaluate(env)
+    old_value = nil
+    expr.update(env) { |value|
+      old_value = Eval.to_number(value)
+      Eval.add(old_value, 1.0)
+    }
+    old_value
+  end
+end
+
+Nodes::PreDecrement.class_eval do
+  def evaluate(env)
+    expr.update(env) { |value| Eval.subtract(value, 1.0) }
+  end
+end
+
+Nodes::PostDecrement.class_eval do
+  def evaluate(env)
+    old_value = nil
+    expr.update(env) { |value|
+      old_value = Eval.to_number(value)
+      Eval.subtract(old_value, 1.0)
+    }
+    old_value
+  end
+end
+
 Nodes::UnaryPlus.class_eval do
   def evaluate(env)
     expr.evaluate(env)

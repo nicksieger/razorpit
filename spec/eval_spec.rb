@@ -289,6 +289,26 @@ describe "#{RazorPit::Eval}.evaluate" do
   it "implements ^=" do
     evaluate("foo = 0xff00, foo ^= 0xf0f0, foo").should == 0x0ff0
   end
+
+  it "implements preincrement" do
+    evaluate("foo = 1, ++foo").should == 2
+    evaluate("foo = 1, ++foo, foo").should == 2
+  end
+
+  it "implements postincrement" do
+    evaluate("foo = 1, foo++").should == 1
+    evaluate("foo = 1, foo++, foo").should == 2
+  end
+
+  it "implements predecrement" do
+    evaluate("foo = 1, --foo").should == 0
+    evaluate("foo = 1, --foo, foo").should == 0
+  end
+
+  it "implements postdecrement" do
+    evaluate("foo = 1, foo--").should == 1
+    evaluate("foo = 1, foo--, foo").should == 0
+  end
 end
 
 

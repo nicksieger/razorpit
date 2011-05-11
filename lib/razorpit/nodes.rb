@@ -119,7 +119,10 @@ module Nodes
     attr_reader :decls
 
     def initialize(decls)
-      @decls = decls
+      @decls = {}
+      decls.each do |name, init|
+        @decls[name.to_sym] = init
+      end
     end
 
     def ==(other)

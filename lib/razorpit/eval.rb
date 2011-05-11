@@ -11,21 +11,38 @@ class << NULL
 end
 
 class Environment
-  def initialize
+  def initialize(parent=nil)
     @variables = {}
+    @parent = parent
+  end
+
+  def declare(name)
+    @variables[name] = yield
   end
 
   def [](name)
-    @variables[name]
+    if @parent and !@variables.has_key?(name)
+      @parent[name]
+    else
+      @variables[name]
+    end
   end
 
   def []=(name, value)
-    @variables[name] = value 
+    if @parent and !@variables.has_key?(name)
+      @parent[name] = value
+    else
+      @variables[name] = value 
+    end
   end
 
   def delete(name)
-    @variables.delete name
-    true
+    if @parent and !@variables.has_key?(name)
+      @parent.delete name
+    else
+      @variables.delete name
+      true
+    end
   end
 end
 
@@ -70,6 +87,26 @@ Nodes::Identifier.class_eval do
 
   def update(env)
     env[name] = yield env[name]
+  end
+end
+
+Nodes::Block.class_eval do
+  def evaluate(env)
+    super(Environment.new(env))
+  end
+end
+
+Nodes::VariableStatement.class_eval do
+  def evaluate(env)
+    decls.each do |name, init|
+      env.declare(name) do
+        if init
+          init.evaluate(env)
+        else
+          nil
+        end
+      end
+    end
   end
 end
 

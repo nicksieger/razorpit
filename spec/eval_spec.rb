@@ -343,6 +343,39 @@ describe "#{RazorPit::Eval}.evaluate" do
     EOS
     result.should == 3;
   end
+
+  it "sets variables in the innermost scope" do
+    result = program <<-EOS
+      var foo=3;
+      {
+        var foo=4;
+        foo = 5;
+        foo;
+      }
+    EOS
+    result.should == 5;
+    result = program <<-EOS
+      var foo=3;
+      {
+        var foo=4;
+        foo = 5;
+      }
+      foo;
+    EOS
+    result.should == 3;
+  end
+
+  it "deletes variables from the innermost scope" do
+    result = program <<-EOS
+      var foo=3;
+      {
+        var foo=4;
+        delete foo;
+        foo;
+      }
+    EOS
+    result.should == 3;
+  end
 end
 
 

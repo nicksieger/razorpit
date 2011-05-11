@@ -309,6 +309,12 @@ describe "#{RazorPit::Eval}.evaluate" do
     evaluate("foo = 1, foo--").should == 1
     evaluate("foo = 1, foo--, foo").should == 0
   end
+
+  it "implements delete for variables" do
+    evaluate("delete foo").should be_true
+    evaluate("foo = 1, delete foo").should be_true
+    evaluate("foo = 1, delete foo, foo").should be_nil
+  end
 end
 
 

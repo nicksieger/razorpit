@@ -22,11 +22,20 @@ class Environment
   def []=(name, value)
     @variables[name] = value 
   end
+
+  def delete(name)
+    @variables.delete name
+    true
+  end
 end
 
 Node.class_eval do
   def evaluate(env)
     raise NotImplementedError, "#{self.class}#evaluate not implemented"
+  end
+
+  def delete(env)
+    raise NotImplementedError, "#{self.class}#delete is not implemented"
   end
 
   def update(env)
@@ -45,6 +54,10 @@ Nodes::Identifier.class_eval do
     env[name]
   end
 
+  def delete(env)
+    env.delete name
+  end
+
   def update(env)
     env[name] = yield env[name]
   end
@@ -53,6 +66,12 @@ end
 Nodes::Assign.class_eval do
   def evaluate(env)
     lhs.update(env) { rhs.evaluate(env) }
+  end
+end
+
+Nodes::Delete.class_eval do
+  def evaluate(env)
+    expr.delete(env)
   end
 end
 

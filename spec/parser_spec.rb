@@ -202,6 +202,13 @@ describe RazorPit::Parser do
                                             N::Number[5]]]
   end
 
+  it "parses ?: with higher precedence than ," do
+    ast = RazorPit::Parser.parse_expression("1 ? 2 : 3, 4")
+    ast.should == N::Sequence[N::Condition[N::Number[1], N::Number[2],
+                                           N::Number[3]],
+                              N::Number[4]]
+  end
+
   it "parses direct property access" do
     ast = RazorPit::Parser.parse_expression("foo.bar")
     ast.should == N::PropertyAccess[N::Identifier["foo"],

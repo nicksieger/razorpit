@@ -204,17 +204,37 @@ describe RazorPit::Parser do
 
   it "parses direct property access" do
     ast = RazorPit::Parser.parse_expression("foo.bar")
-    ast.should == N::NamedPropertyAccess[N::Identifier["foo"], "bar"]
+    ast.should == N::PropertyAccess[N::Identifier["foo"],
+                                    N::String["bar"]]
   end
 
   it "parses subscripted property access" do
     ast = RazorPit::Parser.parse_expression("foo['bar']")
-    ast.should == N::NamedPropertyAccess[N::Identifier["foo"], "bar"]
+    ast.should == N::PropertyAccess[N::Identifier["foo"],
+                                    N::String["bar"]]
   end
 
   it "parses dynamic property access" do
     ast = RazorPit::Parser.parse_expression("foo[bar]")
-    ast.should == N::DynamicPropertyAccess[N::Identifier["foo"],
-                                           N::Identifier["bar"]]
+    ast.should == N::PropertyAccess[N::Identifier["foo"],
+                                    N::Identifier["bar"]]
+  end
+
+  it "parses function calls with no arguments" do
+    ast = RazorPit::Parser.parse_expression("foo()")
+    ast.should == N::FunctionCall[N::Identifier["foo"]]
+  end
+
+  it "parses function calls with arguments" do
+    ast = RazorPit::Parser.parse_expression("foo(1, 2)")
+    ast.should == N::FunctionCall[N::Identifier["foo"],
+                                  N::Number[1], N::Number[2]]
+  end
+
+  it "parses method calls" do
+    ast = RazorPit::Parser.parse_expression("foo.bar(1, 2)")
+    ast.should == N::MethodCall[N::Identifier["foo"],
+                                N::String["bar"],
+                                N::Number[1], N::Number[2]]
   end
 end

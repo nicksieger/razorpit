@@ -32,7 +32,7 @@ module Parser
        BITWISE_OR BITWISE_XOR BITWISE_AND
        EQUALITY RELATIONAL SHIFT
        ADD MULT UNARY
-       INCREMENT MEMBER MAX).each_with_index do |name, i|
+       INCREMENT CALL MEMBER MAX).each_with_index do |name, i|
       # use intervals of two to allow for right associativity adjustment
       const_set("#{name}_BINDING_POWER", i * 2)
     end
@@ -76,7 +76,7 @@ module Parser
     Tokens::PERIOD.token_class_eval do
       def suffix(tokens, lhs)
         name = Grammar.consume_token(tokens, Tokens::IDENTIFIER)
-        Nodes::NamedPropertyAccess[lhs, name.value]
+        Nodes::PropertyAccess[lhs, Nodes::String[name.value]]
       end
     end
 
@@ -85,12 +85,7 @@ module Parser
       def suffix(tokens, lhs)
         rhs = Grammar.expression(tokens, MEMBER_BINDING_POWER)
         Grammar.consume_token(tokens, Tokens::CLOSE_BRACKET)
-        case rhs
-        when Nodes::String
-          Nodes::NamedPropertyAccess[lhs, rhs.value]
-        else
-          Nodes::DynamicPropertyAccess[lhs, rhs]
-        end
+        Nodes::PropertyAccess[lhs, rhs]
       end
     end
 
@@ -118,11 +113,29 @@ module Parser
       end
     end
 
+    Tokens::OPEN_PAREN.left_binding_power = CALL_BINDING_POWER
     Tokens::OPEN_PAREN.token_class_eval do
       def prefix(tokens)
         expr = Grammar.expression(tokens, MIN_BINDING_POWER)
-        Grammar.consume_tokens(tokens, Tokens::CLOSE_PAREN)
+        Grammar.consume_token(tokens, Tokens::CLOSE_PAREN)
         expr
+      end
+
+      def suffix(tokens, lhs)
+        args = []
+        unless Grammar.try_consume_token(tokens, Tokens::CLOSE_PAREN)
+          args << Grammar.expression(tokens, COMMA_BINDING_POWER)
+          while Grammar.try_consume_token(tokens, Tokens::COMMA)
+            args << Grammar.expression(tokens, COMMA_BINDING_POWER)
+          end
+          Grammar.consume_token(tokens, Tokens::CLOSE_PAREN)
+        end
+        case lhs
+        when Nodes::PropertyAccess
+          N::MethodCall[lhs.lhs, lhs.rhs, *args]
+        else
+          N::FunctionCall[lhs, *args]
+        end
       end
     end
 
@@ -130,7 +143,7 @@ module Parser
     Tokens::QUESTION.token_class_eval do
       def suffix(tokens, lhs)
         this_expr = Grammar.expression(tokens, MIN_BINDING_POWER)
-        Grammar.consume_tokens(tokens, Tokens::COLON)
+        Grammar.consume_token(tokens, Tokens::COLON)
         else_expr = Grammar.expression(tokens, MIN_BINDING_POWER)
         Nodes::Condition[lhs, this_expr, else_expr]
       end
@@ -234,11 +247,12 @@ module Parser
       token
     end
 
-    def consume_tokens(tokens, *expected)
-      expected.each do |kind|
-        consume_token(tokens, kind)
+    def try_consume_token(tokens, kind)
+      if kind === tokens.peek
+        tokens.next
+      else
+        nil
       end
-      self
     end
   end
 

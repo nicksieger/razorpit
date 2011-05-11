@@ -81,23 +81,42 @@ module Nodes
     end
   end
 
-  class NamedPropertyAccess < Node
-    attr_reader :lhs
-    attr_reader :name
+  class PropertyAccess < BinaryOpNode
+  end
 
-    def initialize(lhs, name)
-      @lhs = lhs
-      @name = name.to_sym
+  class FunctionCall < Node
+    attr_reader :func
+    attr_reader :args
+
+    def initialize(func, *args)
+      @func = func
+      @args = args
     end
 
     def ==(other)
       self.class == other.class &&
-      self.lhs == other.lhs &&
-      self.name == other.name
+      self.func == other.func &&
+      self.args == other.args
     end
   end
 
-  class DynamicPropertyAccess < BinaryOpNode
+  class MethodCall < Node
+    attr_reader :receiver
+    attr_reader :method
+    attr_reader :args
+
+    def initialize(receiver, method, *args)
+      @receiver = receiver
+      @method = method
+      @args = args
+    end
+
+    def ==(other)
+      self.class == other.class &&
+      self.receiver == other.receiver &&
+      self.method == other.method &&
+      self.args == other.args
+    end
   end
 
   class Condition < Node

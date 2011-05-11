@@ -28,6 +28,12 @@ Nodes::Identifier.class_eval do
   end
 end
 
+Nodes::Assign.class_eval do
+  def evaluate
+    rhs.evaluate
+  end
+end
+
 Nodes::UnaryPlus.class_eval do
   def evaluate
     expr.evaluate

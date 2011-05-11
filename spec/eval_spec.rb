@@ -237,6 +237,10 @@ describe "#{RazorPit::Eval}.evaluate" do
   it "deals with unbound variables" do
     evaluate("foobar").should be_nil
   end
+
+  it "returns the value of an assignment" do
+    evaluate("foo = 2").should == 2
+  end
 end
 
 describe "#{RazorPit::Eval}.to_boolean" do

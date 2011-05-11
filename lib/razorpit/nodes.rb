@@ -100,25 +100,6 @@ module Nodes
     end
   end
 
-  class MethodCall < Node
-    attr_reader :receiver
-    attr_reader :method
-    attr_reader :args
-
-    def initialize(receiver, method, *args)
-      @receiver = receiver
-      @method = method
-      @args = args
-    end
-
-    def ==(other)
-      self.class == other.class &&
-      self.receiver == other.receiver &&
-      self.method == other.method &&
-      self.args == other.args
-    end
-  end
-
   class Condition < Node
     attr_reader :predicate, :then_expr, :else_expr
 

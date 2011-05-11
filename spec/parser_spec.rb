@@ -233,9 +233,9 @@ describe RazorPit::Parser do
 
   it "parses method calls" do
     ast = RazorPit::Parser.parse_expression("foo.bar(1, 2)")
-    ast.should == N::MethodCall[N::Identifier["foo"],
-                                N::String["bar"],
-                                N::Number[1], N::Number[2]]
+    ast.should == N::FunctionCall[N::PropertyAccess[N::Identifier["foo"],
+                                                    N::String["bar"]],
+                                  N::Number[1], N::Number[2]]
   end
 
   it "parses delete" do

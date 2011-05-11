@@ -130,12 +130,7 @@ module Parser
           end
           Grammar.consume_token(tokens, Tokens::CLOSE_PAREN)
         end
-        case lhs
-        when Nodes::PropertyAccess
-          N::MethodCall[lhs.lhs, lhs.rhs, *args]
-        else
-          N::FunctionCall[lhs, *args]
-        end
+        N::FunctionCall[lhs, *args]
       end
     end
 

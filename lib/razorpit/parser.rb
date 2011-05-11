@@ -235,6 +235,37 @@ module Parser
       ast
     end
 
+    def empty_statement(tokens)
+      if try_consume_token(tokens, Tokens::SEMICOLON)
+        Nodes::EmptyStatement[]
+      else
+        nil
+      end
+    end
+
+    def expression_statement(tokens)
+      ast = expression(tokens, MIN_BINDING_POWER)
+      consume_token(tokens, Tokens::SEMICOLON)
+      ast
+    end
+
+    def statement(tokens)
+      empty_statement(tokens) || expression_statement(tokens)
+    end
+
+    def statement_list(tokens, type, terminator)
+      statements = []
+      until try_consume_token(tokens, terminator)
+        ast = statement(tokens)
+        statements << ast unless Nodes::EmptyStatement === ast
+      end
+      type[*statements]
+    end
+
+    def program(tokens)
+      statement_list(tokens, Nodes::Program, Tokens::EOF)
+    end
+
     def consume_token(tokens, kind)
       token = tokens.next
       unless kind === token
@@ -253,7 +284,8 @@ module Parser
   end
 
   def parse(string)
-    Nodes::Program[]
+    tokens = Lexer.scan(string)
+    Grammar.program(tokens)
   end
 
   def parse_expression(string)

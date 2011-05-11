@@ -76,9 +76,19 @@ module Nodes
   end
 
   class Program < Node
-    def ==(other)
-      self.class == other.class
+    attr_reader :statements
+
+    def initialize(*statements)
+      @statements = statements
     end
+
+    def ==(other)
+      self.class == other.class &&
+      self.statements == other.statements
+    end
+  end
+
+  class EmptyStatement < Node
   end
 
   class PropertyAccess < BinaryOpNode

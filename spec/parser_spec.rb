@@ -10,6 +10,16 @@ describe RazorPit::Parser do
     ast.should == N::Program[]
   end
 
+  it "parses a program with an empty statement" do
+    ast = RazorPit::Parser.parse(";")
+    ast.should == N::Program[]
+  end
+
+  it "parses a program with a simple expression statement" do
+    ast = RazorPit::Parser.parse("void 0;")
+    ast.should == N::Program[N::Void[N::Number[0]]]
+  end
+
   it "parses a numeric literal" do
     ast = RazorPit::Parser.parse_expression("1")
     ast.should == N::Number[1]

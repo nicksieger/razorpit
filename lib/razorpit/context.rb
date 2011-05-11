@@ -18,7 +18,7 @@ class Context
 
   def eval(string)
     ast = Parser.parse_expression(string)
-    Helpers.to_ruby(ast.evaluate)
+    Helpers.to_ruby(Eval.evaluate(ast))
   end
 end
 

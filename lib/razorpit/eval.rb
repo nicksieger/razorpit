@@ -11,51 +11,51 @@ class << NULL
 end
 
 Node.class_eval do
-  def evaluate
+  def evaluate(env)
     raise NotImplementedError, "#{self.class}#evaluate not implemented"
   end
 end
 
 LiteralNode.class_eval do
-  def evaluate
+  def evaluate(env)
     value
   end
 end
 
 Nodes::Identifier.class_eval do
-  def evaluate
+  def evaluate(env)
     nil
   end
 end
 
 Nodes::Assign.class_eval do
-  def evaluate
-    rhs.evaluate
+  def evaluate(env)
+    rhs.evaluate(env)
   end
 end
 
 Nodes::UnaryPlus.class_eval do
-  def evaluate
-    expr.evaluate
+  def evaluate(env)
+    expr.evaluate(env)
   end
 end
 
 Nodes::UnaryMinus.class_eval do
-  def evaluate
-    -expr.evaluate
+  def evaluate(env)
+    -expr.evaluate(env)
   end
 end
 
 Nodes::BitwiseNot.class_eval do
-  def evaluate
-    (~Eval.to_int32(expr.evaluate).to_i).to_f
+  def evaluate(env)
+    (~Eval.to_int32(expr.evaluate(env)).to_i).to_f
   end
 end
 
 Nodes::Add.class_eval do
-  def evaluate
-    lresult = lhs.evaluate
-    rresult = rhs.evaluate
+  def evaluate(env)
+    lresult = lhs.evaluate(env)
+    rresult = rhs.evaluate(env)
     if String === lresult or String === rresult
       "#{Eval.to_string(lresult)}#{Eval.to_string(rresult)}"
     else
@@ -65,32 +65,32 @@ Nodes::Add.class_eval do
 end
 
 Nodes::Subtract.class_eval do
-  def evaluate
-    Eval.to_number(lhs.evaluate) - Eval.to_number(rhs.evaluate)
+  def evaluate(env)
+    Eval.to_number(lhs.evaluate(env)) - Eval.to_number(rhs.evaluate(env))
   end
 end
 
 Nodes::Multiply.class_eval do
-  def evaluate
-    Eval.to_number(lhs.evaluate) * Eval.to_number(rhs.evaluate)
+  def evaluate(env)
+    Eval.to_number(lhs.evaluate(env)) * Eval.to_number(rhs.evaluate(env))
   end
 end
 
 Nodes::Divide.class_eval do
-  def evaluate
-    Eval.to_number(lhs.evaluate) / Eval.to_number(rhs.evaluate)
+  def evaluate(env)
+    Eval.to_number(lhs.evaluate(env)) / Eval.to_number(rhs.evaluate(env))
   end
 end
 
 Nodes::Modulus.class_eval do
-  def evaluate
-    Eval.to_number(lhs.evaluate) % Eval.to_number(rhs.evaluate)
+  def evaluate(env)
+    Eval.to_number(lhs.evaluate(env)) % Eval.to_number(rhs.evaluate(env))
   end
 end
 
 Nodes::TypeOf.class_eval do
-  def evaluate
-    result = expr.evaluate
+  def evaluate(env)
+    result = expr.evaluate(env)
     case result
     when Numeric
       "number"
@@ -105,56 +105,56 @@ Nodes::TypeOf.class_eval do
 end
 
 Nodes::Not.class_eval do
-  def evaluate
-    result = expr.evaluate
+  def evaluate(env)
+    result = expr.evaluate(env)
     !Eval.to_boolean(result)
   end
 end
 
 Nodes::And.class_eval do
-  def evaluate
-    left = lhs.evaluate
+  def evaluate(env)
+    left = lhs.evaluate(env)
     return left unless Eval.to_boolean(left)
-    rhs.evaluate
+    rhs.evaluate(env)
   end
 end
 
 Nodes::Or.class_eval do
-  def evaluate
-    left = lhs.evaluate
+  def evaluate(env)
+    left = lhs.evaluate(env)
     return left if Eval.to_boolean(left)
-    rhs.evaluate
+    rhs.evaluate(env)
   end
 end
 
 Nodes::BitwiseAnd.class_eval do
-  def evaluate
-    left = Eval.to_int32(lhs.evaluate).to_i
-    right = Eval.to_int32(rhs.evaluate).to_i
+  def evaluate(env)
+    left = Eval.to_int32(lhs.evaluate(env)).to_i
+    right = Eval.to_int32(rhs.evaluate(env)).to_i
     (left & right).to_f
   end
 end
 
 Nodes::BitwiseXOr.class_eval do
-  def evaluate
-    left = Eval.to_int32(lhs.evaluate).to_i
-    right = Eval.to_int32(rhs.evaluate).to_i
+  def evaluate(env)
+    left = Eval.to_int32(lhs.evaluate(env)).to_i
+    right = Eval.to_int32(rhs.evaluate(env)).to_i
     (left ^ right).to_f
   end
 end
 
 Nodes::BitwiseOr.class_eval do
-  def evaluate
-    left = Eval.to_int32(lhs.evaluate).to_i
-    right = Eval.to_int32(rhs.evaluate).to_i
+  def evaluate(env)
+    left = Eval.to_int32(lhs.evaluate(env)).to_i
+    right = Eval.to_int32(rhs.evaluate(env)).to_i
     (left | right).to_f
   end
 end
 
 Nodes::LeftShift.class_eval do
-  def evaluate
-    value = Eval.to_int32(lhs.evaluate).to_i
-    shift = Eval.to_uint32(rhs.evaluate).to_i & 0x1f
+  def evaluate(env)
+    value = Eval.to_int32(lhs.evaluate(env)).to_i
+    shift = Eval.to_uint32(rhs.evaluate(env)).to_i & 0x1f
     value = ((value << shift) & 0xffffffff).to_f
     value -= (1 << 32) if value >= (1 << 31)
     value
@@ -162,95 +162,95 @@ Nodes::LeftShift.class_eval do
 end
 
 Nodes::SignedRightShift.class_eval do
-  def evaluate
-    value = Eval.to_int32(lhs.evaluate).to_i
-    shift = Eval.to_uint32(rhs.evaluate).to_i & 0x1f
+  def evaluate(env)
+    value = Eval.to_int32(lhs.evaluate(env)).to_i
+    shift = Eval.to_uint32(rhs.evaluate(env)).to_i & 0x1f
     (value >> shift).to_f
   end
 end
 
 Nodes::UnsignedRightShift.class_eval do
-  def evaluate
-    value = Eval.to_uint32(lhs.evaluate).to_i
-    shift = Eval.to_uint32(rhs.evaluate).to_i & 0x1f
+  def evaluate(env)
+    value = Eval.to_uint32(lhs.evaluate(env)).to_i
+    shift = Eval.to_uint32(rhs.evaluate(env)).to_i & 0x1f
     (value >> shift).to_f
   end
 end
 
 Nodes::Condition.class_eval do
-  def evaluate
-    if Eval.to_boolean(predicate.evaluate)
-      then_expr.evaluate
+  def evaluate(env)
+    if Eval.to_boolean(predicate.evaluate(env))
+      then_expr.evaluate(env)
     else
-      else_expr.evaluate
+      else_expr.evaluate(env)
     end
   end
 end
 
 Nodes::Void.class_eval do
-  def evaluate
+  def evaluate(env)
     nil
   end
 end
 
 class << Nodes::NULL
-  def evaluate
+  def evaluate(env)
     RazorPit::NULL
   end
 end
 
 Nodes::Equal.class_eval do
-  def evaluate
-    Eval.abstractly_equal?(lhs.evaluate, rhs.evaluate)
+  def evaluate(env)
+    Eval.abstractly_equal?(lhs.evaluate(env), rhs.evaluate(env))
   end
 end
 
 Nodes::NotEqual.class_eval do
-  def evaluate
-    not Eval.abstractly_equal?(lhs.evaluate, rhs.evaluate)
+  def evaluate(env)
+    not Eval.abstractly_equal?(lhs.evaluate(env), rhs.evaluate(env))
   end
 end
 
 Nodes::StrictlyEqual.class_eval do
-  def evaluate
-    Eval.strictly_equal?(lhs.evaluate, rhs.evaluate)
+  def evaluate(env)
+    Eval.strictly_equal?(lhs.evaluate(env), rhs.evaluate(env))
   end
 end
 
 Nodes::StrictlyNotEqual.class_eval do
-  def evaluate
-    not Eval.strictly_equal?(lhs.evaluate, rhs.evaluate)
+  def evaluate(env)
+    not Eval.strictly_equal?(lhs.evaluate(env), rhs.evaluate(env))
   end
 end
 
 Nodes::LessThan.class_eval do
-  def evaluate
-    Eval.less_than?(lhs.evaluate, rhs.evaluate)
+  def evaluate(env)
+    Eval.less_than?(lhs.evaluate(env), rhs.evaluate(env))
   end
 end
 
 Nodes::GreaterThan.class_eval do
-  def evaluate
-    Eval.greater_than?(lhs.evaluate, rhs.evaluate)
+  def evaluate(env)
+    Eval.greater_than?(lhs.evaluate(env), rhs.evaluate(env))
   end
 end
 
 Nodes::LessThanOrEqual.class_eval do
-  def evaluate
-    Eval.less_than_or_equal?(lhs.evaluate, rhs.evaluate)
+  def evaluate(env)
+    Eval.less_than_or_equal?(lhs.evaluate(env), rhs.evaluate(env))
   end
 end
 
 Nodes::GreaterThanOrEqual.class_eval do
-  def evaluate
-    Eval.greater_than_or_equal?(lhs.evaluate, rhs.evaluate)
+  def evaluate(env)
+    Eval.greater_than_or_equal?(lhs.evaluate(env), rhs.evaluate(env))
   end
 end
 
 Nodes::Sequence.class_eval do
-  def evaluate
-    lhs.evaluate
-    rhs.evaluate
+  def evaluate(env)
+    lhs.evaluate(env)
+    rhs.evaluate(env)
   end
 end
 
@@ -386,7 +386,7 @@ def abstractly_equal?(a, b)
 end
 
 def evaluate(ast)
-  ast.evaluate
+  ast.evaluate(nil)
 end
 
 end

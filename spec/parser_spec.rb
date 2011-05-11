@@ -16,17 +16,20 @@ describe RazorPit::Parser do
   end
 
   it "parses a program with a simple expression statement" do
-    ast = RazorPit::Parser.parse("void 0;")
-    ast.should == N::Program[N::Void[N::Number[0]]]
+    ast = RazorPit::Parser.parse("void 0; void 1;")
+    ast.should == N::Program[N::Void[N::Number[0]],
+                             N::Void[N::Number[1]]]
   end
 
   it "parses a program with a block" do
     ast = RazorPit::Parser.parse <<-EOS
       {
         void 0;
+        void 1;
       }
     EOS
-    ast.should == N::Program[N::Block[N::Void[N::Number[0]]]]
+    ast.should == N::Program[N::Block[N::Void[N::Number[0]],
+                                      N::Void[N::Number[1]]]]
   end
 
   it "parses a numeric literal" do

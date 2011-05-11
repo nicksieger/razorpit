@@ -38,6 +38,13 @@ describe RazorPit::Parser do
                                                   "b" => nil]]
   end
 
+  it "parses a function declaration" do
+    ast = RazorPit::Parser.parse("function foo(a, b) { a + b; }")
+    ast.should == N::Program[
+                    N::FunctionDeclaration["foo", ["a", "b"],
+                      N::Add[N::Identifier["a"], N::Identifier["b"]]]]
+  end
+
   it "parses a numeric literal" do
     ast = RazorPit::Parser.parse_expression("1")
     ast.should == N::Number[1]

@@ -93,6 +93,25 @@ module Nodes
   class Block < StatementListNode
   end
 
+  class FunctionDeclaration < Node
+    attr_reader :name
+    attr_reader :args
+    attr_reader :body
+
+    def initialize(name, args, *body)
+      @name = name.to_sym
+      @args = args.map { |a| a.to_sym }
+      @body = Block.new(*body)
+    end
+
+    def ==(other)
+      self.class == other.class &&
+      self.name == other.name &&
+      self.args == other.args &&
+      self.body == other.body
+    end
+  end
+
   class EmptyStatement < Node
   end
 

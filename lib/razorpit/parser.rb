@@ -247,9 +247,8 @@ module Parser
 
     def block_statement(tokens)
       return nil unless try_consume_token(tokens, Tokens::OPEN_BRACE)
-      statement_list(tokens, Nodes::Block, Tokens::CLOSE_BRACE)
+      statement_list(tokens, Tokens::CLOSE_BRACE) { |s| Nodes::Block[*s] }
     end
-
 
     def variable_statement(tokens)
       return nil unless try_consume_token(tokens, Tokens::VAR)
@@ -269,22 +268,40 @@ module Parser
       Nodes::VariableStatement[decls]
     end
 
-    def statement(tokens)
-      empty_statement(tokens) || block_statement(tokens) ||
-      variable_statement(tokens) || expression_statement(tokens)
+    def function_declaration(tokens)
+      return nil unless try_consume_token(tokens, Tokens::FUNCTION)
+      name = consume_token(tokens, Tokens::IDENTIFIER).value
+      args = []
+      consume_token(tokens, Tokens::OPEN_PAREN)
+      unless try_consume_token(tokens, Tokens::CLOSE_PAREN)
+        begin
+          args << consume_token(tokens, Tokens::IDENTIFIER).value
+        end while try_consume_token(tokens, Tokens::COMMA)
+        consume_token(tokens, Tokens::CLOSE_PAREN)
+      end
+      consume_token(tokens, Tokens::OPEN_BRACE)
+      statement_list(tokens, Tokens::CLOSE_BRACE) { |s|
+        Nodes::FunctionDeclaration[name, args, *s]
+      }
     end
 
-    def statement_list(tokens, type, terminator)
+    def statement(tokens)
+      empty_statement(tokens) || block_statement(tokens) ||
+      variable_statement(tokens) || function_declaration(tokens) ||
+      expression_statement(tokens)
+    end
+
+    def statement_list(tokens, terminator)
       statements = []
       until try_consume_token(tokens, terminator)
         ast = statement(tokens)
         statements << ast unless Nodes::EmptyStatement === ast
       end
-      type[*statements]
+      yield statements
     end
 
     def program(tokens)
-      statement_list(tokens, Nodes::Program, Tokens::EOF)
+      statement_list(tokens, Tokens::EOF) { |s| Nodes::Program[*s] }
     end
 
     def consume_token(tokens, kind)

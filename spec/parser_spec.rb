@@ -135,6 +135,8 @@ describe RazorPit::Parser do
   it_parses_infix "^=", N::BitwiseXOrAssign
   it_parses_infix "|=", N::BitwiseOrAssign
 
+  it_parses_infix ",", N::Sequence
+
   def self.it_gives_equal_infix_precedence_to(op_a, op_b)
     it "gives equal precedence to #{op_a} and #{op_b}" do
       ast_a = RazorPit::Parser.parse_expression("1 #{op_a} 2 #{op_b} 3")
@@ -184,6 +186,7 @@ describe RazorPit::Parser do
   it_gives_higher_infix_precedence_to "^", "|"
   it_gives_higher_infix_precedence_to "|", "&&"
   it_gives_higher_infix_precedence_to "&&", "||"
+  it_gives_higher_infix_precedence_to "||", ","
 
   it "gives infix precedence to || over ?:" do
     ast = RazorPit::Parser.parse_expression("1 || 2 ? 3 || 4 : 5 || 6")

@@ -218,6 +218,9 @@ module Nodes
   class BitwiseNot < UnaryOpNode
   end
 
+  class Sequence < BinaryOpNode
+  end
+
   NULL = Node.new
   class << NULL
     def ==(other)

@@ -28,7 +28,7 @@ module Parser
       end
     end
 
-    %w(MIN ASSIGN CONDITION OR AND
+    %w(MIN COMMA ASSIGN CONDITION OR AND
        BITWISE_OR BITWISE_XOR BITWISE_AND
        EQUALITY RELATIONAL SHIFT
        ADD MULT UNARY
@@ -182,6 +182,8 @@ module Parser
     define_infix(Tokens::SHIFT_LEFT_ASSIGN, Nodes::LeftShiftAssign, ASSIGN_BINDING_POWER)
     define_infix(Tokens::SHIFT_RIGHT_EXTEND_ASSIGN, Nodes::SignedRightShiftAssign, ASSIGN_BINDING_POWER)
     define_infix(Tokens::SHIFT_RIGHT_ASSIGN, Nodes::UnsignedRightShiftAssign, ASSIGN_BINDING_POWER)
+
+    define_infix(Tokens::COMMA, Nodes::Sequence, COMMA_BINDING_POWER)
 
     # done with these
     undef define_literal

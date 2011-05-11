@@ -32,6 +32,12 @@ describe RazorPit::Parser do
                                       N::Void[N::Number[1]]]]
   end
 
+  it "parses a variable statement" do
+    ast = RazorPit::Parser.parse("var a=1, b;")
+    ast.should == N::Program[N::VariableStatement["a" => N::Number[1],
+                                                  "b" => nil]]
+  end
+
   it "parses a numeric literal" do
     ast = RazorPit::Parser.parse_expression("1")
     ast.should == N::Number[1]

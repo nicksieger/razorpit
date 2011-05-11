@@ -96,6 +96,18 @@ module Nodes
   class EmptyStatement < Node
   end
 
+  class VariableStatement < Node
+    attr_reader :decls
+
+    def initialize(decls)
+      @decls = decls
+    end
+
+    def ==(other)
+      self.class == other.class && self.decls == other.decls
+    end
+  end
+
   class PropertyAccess < BinaryOpNode
   end
 

@@ -251,9 +251,28 @@ module Parser
       statement_list(tokens, Nodes::Block, Tokens::CLOSE_BRACE)
     end
 
+
+    def variable_statement(tokens)
+      return nil unless try_consume_token(tokens, Tokens::VAR)
+
+      decls = {}
+      begin
+        name = consume_token(tokens, Tokens::IDENTIFIER).value
+        init = if try_consume_token(tokens, Tokens::ASSIGN)
+                 expression(tokens, COMMA_BINDING_POWER)
+               else
+                 nil
+               end
+        decls[name] = init
+      end while try_consume_token(tokens, Tokens::COMMA)
+
+      consume_token(tokens, Tokens::SEMICOLON)
+      Nodes::VariableStatement[decls]
+    end
+
     def statement(tokens)
       empty_statement(tokens) || block_statement(tokens) ||
-      expression_statement(tokens)
+      variable_statement(tokens) || expression_statement(tokens)
     end
 
     def statement_list(tokens, type, terminator)

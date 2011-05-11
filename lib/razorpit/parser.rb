@@ -124,10 +124,9 @@ module Parser
       def suffix(tokens, lhs)
         args = []
         unless Grammar.try_consume_token(tokens, Tokens::CLOSE_PAREN)
-          args << Grammar.expression(tokens, COMMA_BINDING_POWER)
-          while Grammar.try_consume_token(tokens, Tokens::COMMA)
+          begin
             args << Grammar.expression(tokens, COMMA_BINDING_POWER)
-          end
+          end while Grammar.try_consume_token(tokens, Tokens::COMMA)
           Grammar.consume_token(tokens, Tokens::CLOSE_PAREN)
         end
         N::FunctionCall[lhs, *args]

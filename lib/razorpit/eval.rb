@@ -10,6 +10,20 @@ class << NULL
   alias_method :inspect, :to_s
 end
 
+class Environment
+  def initialize
+    @variables = {}
+  end
+
+  def [](name)
+    @variables[name]
+  end
+
+  def []=(name, value)
+    @variables[name] = value 
+  end
+end
+
 Node.class_eval do
   def evaluate(env)
     raise NotImplementedError, "#{self.class}#evaluate not implemented"
@@ -24,13 +38,17 @@ end
 
 Nodes::Identifier.class_eval do
   def evaluate(env)
-    nil
+    env[name]
+  end
+
+  def assign(env, value)
+    env[name] = value
   end
 end
 
 Nodes::Assign.class_eval do
   def evaluate(env)
-    rhs.evaluate(env)
+    lhs.assign(env, rhs.evaluate(env))
   end
 end
 
@@ -386,7 +404,7 @@ def abstractly_equal?(a, b)
 end
 
 def evaluate(ast)
-  ast.evaluate(nil)
+  ast.evaluate(Environment.new)
 end
 
 end

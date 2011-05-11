@@ -241,6 +241,10 @@ describe "#{RazorPit::Eval}.evaluate" do
   it "returns the value of an assignment" do
     evaluate("foo = 2").should == 2
   end
+
+  it "implements assignment" do
+    evaluate("foo = 2, foo").should == 2
+  end
 end
 
 describe "#{RazorPit::Eval}.to_boolean" do

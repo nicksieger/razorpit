@@ -28,6 +28,10 @@ Node.class_eval do
   def evaluate(env)
     raise NotImplementedError, "#{self.class}#evaluate not implemented"
   end
+
+  def update(env)
+    raise NotImplementedError, "#{self.class}#update not implemented"
+  end
 end
 
 LiteralNode.class_eval do
@@ -41,14 +45,84 @@ Nodes::Identifier.class_eval do
     env[name]
   end
 
-  def assign(env, value)
-    env[name] = value
+  def update(env)
+    env[name] = yield env[name]
   end
 end
 
 Nodes::Assign.class_eval do
   def evaluate(env)
-    lhs.assign(env, rhs.evaluate(env))
+    lhs.update(env) { rhs.evaluate(env) }
+  end
+end
+
+Nodes::AddAssign.class_eval do
+  def evaluate(env)
+    lhs.update(env) { |value| Eval.add(value, rhs.evaluate(env)) }
+  end
+end
+
+Nodes::SubtractAssign.class_eval do
+  def evaluate(env)
+    lhs.update(env) { |value| Eval.subtract(value, rhs.evaluate(env)) }
+  end
+end
+
+Nodes::MultiplyAssign.class_eval do
+  def evaluate(env)
+    lhs.update(env) { |value| Eval.multiply(value, rhs.evaluate(env)) }
+  end
+end
+
+Nodes::DivideAssign.class_eval do
+  def evaluate(env)
+    lhs.update(env) { |value| Eval.divide(value, rhs.evaluate(env)) }
+  end
+end
+
+Nodes::ModulusAssign.class_eval do
+  def evaluate(env)
+    lhs.update(env) { |value| Eval.modulus(value, rhs.evaluate(env)) }
+  end
+end
+
+Nodes::LeftShiftAssign.class_eval do
+  def evaluate(env)
+    lhs.update(env) { |value| Eval.left_shift(value, rhs.evaluate(env)) }
+  end
+end
+
+Nodes::SignedRightShiftAssign.class_eval do
+  def evaluate(env)
+    lhs.update(env) { |value|
+      Eval.signed_right_shift(value, rhs.evaluate(env))
+    }
+  end
+end
+
+Nodes::UnsignedRightShiftAssign.class_eval do
+  def evaluate(env)
+    lhs.update(env) { |value|
+      Eval.unsigned_right_shift(value, rhs.evaluate(env))
+    }
+  end
+end
+
+Nodes::BitwiseAndAssign.class_eval do
+  def evaluate(env)
+    lhs.update(env) { |value| Eval.bitwise_and(value, rhs.evaluate(env)) }
+  end
+end
+
+Nodes::BitwiseXOrAssign.class_eval do
+  def evaluate(env)
+    lhs.update(env) { |value| Eval.bitwise_xor(value, rhs.evaluate(env)) }
+  end
+end
+
+Nodes::BitwiseOrAssign.class_eval do
+  def evaluate(env)
+    lhs.update(env) { |value| Eval.bitwise_or(value, rhs.evaluate(env)) }
   end
 end
 
@@ -72,37 +146,31 @@ end
 
 Nodes::Add.class_eval do
   def evaluate(env)
-    lresult = lhs.evaluate(env)
-    rresult = rhs.evaluate(env)
-    if String === lresult or String === rresult
-      "#{Eval.to_string(lresult)}#{Eval.to_string(rresult)}"
-    else
-      Eval.to_number(lresult) + Eval.to_number(rresult)
-    end
+    Eval.add(lhs.evaluate(env), rhs.evaluate(env))
   end
 end
 
 Nodes::Subtract.class_eval do
   def evaluate(env)
-    Eval.to_number(lhs.evaluate(env)) - Eval.to_number(rhs.evaluate(env))
+    Eval.subtract(lhs.evaluate(env), rhs.evaluate(env))
   end
 end
 
 Nodes::Multiply.class_eval do
   def evaluate(env)
-    Eval.to_number(lhs.evaluate(env)) * Eval.to_number(rhs.evaluate(env))
+    Eval.multiply(lhs.evaluate(env), rhs.evaluate(env))
   end
 end
 
 Nodes::Divide.class_eval do
   def evaluate(env)
-    Eval.to_number(lhs.evaluate(env)) / Eval.to_number(rhs.evaluate(env))
+    Eval.divide(lhs.evaluate(env), rhs.evaluate(env))
   end
 end
 
 Nodes::Modulus.class_eval do
   def evaluate(env)
-    Eval.to_number(lhs.evaluate(env)) % Eval.to_number(rhs.evaluate(env))
+    Eval.modulus(lhs.evaluate(env), rhs.evaluate(env))
   end
 end
 
@@ -147,51 +215,37 @@ end
 
 Nodes::BitwiseAnd.class_eval do
   def evaluate(env)
-    left = Eval.to_int32(lhs.evaluate(env)).to_i
-    right = Eval.to_int32(rhs.evaluate(env)).to_i
-    (left & right).to_f
+    Eval.bitwise_and(lhs.evaluate(env), rhs.evaluate(env))
   end
 end
 
 Nodes::BitwiseXOr.class_eval do
   def evaluate(env)
-    left = Eval.to_int32(lhs.evaluate(env)).to_i
-    right = Eval.to_int32(rhs.evaluate(env)).to_i
-    (left ^ right).to_f
+    Eval.bitwise_xor(lhs.evaluate(env), rhs.evaluate(env))
   end
 end
 
 Nodes::BitwiseOr.class_eval do
   def evaluate(env)
-    left = Eval.to_int32(lhs.evaluate(env)).to_i
-    right = Eval.to_int32(rhs.evaluate(env)).to_i
-    (left | right).to_f
+    Eval.bitwise_or(lhs.evaluate(env), rhs.evaluate(env))
   end
 end
 
 Nodes::LeftShift.class_eval do
   def evaluate(env)
-    value = Eval.to_int32(lhs.evaluate(env)).to_i
-    shift = Eval.to_uint32(rhs.evaluate(env)).to_i & 0x1f
-    value = ((value << shift) & 0xffffffff).to_f
-    value -= (1 << 32) if value >= (1 << 31)
-    value
+    Eval.left_shift(lhs.evaluate(env), rhs.evaluate(env))
   end
 end
 
 Nodes::SignedRightShift.class_eval do
   def evaluate(env)
-    value = Eval.to_int32(lhs.evaluate(env)).to_i
-    shift = Eval.to_uint32(rhs.evaluate(env)).to_i & 0x1f
-    (value >> shift).to_f
+    Eval.signed_right_shift(lhs.evaluate(env), rhs.evaluate(env))
   end
 end
 
 Nodes::UnsignedRightShift.class_eval do
   def evaluate(env)
-    value = Eval.to_uint32(lhs.evaluate(env)).to_i
-    shift = Eval.to_uint32(rhs.evaluate(env)).to_i & 0x1f
-    (value >> shift).to_f
+    Eval.unsigned_right_shift(lhs.evaluate(env), rhs.evaluate(env))
   end
 end
 
@@ -311,6 +365,68 @@ def to_number(obj)
   else
     0.0/0.0 # NaN
   end
+end
+
+def add(a, b)
+  if String === a or String === b
+    "#{to_string(a)}#{to_string(b)}"
+  else
+    to_number(a) + to_number(b)
+  end
+end
+
+def subtract(a, b)
+  to_number(a) - to_number(b)
+end
+
+def multiply(a, b)
+  to_number(a) * to_number(b)
+end
+
+def divide(a, b)
+  to_number(a) / to_number(b)
+end
+
+def modulus(a, b)
+  to_number(a) % to_number(b)
+end
+
+def left_shift(a, b)
+  value = to_int32(a).to_i
+  shift = to_uint32(b).to_i & 0x1f
+  value = ((value << shift) & 0xffffffff).to_f
+  value -= (1 << 32) if value >= (1 << 31)
+  value
+end
+
+def signed_right_shift(a, b)
+  value = to_int32(a).to_i
+  shift = to_uint32(b).to_i & 0x1f
+  (value >> shift).to_f
+end
+
+def unsigned_right_shift(a, b)
+  value = to_uint32(a).to_i
+  shift = to_uint32(b).to_i & 0x1f
+  (value >> shift).to_f
+end
+
+def bitwise_and(a, b)
+  left = to_int32(a).to_i
+  right = to_int32(b).to_i
+  (left & right).to_f
+end
+
+def bitwise_xor(a, b)
+  left = to_int32(a).to_i
+  right = to_int32(b).to_i
+  (left ^ right).to_f
+end
+
+def bitwise_or(a, b)
+  left = to_int32(a).to_i
+  right = to_int32(b).to_i
+  (left | right).to_f
 end
 
 def to_uint32(obj)

@@ -245,7 +245,52 @@ describe "#{RazorPit::Eval}.evaluate" do
   it "implements assignment" do
     evaluate("foo = 2, foo").should == 2
   end
+
+  it "implements +=" do
+    evaluate("foo = 2, foo += 3, foo").should == 5
+  end
+
+  it "implements -=" do
+    evaluate("foo = 3, foo -= 2, foo").should == 1
+  end
+
+  it "implements *=" do
+    evaluate("foo = 3, foo *= 2, foo").should == 6
+  end
+
+  it "implements /=" do
+    evaluate("foo = 6, foo /= 2, foo").should == 3
+  end
+
+  it "implements %=" do
+    evaluate("foo = 6, foo %= 5, foo").should == 1
+  end
+
+  it "implements <<=" do
+    evaluate("foo = 1, foo <<= 1, foo").should == 2
+  end
+
+  it "implements >>=" do
+    evaluate("foo = 8, foo >>= 1, foo").should == 4
+  end
+
+  it "implements >>>=" do
+    evaluate("foo = 8, foo >>= 1, foo").should == 4
+  end
+
+  it "implements &=" do
+    evaluate("foo = 0xff00, foo &= 0xf0f0, foo").should == 0xf000
+  end
+
+  it "implements |=" do
+    evaluate("foo = 0xff00, foo |= 0xf0f0, foo").should == 0xfff0
+  end
+
+  it "implements ^=" do
+    evaluate("foo = 0xff00, foo ^= 0xf0f0, foo").should == 0x0ff0
+  end
 end
+
 
 describe "#{RazorPit::Eval}.to_boolean" do
   it "considers undefined to be false" do

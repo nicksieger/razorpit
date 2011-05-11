@@ -22,6 +22,12 @@ LiteralNode.class_eval do
   end
 end
 
+Nodes::Identifier.class_eval do
+  def evaluate
+    nil
+  end
+end
+
 Nodes::UnaryPlus.class_eval do
   def evaluate
     expr.evaluate

@@ -233,6 +233,10 @@ describe "#{RazorPit::Eval}.evaluate" do
   it "implements the comma operator" do
     evaluate("1, 2").should == 2
   end
+
+  it "deals with unbound variables" do
+    evaluate("foobar").should be_nil
+  end
 end
 
 describe "#{RazorPit::Eval}.to_boolean" do

@@ -229,6 +229,10 @@ describe "#{RazorPit::Eval}.evaluate" do
     evaluate("-1 > '-2'").should be_true
     evaluate("'-1' > '-2'").should be_false
   end
+
+  it "implements the comma operator" do
+    evaluate("1, 2").should == 2
+  end
 end
 
 describe "#{RazorPit::Eval}.to_boolean" do

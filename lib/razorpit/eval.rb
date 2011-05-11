@@ -235,6 +235,13 @@ Nodes::GreaterThanOrEqual.class_eval do
   end
 end
 
+Nodes::Sequence.class_eval do
+  def evaluate
+    lhs.evaluate
+    rhs.evaluate
+  end
+end
+
 module Eval
 extend self
 

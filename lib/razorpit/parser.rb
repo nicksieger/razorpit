@@ -16,11 +16,11 @@ module Parser
 
     Token.module_eval do
       def prefix(tokens)
-        raise "Parse error"
+        raise "Parse error (#{self} not expected as prefix)"
       end
 
       def suffix(tokens, lhs)
-        raise "Parse error"
+        raise "Parse error (#{self} not expected as suffix)"
       end
 
       def left_binding_power
@@ -32,7 +32,7 @@ module Parser
        BITWISE_OR BITWISE_XOR BITWISE_AND
        EQUALITY RELATIONAL SHIFT
        ADD MULT UNARY
-       INCREMENT MAX).each_with_index do |name, i|
+       INCREMENT MEMBER MAX).each_with_index do |name, i|
       # use intervals of two to allow for right associativity adjustment
       const_set("#{name}_BINDING_POWER", i * 2)
     end
@@ -69,6 +69,28 @@ module Parser
             #{ast_class}[expr]
           end
         EOS
+      end
+    end
+
+    Tokens::PERIOD.left_binding_power = MEMBER_BINDING_POWER
+    Tokens::PERIOD.token_class_eval do
+      def suffix(tokens, lhs)
+        name = Grammar.consume_token(tokens, Tokens::IDENTIFIER)
+        Nodes::NamedPropertyAccess[lhs, name.value]
+      end
+    end
+
+    Tokens::OPEN_BRACKET.left_binding_power = MEMBER_BINDING_POWER
+    Tokens::OPEN_BRACKET.token_class_eval do
+      def suffix(tokens, lhs)
+        rhs = Grammar.expression(tokens, MEMBER_BINDING_POWER)
+        Grammar.consume_token(tokens, Tokens::CLOSE_BRACKET)
+        case rhs
+        when Nodes::String
+          Nodes::NamedPropertyAccess[lhs, rhs.value]
+        else
+          Nodes::DynamicPropertyAccess[lhs, rhs]
+        end
       end
     end
 
@@ -204,10 +226,17 @@ module Parser
       ast
     end
 
+    def consume_token(tokens, kind)
+      token = tokens.next
+      unless kind === token
+        raise "Parse error (expected #{kind} but got #{token})"
+      end
+      token
+    end
+
     def consume_tokens(tokens, *expected)
       expected.each do |kind|
-        token = tokens.next
-        raise "Parse error" unless kind === token
+        consume_token(tokens, kind)
       end
       self
     end

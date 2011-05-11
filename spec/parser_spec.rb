@@ -201,4 +201,20 @@ describe RazorPit::Parser do
                                N::Condition[N::Number[3], N::Number[4],
                                             N::Number[5]]]
   end
+
+  it "parses direct property access" do
+    ast = RazorPit::Parser.parse_expression("foo.bar")
+    ast.should == N::NamedPropertyAccess[N::Identifier["foo"], "bar"]
+  end
+
+  it "parses subscripted property access" do
+    ast = RazorPit::Parser.parse_expression("foo['bar']")
+    ast.should == N::NamedPropertyAccess[N::Identifier["foo"], "bar"]
+  end
+
+  it "parses dynamic property access" do
+    ast = RazorPit::Parser.parse_expression("foo[bar]")
+    ast.should == N::DynamicPropertyAccess[N::Identifier["foo"],
+                                           N::Identifier["bar"]]
+  end
 end

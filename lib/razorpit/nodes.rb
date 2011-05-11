@@ -81,6 +81,25 @@ module Nodes
     end
   end
 
+  class NamedPropertyAccess < Node
+    attr_reader :lhs
+    attr_reader :name
+
+    def initialize(lhs, name)
+      @lhs = lhs
+      @name = name.to_sym
+    end
+
+    def ==(other)
+      self.class == other.class &&
+      self.lhs == other.lhs &&
+      self.name == other.name
+    end
+  end
+
+  class DynamicPropertyAccess < BinaryOpNode
+  end
+
   class Condition < Node
     attr_reader :predicate, :then_expr, :else_expr
 

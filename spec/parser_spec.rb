@@ -237,4 +237,10 @@ describe RazorPit::Parser do
                                 N::String["bar"],
                                 N::Number[1], N::Number[2]]
   end
+
+  it "parses delete" do
+    ast = RazorPit::Parser.parse_expression("delete foo['bar']")
+    ast.should == N::Delete[N::PropertyAccess[N::Identifier["foo"],
+                                              N::String["bar"]]]
+  end
 end

@@ -168,6 +168,7 @@ module Parser
     define_literal(Tokens::REGEX, Nodes::RegEx)
     define_literal(Tokens::IDENTIFIER, Nodes::Identifier)
 
+    define_prefix(Tokens::DELETE, Nodes::Delete, UNARY_BINDING_POWER)
     define_prefix(Tokens::PLUS, Nodes::UnaryPlus, UNARY_BINDING_POWER)
     define_prefix(Tokens::MINUS, Nodes::UnaryMinus, UNARY_BINDING_POWER)
     define_prefix(Tokens::TYPEOF, Nodes::TypeOf, UNARY_BINDING_POWER)

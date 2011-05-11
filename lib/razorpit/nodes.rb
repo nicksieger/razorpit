@@ -268,6 +268,9 @@ module Nodes
   class Sequence < BinaryOpNode
   end
 
+  class Delete < UnaryOpNode
+  end
+
   NULL = Node.new
   class << NULL
     def ==(other)

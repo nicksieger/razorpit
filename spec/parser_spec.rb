@@ -10,6 +10,12 @@ describe RazorPit::Parser do
     ast.should == N::Program[]
   end
 
+  it "raises ParseError on invalid syntax" do
+    lambda {
+      RazorPit::Parser.parse("1 2")
+    }.should raise_error(RazorPit::ParseError)
+  end
+
   it "parses a program with an empty statement" do
     ast = RazorPit::Parser.parse(";")
     ast.should == N::Program[]

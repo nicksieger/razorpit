@@ -4,6 +4,9 @@ require 'razorpit/nodes'
 
 module RazorPit
 
+class ParseError < RuntimeError
+end
+
 module Parser
   extend self
 
@@ -15,14 +18,6 @@ module Parser
     end
 
     Token.module_eval do
-      def prefix(tokens)
-        raise "Parse error (#{self} not expected as prefix)"
-      end
-
-      def suffix(tokens, lhs)
-        raise "Parse error (#{self} not expected as suffix)"
-      end
-
       def left_binding_power
         token_type.left_binding_power
       end
@@ -327,7 +322,7 @@ module Parser
     def consume_token(tokens, kind)
       token = tokens.next
       unless kind === token
-        raise "Parse error (expected #{kind} but got #{token})"
+        raise ParseError, "Expected #{kind} but got #{token}"
       end
       token
     end

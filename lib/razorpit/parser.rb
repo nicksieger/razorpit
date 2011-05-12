@@ -225,10 +225,13 @@ module Parser
     end
 
     def expression(tokens, right_binding_power)
-      token = tokens.next
+      token = consume_token(tokens, Token)
       ast = token.prefix(tokens)
-      while left_binding_power(tokens.peek) > right_binding_power
-        token = tokens.next
+      loop do
+        token = try_consume_token(tokens, Proc.new { |t|
+          left_binding_power(t) > right_binding_power
+        })
+        break unless token
         ast = token.suffix(tokens, ast)
       end
       ast

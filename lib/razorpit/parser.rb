@@ -28,6 +28,12 @@ module Parser
       end
     end
 
+    module PrefixToken
+    end
+
+    module SuffixToken
+    end
+
     %w(MIN COMMA ASSIGN CONDITION OR AND
        BITWISE_OR BITWISE_XOR BITWISE_AND
        EQUALITY RELATIONAL SHIFT
@@ -40,6 +46,7 @@ module Parser
     def define_literal(token_type, ast_class)
       token_type.left_binding_power = MAX_BINDING_POWER
       token_type.token_class_eval do
+        include PrefixToken
         eval <<-EOS
           def prefix(tokens)
             #{ast_class}[value]
@@ -52,6 +59,7 @@ module Parser
     def define_infix(token_type, ast_class, binding_power)
       token_type.left_binding_power = binding_power
       token_type.token_class_eval do
+        include SuffixToken
         eval <<-EOS
           def suffix(tokens, lhs)
             rhs = Grammar.expression(tokens, #{binding_power})
@@ -63,6 +71,7 @@ module Parser
 
     def define_prefix(token_type, ast_class, binding_power)
       token_type.token_class_eval do
+        include PrefixToken
         eval <<-EOS
           def prefix(tokens)
             expr = Grammar.expression(tokens, #{binding_power})
@@ -74,6 +83,7 @@ module Parser
 
     Tokens::PERIOD.left_binding_power = MEMBER_BINDING_POWER
     Tokens::PERIOD.token_class_eval do
+      include SuffixToken
       def suffix(tokens, lhs)
         name = Grammar.consume_token(tokens, Tokens::IDENTIFIER)
         Nodes::PropertyAccess[lhs, Nodes::String[name.value]]
@@ -82,6 +92,7 @@ module Parser
 
     Tokens::OPEN_BRACKET.left_binding_power = MEMBER_BINDING_POWER
     Tokens::OPEN_BRACKET.token_class_eval do
+      include SuffixToken
       def suffix(tokens, lhs)
         rhs = Grammar.expression(tokens, MEMBER_BINDING_POWER)
         Grammar.consume_token(tokens, Tokens::CLOSE_BRACKET)
@@ -91,6 +102,9 @@ module Parser
 
     Tokens::INCREMENT.left_binding_power = INCREMENT_BINDING_POWER
     Tokens::INCREMENT.token_class_eval do
+      include PrefixToken 
+      include SuffixToken
+
       def prefix(tokens)
         expr = Grammar.expression(tokens, INCREMENT_BINDING_POWER)
         Nodes::PreIncrement[expr]
@@ -103,6 +117,9 @@ module Parser
 
     Tokens::DECREMENT.left_binding_power = INCREMENT_BINDING_POWER
     Tokens::DECREMENT.token_class_eval do
+      include PrefixToken 
+      include SuffixToken
+
       def prefix(tokens)
         expr = Grammar.expression(tokens, INCREMENT_BINDING_POWER)
         Nodes::PreDecrement[expr]
@@ -115,6 +132,9 @@ module Parser
 
     Tokens::OPEN_PAREN.left_binding_power = CALL_BINDING_POWER
     Tokens::OPEN_PAREN.token_class_eval do
+      include PrefixToken 
+      include SuffixToken
+
       def prefix(tokens)
         expr = Grammar.expression(tokens, MIN_BINDING_POWER)
         Grammar.consume_token(tokens, Tokens::CLOSE_PAREN)
@@ -135,6 +155,7 @@ module Parser
 
     Tokens::QUESTION.left_binding_power = CONDITION_BINDING_POWER
     Tokens::QUESTION.token_class_eval do
+      include SuffixToken
       def suffix(tokens, lhs)
         this_expr = Grammar.expression(tokens, COMMA_BINDING_POWER)
         Grammar.consume_token(tokens, Tokens::COLON)
@@ -143,14 +164,9 @@ module Parser
       end
     end
 
-    Tokens::EOF.token_class_eval do
-      def suffix(tokens, lhs)
-        lhs
-      end
-    end
-
     Tokens::NULL.left_binding_power = MAX_BINDING_POWER
     Tokens::NULL.token_class_eval do
+      include PrefixToken
       def prefix(tokens)
         Nodes::NULL
       end
@@ -225,10 +241,11 @@ module Parser
     end
 
     def expression(tokens, right_binding_power)
-      token = consume_token(tokens, Token)
+      token = consume_token(tokens, PrefixToken)
       ast = token.prefix(tokens)
       loop do
         token = try_consume_token(tokens, Proc.new { |t|
+          SuffixToken === t and
           left_binding_power(t) > right_binding_power
         })
         break unless token

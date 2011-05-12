@@ -16,6 +16,13 @@ describe RazorPit::Parser do
     }.should raise_error(RazorPit::ParseError)
   end
 
+  it "assumes semicolon before } and EOF" do
+    ast = RazorPit::Parser.parse("1; 2")
+    ast.should == N::Program[N::Number[1], N::Number[2]]
+    ast = RazorPit::Parser.parse("{1; 2}")
+    ast.should == N::Program[N::Block[N::Number[1], N::Number[2]]]
+  end
+
   it "parses a program with an empty statement" do
     ast = RazorPit::Parser.parse(";")
     ast.should == N::Program[]

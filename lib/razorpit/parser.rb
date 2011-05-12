@@ -320,11 +320,17 @@ module Parser
     end
 
     def consume_token(tokens, kind)
-      token = tokens.next
+      token = tokens.peek
       unless kind === token
+        if kind === Tokens::SEMICOLON
+          case token
+          when Tokens::EOF, Tokens::CLOSE_BRACE
+            return Tokens::SEMICOLON
+          end
+        end
         raise ParseError, "Expected #{kind} but got #{token}"
       end
-      token
+      tokens.next
     end
 
     def try_consume_token(tokens, kind)

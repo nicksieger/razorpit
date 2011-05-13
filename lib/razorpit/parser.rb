@@ -10,6 +10,7 @@ end
 class Parser
   def initialize(tokens)
     @tokens = tokens
+    @line_break = false
   end
 
   def self.parse(string)
@@ -330,25 +331,37 @@ class Parser
     statement_list(Tokens::EOF) { |s| Nodes::Program[*s] }
   end
 
-  def consume_token(kind)
-    @tokens.next while Tokens::LINE_BREAK === @tokens.peek
+  def lookahead_token
     token = @tokens.peek
-    unless kind === token
-      if kind === Tokens::SEMICOLON
-        case token
-        when Tokens::EOF, Tokens::CLOSE_BRACE
-          return Tokens::SEMICOLON
-        end
-      end
-      raise ParseError, "Expected #{kind} but got #{token}"
+    case token
+    when Tokens::LINE_BREAK
+      @line_break = true
+      @tokens.next
+      @tokens.peek
+    else
+      token
     end
-    @tokens.next
+  end
+
+  def advance_token(override=nil)
+    @line_break = false
+    override || @tokens.next
+  end
+
+  def consume_token(kind)
+    token = lookahead_token
+    case token
+    when kind
+      return advance_token
+    when Tokens::EOF, Tokens::CLOSE_BRACE
+      return advance_token(Tokens::SEMICOLON) if kind === Tokens::SEMICOLON
+    end
+    raise ParseError, "Expected #{kind} but got #{token}"
   end
 
   def try_consume_token(kind)
-    @tokens.next while Tokens::LINE_BREAK === @tokens.peek
-    if kind === @tokens.peek
-      @tokens.next
+    if kind === lookahead_token
+      advance_token
     else
       nil
     end

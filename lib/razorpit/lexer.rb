@@ -2,19 +2,31 @@ require 'razorpit/tokens'
 
 module RazorPit
 
-module Lexer
-  extend self
-
+class Lexer
   class InvalidToken < Exception
   end
 
-  def scan(string)
-    return enum_for(:scan, string) unless block_given?
+  def self.scan(string)
+    lexer = new(string)
+    if block_given?
+      lexer.scan { |token| yield token }
+      self
+    else
+      lexer.scan
+    end
+  end
+
+  def initialize(string)
+    @string = string
+  end
+
+  def scan
+    return enum_for(:scan) unless block_given?
 
     offset = 0
 
-    until offset == string.length
-      token, new_offset = Tokens.match_token(string, offset)
+    until offset == @string.length
+      token, new_offset = Tokens.match_token(@string, offset)
 
       case token
       when Tokens::INVALID

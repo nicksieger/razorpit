@@ -16,6 +16,10 @@ describe "#{RazorPit::Context}#eval" do
     @ctx = RazorPit::Context.new
   end
 
+  it "should evaluate multiple statements" do
+    @ctx.eval("1; 2").should == 2.0
+  end
+
   it "evaluates a trivial expression" do
     @ctx.eval("1").should == 1.0
   end

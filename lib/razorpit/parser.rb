@@ -7,9 +7,7 @@ module RazorPit
 class ParseError < RuntimeError
 end
 
-module Parser
-  extend self
-
+class Parser
   module Grammar
     extend self
 
@@ -344,14 +342,16 @@ module Parser
     end
   end
 
-  def parse(string)
+  include Grammar
+
+  def self.parse(string)
     tokens = Lexer.scan(string)
-    Grammar.program(tokens)
+    new.program(tokens)
   end
 
-  def parse_expression(string)
+  def self.parse_expression(string)
     tokens = Lexer.scan(string)
-    Grammar.expression(tokens, Grammar::MIN_BINDING_POWER)
+    new.expression(tokens, Grammar::MIN_BINDING_POWER)
   end
 end
 

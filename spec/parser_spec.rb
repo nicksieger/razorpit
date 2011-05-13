@@ -23,6 +23,16 @@ describe RazorPit::Parser do
     ast.should == N::Program[N::Block[N::Number[1], N::Number[2]]]
   end
 
+  it "assumes semicolon at significant line breaks" do
+    ast = RazorPit::Parser.parse("1\n2")
+    ast.should == N::Program[N::Number[1], N::Number[2]]
+  end
+
+  it "does not assume semicolons at non-signifiant line breaks" do
+    ast = RazorPit::Parser.parse("1\n+ 2")
+    ast.should == N::Program[N::Add[N::Number[1], N::Number[2]]]
+  end
+
   it "parses a program with an empty statement" do
     ast = RazorPit::Parser.parse(";")
     ast.should == N::Program[]

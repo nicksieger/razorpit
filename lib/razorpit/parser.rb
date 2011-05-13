@@ -353,7 +353,7 @@ class Parser
     case token
     when kind
       return advance_token
-    when Tokens::EOF, Tokens::CLOSE_BRACE
+    when Tokens::EOF, Tokens::CLOSE_BRACE, Proc.new { @line_break }
       return advance_token(Tokens::SEMICOLON) if kind === Tokens::SEMICOLON
     end
     raise ParseError, "Expected #{kind} but got #{token}"

@@ -3,16 +3,18 @@ require 'razorpit/tokens'
 module RazorPit
 
 class Lexer
+  include Enumerable
+
   class InvalidToken < Exception
   end
 
   def self.scan(string)
     lexer = new(string)
     if block_given?
-      lexer.scan { |token| yield token }
+      lexer.each { |token| yield token }
       self
     else
-      lexer.scan
+      lexer.each
     end
   end
 
@@ -20,8 +22,8 @@ class Lexer
     @string = string
   end
 
-  def scan
-    return enum_for(:scan) unless block_given?
+  def each
+    return enum_for(:each) unless block_given?
 
     offset = 0
 

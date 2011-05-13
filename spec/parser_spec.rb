@@ -55,6 +55,11 @@ describe RazorPit::Parser do
                                       N::Void[N::Number[1]]]]
   end
 
+  it "should parse slashes as regular expressions in prefix position" do
+    ast = RazorPit::Parser.parse("/foo/i")
+    ast.should == N::Program[N::RegExp[["foo", "i"]]]
+  end
+
   it "parses a variable statement" do
     ast = RazorPit::Parser.parse("var a=1, b;")
     ast.should == N::Program[N::VariableStatement["a" => N::Number[1],
@@ -105,7 +110,7 @@ describe RazorPit::Parser do
 
   it "should parse regular expression literals" do
     ast = RazorPit::Parser.parse_expression("/foobar/")
-    ast.should == N::RegEx["foobar"]
+    ast.should == N::RegExp[["foobar", ""]]
   end
 
   it "should parse the ternary conditional operator" do

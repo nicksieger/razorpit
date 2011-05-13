@@ -72,7 +72,19 @@ module Nodes
   class String < LiteralNode
   end
 
-  class RegEx < LiteralNode
+  class RegExp < Node
+    attr_reader :source, :flags
+
+    def initialize((source, flags))
+      @source = source
+      @flags = flags
+    end
+
+    def ==(other)
+      self.class == other.class &&
+      self.source == other.source &&
+      self.flags == other.flags
+    end
   end
 
   class Identifier < Node

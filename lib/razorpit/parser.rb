@@ -180,7 +180,7 @@ class Parser
   define_literal(Tokens::NUMBER, Nodes::Number)
   define_literal(Tokens::BOOLEAN, Nodes::Boolean)
   define_literal(Tokens::STRING, Nodes::String)
-  define_literal(Tokens::REGEX, Nodes::RegEx)
+  define_literal(Tokens::REGEXP, Nodes::RegExp)
   define_literal(Tokens::IDENTIFIER, Nodes::Identifier)
 
   define_prefix(Tokens::DELETE, Nodes::Delete, UNARY_BINDING_POWER)

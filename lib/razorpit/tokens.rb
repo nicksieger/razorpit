@@ -186,7 +186,10 @@ module Tokens
   end
   define_token(:IDENTIFIER, /(?<value>[a-z_$][a-z0-9_$]*)/i)
   define_token(:STRING, /(?:'(?<value>[^']*)'|"(?<value>[^"]*)")/)
-  define_token(:REGEX, /\/(?<value>[^\/]*)\//)
+  define_token(:REGEXP, /\/(?<value>[^\/]*\/[a-z0-9_$]*)/) do |value|
+    value =~ %r!(.*)/([^/]*)$!
+    [$1, $2]
+  end
 
   # keywords, etc.
   define_token(:BOOLEAN, /(?<value>true|false)/) { |value| value == "true" }

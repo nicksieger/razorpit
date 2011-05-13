@@ -112,6 +112,7 @@ module Tokens
 
   define_token(:INVALID, /(?<value>.)/)
   define_token(:WHITESPACE, /\s+/)
+  define_token(:LINE_BREAK, /(?:[\u000A\u000D\u2028\u2029]+\s*)+/)
   define_token(:EOF, /\Z/)
 
   # punctuators

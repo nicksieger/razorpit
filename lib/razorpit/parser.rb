@@ -320,6 +320,7 @@ module Parser
     end
 
     def consume_token(tokens, kind)
+      tokens.next while Tokens::LINE_BREAK === tokens.peek
       token = tokens.peek
       unless kind === token
         if kind === Tokens::SEMICOLON
@@ -334,6 +335,7 @@ module Parser
     end
 
     def try_consume_token(tokens, kind)
+      tokens.next while Tokens::LINE_BREAK === tokens.peek
       if kind === tokens.peek
         tokens.next
       else

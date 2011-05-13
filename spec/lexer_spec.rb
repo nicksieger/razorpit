@@ -107,6 +107,8 @@ describe RazorPit::Lexer do
            ["shift right extend assign", ">>>=",
             [T::SHIFT_RIGHT_ASSIGN, T::EOF]],
            ["null", "null", [T::NULL, T::EOF]],
+           ["whitespace with newlines", "1\n\n2",
+            [T::NUMBER[1], T::LINE_BREAK, T::NUMBER[2], T::EOF]],
            ["a simple expression", "1+1",
             [T::NUMBER[1], T::PLUS, T::NUMBER[1], T::EOF]],
            ["a simple expression with whitespace", "1 + 1",

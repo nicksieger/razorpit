@@ -206,13 +206,18 @@ module Tokens
   undef define_keyword
 
   # reverse to put later-defined tokens first (i.e. higher priority)
-  subexpressions = constants.reverse.map { |token_name|
-    const_get(token_name).re
-  }
-  @tokens_regexp = Regexp.compile("#{subexpressions.join("|")}")
+  token_types = constants.reverse.map { |token_name| const_get(token_name) }
 
-  def match_token(string, offset)
-    m = @tokens_regexp.match(string, offset)
+  def make_re(token_types)
+    subexpressions = token_types.select { |t| yield t }.map { |t| t.re }
+    Regexp.compile("#{subexpressions.join("|")}")
+  end
+
+  @infix_tokens_re = make_re(token_types) { |t| t != REGEXP }
+  @prefix_tokens_re = make_re(token_types) { |t| t != DIV && t != DIV_ASSIGN }
+
+  def match_token(tokens_re, string, offset)
+    m = tokens_re.match(string, offset)
     new_offset = m.end(0)
     token = @simple_tokens[m[0]]
     unless token
@@ -225,6 +230,14 @@ module Tokens
       end
     end
     return token, new_offset
+  end
+
+  def match_infix_token(string, offset)
+    match_token(@infix_tokens_re, string, offset)
+  end
+
+  def match_prefix_token(string, offset)
+    match_token(@prefix_tokens_re, string, offset)
   end
 end
 

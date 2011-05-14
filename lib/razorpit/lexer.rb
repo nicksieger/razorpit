@@ -20,6 +20,17 @@ class Lexer
 
   def initialize(string)
     @string = string
+    @infix = false
+  end
+
+  def with_infix(infix)
+    saved_infix = @infix
+    @infix = infix
+    begin
+      yield
+    ensure
+      @infix = saved_infix
+    end
   end
 
   def each
@@ -28,7 +39,11 @@ class Lexer
     offset = 0
 
     until offset == @string.length
-      token, new_offset = Tokens.match_token(@string, offset)
+      token, new_offset = if @infix
+                            Tokens.match_infix_token(@string, offset)
+                          else
+                            Tokens.match_prefix_token(@string, offset)
+                          end
 
       case token
       when Tokens::INVALID

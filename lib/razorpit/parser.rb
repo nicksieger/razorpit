@@ -8,19 +8,20 @@ class ParseError < RuntimeError
 end
 
 class Parser
-  def initialize(tokens)
-    @tokens = tokens
+  def initialize(lexer)
+    @lexer = lexer
+    @tokens = lexer.each
     @line_break = false
   end
 
   def self.parse(string)
-    tokens = Lexer.scan(string)
-    new(tokens).program
+    lexer = Lexer.new(string)
+    new(lexer).program
   end
 
   def self.parse_expression(string)
-    tokens = Lexer.scan(string)
-    new(tokens).expression(MIN_BINDING_POWER)
+    lexer = Lexer.new(string)
+    new(lexer).expression(MIN_BINDING_POWER)
   end
 
   TokenType.module_eval do
@@ -248,17 +249,21 @@ class Parser
   end
 
   def expression(right_binding_power)
-    token = consume_token(PrefixToken)
-    ast = token.prefix(self)
-    loop do
-      token = try_consume_token(Proc.new { |t|
-        SuffixToken === t and
-        left_binding_power(t) > right_binding_power
-      })
-      break unless token
-      ast = token.suffix(self, ast)
+    @lexer.with_infix(false) do
+      token = consume_token(PrefixToken)
+      ast = token.prefix(self)
+      @lexer.with_infix(true) do
+        loop do
+          token = try_consume_token(Proc.new { |t|
+            SuffixToken === t and
+            left_binding_power(t) > right_binding_power
+          })
+          break unless token
+          ast = token.suffix(self, ast)
+        end
+      end
+      ast
     end
-    ast
   end
 
   def empty_statement
@@ -313,9 +318,11 @@ class Parser
   end
 
   def statement
-    empty_statement || block_statement ||
-    variable_statement || function_declaration ||
-    expression_statement
+    @lexer.with_infix(false) do
+      empty_statement || block_statement ||
+      variable_statement || function_declaration ||
+      expression_statement
+    end
   end
 
   def statement_list(terminator)

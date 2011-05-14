@@ -60,7 +60,7 @@ describe RazorPit::Parser do
     ast.should == N::Program[N::RegExp[["foo", "i"]]]
   end
 
-  xit "should parse slashes as division in infix position" do
+  it "should parse slashes as division in infix position" do
     ast = RazorPit::Parser.parse("a/foo/i")
     ast.should == N::Program[N::Divide[N::Divide[N::Identifier["a"],
                                                  N::Identifier["foo"]],

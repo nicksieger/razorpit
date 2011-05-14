@@ -59,7 +59,6 @@ describe RazorPit::Lexer do
            ["a plus sign", "+", [T::PLUS, T::EOF]],
            ["a minus sign", "-", [T::MINUS, T::EOF]],
            ["a star", "*", [T::TIMES, T::EOF]],
-           ["a slash", "/", [T::DIV, T::EOF]],
            ["a semicolon", ";", [T::SEMICOLON, T::EOF]],
            ["a colon", ":", [T::COLON, T::EOF]],
            ["a period", ".", [T::PERIOD, T::EOF]],
@@ -98,7 +97,6 @@ describe RazorPit::Lexer do
            ["plus assign", "+=", [T::PLUS_ASSIGN, T::EOF]],
            ["minus assign", "-=", [T::MINUS_ASSIGN, T::EOF]],
            ["times assign", "*=", [T::TIMES_ASSIGN, T::EOF]],
-           ["division assign", "/=", [T::DIV_ASSIGN, T::EOF]],
            ["modulus assign", "%=", [T::MODULUS_ASSIGN, T::EOF]],
            ["bitwise or assign", "|=", [T::BITWISE_OR_ASSIGN, T::EOF]],
            ["bitwise and assign", "&=", [T::BITWISE_AND_ASSIGN, T::EOF]],
@@ -132,6 +130,20 @@ describe RazorPit::Lexer do
   cases.each do |name, string, output|
     it "tokenizes #{name}" do
       RazorPit::Lexer.scan(string).to_a.should == output
+    end
+  end
+
+  it "tokenizes division symbols when in infix mode" do
+    lexer = RazorPit::Lexer.new("/foo/=")
+    lexer.with_infix(true) do
+      lexer.each.to_a.should == [T::DIV, T::IDENTIFIER["foo"], T::DIV_ASSIGN, T::EOF]
+    end
+  end
+
+  it "tokenizes regular expressions when in prefix mode" do
+    lexer = RazorPit::Lexer.new("/foo/=")
+    lexer.with_infix(false) do
+      lexer.each.to_a.should == [T::REGEXP[["foo", ""]], T::ASSIGN, T::EOF]
     end
   end
 end

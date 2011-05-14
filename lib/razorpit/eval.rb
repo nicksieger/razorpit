@@ -22,6 +22,7 @@ class Function
 
   def call(args)
     @body.evaluate(@env)
+    nil
   end
 end
 

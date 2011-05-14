@@ -380,7 +380,7 @@ describe "#{RazorPit::Eval}.evaluate" do
   it "supports function declaration" do
     program(%Q{
       function foo() {}
-      foo
+      foo;
     }).should be_a_kind_of(RazorPit::Function)
   end
 
@@ -388,9 +388,16 @@ describe "#{RazorPit::Eval}.evaluate" do
     program(%Q{
       var blah;
       function foo() { blah = 2; }
-      foo()
-      blah
+      foo();
+      blah;
     }).should == 2
+  end
+
+  it "never returns the value of the final statement of a function" do
+    program(%Q{
+      function foo() { 32; }
+      foo();
+    }).should be_nil
   end
 end
 

@@ -80,6 +80,20 @@ describe RazorPit::Parser do
                       N::Add[N::Identifier["a"], N::Identifier["b"]]]]
   end
 
+  it "parses a named function expression" do
+    ast = RazorPit::Parser.parse("(function foo(a, b) { a + b; })")
+    ast.should == N::Program[
+                    N::Function["foo", ["a", "b"],
+                      N::Add[N::Identifier["a"], N::Identifier["b"]]]]
+  end
+
+  it "parses an anonymous function expression" do
+    ast = RazorPit::Parser.parse("(function (a, b) { a + b; })")
+    ast.should == N::Program[
+                    N::Function[nil, ["a", "b"],
+                      N::Add[N::Identifier["a"], N::Identifier["b"]]]]
+  end
+
   it "parses a numeric literal" do
     ast = RazorPit::Parser.parse_expression("1")
     ast.should == N::Number[1]

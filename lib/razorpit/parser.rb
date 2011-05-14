@@ -248,6 +248,7 @@ class Parser
   end
 
   def expression(right_binding_power)
+    function_expression ||
     @lexer.with_infix(false) do
       token = consume_token(PrefixToken)
       ast = token.prefix(self)
@@ -299,9 +300,14 @@ class Parser
     Nodes::VariableStatement[decls]
   end
 
-  def function_declaration
+  def function_definition(name_required)
     return nil unless try_consume_token(Tokens::FUNCTION)
-    name = consume_token(Tokens::IDENTIFIER).value
+    name = try_consume_token(Tokens::IDENTIFIER)
+    if name
+      name = name.value
+    elsif name_required
+      raise ParseError, "missing function name"
+    end
     args = []
     consume_token(Tokens::OPEN_PAREN)
     unless try_consume_token(Tokens::CLOSE_PAREN)
@@ -312,8 +318,20 @@ class Parser
     end
     consume_token(Tokens::OPEN_BRACE)
     statement_list(Tokens::CLOSE_BRACE) { |s|
-      Nodes::FunctionDeclaration[name, args, *s]
+      yield name, args, s
     }
+  end
+
+  def function_expression
+    function_definition(false) do |name, args, s|
+      Nodes::Function[name, args, *s]
+    end
+  end
+
+  def function_declaration
+    function_definition(true) do |name, args, s|
+      Nodes::FunctionDeclaration[name, args, *s]
+    end
   end
 
   def statement

@@ -277,6 +277,12 @@ class Parser
     ast
   end
 
+  def control_statement
+    return nil unless try_consume_token(Tokens::RETURN)
+    ast = expression(MIN_BINDING_POWER)
+    Nodes::Return[ast]
+  end
+
   def block_statement
     return nil unless try_consume_token(Tokens::OPEN_BRACE)
     statement_list(Tokens::CLOSE_BRACE) { |s| Nodes::Block[*s] }
@@ -336,9 +342,9 @@ class Parser
 
   def statement
     @lexer.with_infix(false) do
-      empty_statement || block_statement ||
-      variable_statement || function_declaration ||
-      expression_statement
+      empty_statement || control_statement ||
+      block_statement || variable_statement ||
+      function_declaration || expression_statement
     end
   end
 

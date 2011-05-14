@@ -105,6 +105,9 @@ module Nodes
   class Block < StatementListNode
   end
 
+  class Return < UnaryOpNode
+  end
+
   class Function < Node
     attr_reader :name
     attr_reader :args

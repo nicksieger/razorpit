@@ -19,6 +19,10 @@ class Function
     @env = env
     @body = body
   end
+
+  def call(args)
+    @body.evaluate(@env)
+  end
 end
 
 class Environment
@@ -69,6 +73,11 @@ Node.class_eval do
   def update(env)
     raise NotImplementedError, "#{self.class}#update not implemented"
   end
+
+  def call(env, args)
+    func = evaluate(env)
+    func.call(args)
+  end
 end
 
 LiteralNode.class_eval do
@@ -97,6 +106,13 @@ Nodes::FunctionDeclaration.class_eval do
   def evaluate(env)
     f = super(env)
     env[f.name] = f
+  end
+end
+
+Nodes::FunctionCall.class_eval do
+  def evaluate(env)
+    values = args.map { |a| a.evaluate(env) }
+    func.call(env, values)
   end
 end
 

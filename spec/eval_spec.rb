@@ -383,6 +383,15 @@ describe "#{RazorPit::Eval}.evaluate" do
       foo
     }).should be_a_kind_of(RazorPit::Function)
   end
+
+  it "supports function calls" do
+    program(%Q{
+      var blah;
+      function foo() { blah = 2; }
+      foo()
+      blah
+    }).should == 2
+  end
 end
 
 

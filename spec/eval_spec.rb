@@ -400,11 +400,18 @@ describe "#{RazorPit::Eval}.evaluate" do
     }).should be_nil
   end
 
-  it "should return the value returned by a return statement" do
+  it "returns the value returned by a return statement" do
     program(%Q{
       function foo() { return 32; }
       foo();
     }).should == 32
+  end
+
+  it "passes arguments to functions" do
+    program(%Q{
+      function foo(a, b) { return a - b; }
+      foo(3, 1);
+    }).should == 2
   end
 end
 

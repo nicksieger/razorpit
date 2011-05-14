@@ -129,7 +129,7 @@ describe RazorPit::Lexer do
 
   cases.each do |name, string, output|
     it "tokenizes #{name}" do
-      RazorPit::Lexer.scan(string).to_a.should == output
+      RazorPit::Lexer.new(string).to_a.should == output
     end
   end
 
@@ -148,26 +148,17 @@ describe RazorPit::Lexer do
   end
 end
 
-describe "#{RazorPit::Lexer}.scan" do
+describe RazorPit::Lexer do
   it "raises an exception when it encounters an invalid token" do
     lambda {
-      RazorPit::Lexer.scan("@").to_a
+      RazorPit::Lexer.new("@").to_a
     }.should raise_error(RazorPit::Lexer::InvalidToken)
   end
 
   it "returns an enumerator if no block given" do
-    returned = RazorPit::Lexer.scan("1")
-    returned.should be_a_kind_of(Enumerator)
+    returned = RazorPit::Lexer.new("1")
+    returned.should be_a_kind_of(Enumerable)
     returned.to_a.should == [T::NUMBER[1], T::EOF]
-  end
-
-  it "yields each token if block given" do
-    tokens = []
-    returned = RazorPit::Lexer.scan("1") do |token|
-      tokens << token
-    end
-    returned.should == RazorPit::Lexer
-    tokens.should == [T::NUMBER[1], T::EOF]
   end
 end
 

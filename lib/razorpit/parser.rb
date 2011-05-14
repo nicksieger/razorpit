@@ -10,7 +10,6 @@ end
 class Parser
   def initialize(lexer)
     @lexer = lexer
-    @tokens = lexer.each
     @line_break = false
   end
 
@@ -339,12 +338,12 @@ class Parser
   end
 
   def lookahead_token
-    token = @tokens.peek
+    token = @lexer.peek
     case token
     when Tokens::LINE_BREAK
       @line_break = true
-      @tokens.next
-      @tokens.peek
+      @lexer.next
+      @lexer.peek
     else
       token
     end
@@ -352,7 +351,7 @@ class Parser
 
   def advance_token(override=nil)
     @line_break = false
-    override || @tokens.next
+    override || @lexer.next
   end
 
   def consume_token(kind)

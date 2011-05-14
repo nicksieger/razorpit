@@ -8,19 +8,10 @@ class Lexer
   class InvalidToken < Exception
   end
 
-  def self.scan(string)
-    lexer = new(string)
-    if block_given?
-      lexer.each { |token| yield token }
-      self
-    else
-      lexer.each
-    end
-  end
-
   def initialize(string)
     @string = string
     @infix = false
+    @producer = produce
   end
 
   def with_infix(infix)
@@ -33,8 +24,8 @@ class Lexer
     end
   end
 
-  def each
-    return enum_for(:each) unless block_given?
+  def produce
+    return enum_for(:produce) unless block_given?
 
     offset = 0
 
@@ -60,6 +51,22 @@ class Lexer
     yield Tokens::EOF
 
     self
+  end
+
+  def next
+    @producer.next
+  end
+
+  def peek
+    @producer.peek
+  end
+
+  def each
+    if block_given?
+      @producer.each { |token| yield token }
+    else
+      @producer.each
+    end
   end
 end
 

@@ -23,7 +23,7 @@ class Function
   def call(args)
     env = Environment.new(@env)
     @args.zip(args) do |name, value|
-      env[name] = value
+      env.declare(name) { value }
     end
     catch(:razorpit_return) do
       @body.evaluate(env)

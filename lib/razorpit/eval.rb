@@ -10,6 +10,17 @@ class << NULL
   alias_method :inspect, :to_s
 end
 
+class Function
+  attr_reader :name
+
+  def initialize(name, args, env, body)
+    @name = name
+    @args = args
+    @env = env
+    @body = body
+  end
+end
+
 class Environment
   def initialize(parent=nil)
     @variables = {}
@@ -73,6 +84,19 @@ StatementListNode.class_eval do
       result = statement.evaluate(env)
     end
     result
+  end
+end
+
+Nodes::Function.class_eval do
+  def evaluate(env)
+    RazorPit::Function.new(name, args, env, body)
+  end
+end
+
+Nodes::FunctionDeclaration.class_eval do
+  def evaluate(env)
+    f = super(env)
+    env[f.name] = f
   end
 end
 

@@ -376,6 +376,13 @@ describe "#{RazorPit::Eval}.evaluate" do
     EOS
     result.should == 3;
   end
+
+  it "supports function declaration" do
+    program(%Q{
+      function foo() {}
+      foo
+    }).should be_a_kind_of(RazorPit::Function)
+  end
 end
 
 

@@ -399,6 +399,13 @@ describe "#{RazorPit::Eval}.evaluate" do
       foo();
     }).should be_nil
   end
+
+  it "should return the value returned by a return statement" do
+    program(%Q{
+      function foo() { return 32; }
+      foo();
+    }).should == 32
+  end
 end
 
 

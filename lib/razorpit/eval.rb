@@ -21,8 +21,10 @@ class Function
   end
 
   def call(args)
-    @body.evaluate(@env)
-    nil
+    catch(:razorpit_return) do
+      @body.evaluate(@env)
+      nil
+    end
   end
 end
 
@@ -114,6 +116,12 @@ Nodes::FunctionCall.class_eval do
   def evaluate(env)
     values = args.map { |a| a.evaluate(env) }
     func.call(env, values)
+  end
+end
+
+Nodes::Return.class_eval do
+  def evaluate(env)
+    throw :razorpit_return, expr.evaluate(env)
   end
 end
 

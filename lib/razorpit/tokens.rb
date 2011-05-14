@@ -209,7 +209,9 @@ module Tokens
   token_types = constants.reverse.map { |token_name| const_get(token_name) }
 
   def make_re(token_types)
-    subexpressions = token_types.select { |t| yield t }.map { |t| t.re }
+    kept = token_types.select { |t| yield t }
+    shunted = token_types.reject { |t| yield t }
+    subexpressions = (kept + shunted).map { |t| t.re }
     Regexp.compile("#{subexpressions.join("|")}")
   end
 

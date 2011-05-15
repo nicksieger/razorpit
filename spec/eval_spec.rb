@@ -420,6 +420,25 @@ describe "#{RazorPit::Eval}.evaluate" do
       foo(3, 1);
     }).should == 2
   end
+
+  it "implements the if statement" do
+    program(%Q{
+      if (true) {
+        x = 1;
+      } else {
+        x = 2;
+      }
+      x;
+    }).should == 1
+    program(%Q{
+      if (false) {
+        x = 1;
+      } else {
+        x = 2;
+      }
+      x;
+    }).should == 2
+  end
 end
 
 

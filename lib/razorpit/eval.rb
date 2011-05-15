@@ -129,6 +129,16 @@ Nodes::Return.class_eval do
   end
 end
 
+Nodes::If.class_eval do
+  def evaluate(env)
+    if Eval.to_boolean(predicate.evaluate(env))
+      then_clause.evaluate(env)
+    elsif else_clause
+      else_clause.evaluate(env)
+    end
+  end
+end
+
 Nodes::Identifier.class_eval do
   def evaluate(env)
     env[name]

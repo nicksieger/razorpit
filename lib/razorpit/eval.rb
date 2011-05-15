@@ -125,7 +125,7 @@ end
 
 Nodes::Return.class_eval do
   def evaluate(env)
-    throw :razorpit_return, expr.evaluate(env)
+    throw :razorpit_return, expr && expr.evaluate(env)
   end
 end
 

@@ -400,6 +400,13 @@ describe "#{RazorPit::Eval}.evaluate" do
     }).should be_nil
   end
 
+  it "returns undefined from argument-less return" do
+    program(%Q{
+      function foo() { return; }
+      foo();
+    }).should be_nil
+  end
+
   it "returns the value returned by a return statement" do
     program(%Q{
       function foo() { return 32; }

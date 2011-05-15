@@ -136,6 +136,23 @@ module Nodes
   class EmptyStatement < Node
   end
 
+  class If < Node
+    attr_reader :predicate, :then_clause, :else_clause
+
+    def initialize(predicate, then_clause, else_clause=nil)
+      @predicate = predicate
+      @then_clause = then_clause
+      @else_clause = else_clause
+    end
+
+    def ==(other)
+      self.class == other.class &&
+      self.predicate == other.predicate &&
+      self.then_clause == other.then_clause &&
+      self.else_clause == other.else_clause
+    end
+  end
+
   class VariableStatement < Node
     attr_reader :decls
 

@@ -297,6 +297,20 @@ class Parser
     statement_list(Tokens::CLOSE_BRACE) { |s| Nodes::Block[*s] }
   end
 
+  def try_if_statement
+    return nil unless try_consume_token(Tokens::IF)
+    consume_token(Tokens::OPEN_PAREN)
+    predicate = expression(MIN_BINDING_POWER)
+    consume_token(Tokens::CLOSE_PAREN)
+    then_clause = statement
+    else_clause = if try_consume_token(Tokens::ELSE)
+                    statement
+                  else
+                    nil
+                  end
+    Nodes::If[predicate, then_clause, else_clause]
+  end
+
   def try_variable_statement
     return nil unless try_consume_token(Tokens::VAR)
 
@@ -352,6 +366,7 @@ class Parser
   def statement
     @lexer.with_infix(false) do
       try_empty_statement || try_control_statement ||
+      try_if_statement ||
       try_block_statement || try_variable_statement ||
       try_function_declaration || expression_statement
     end

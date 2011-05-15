@@ -349,4 +349,17 @@ describe RazorPit::Parser do
     ast.should == N::Delete[N::PropertyAccess[N::Identifier["foo"],
                                               N::String["bar"]]]
   end
+
+  it "parses if statements" do
+    ast = RazorPit::Parser.parse("if (a) b;")
+    ast.should == N::Program[N::If[N::Identifier["a"],
+                                   N::Identifier["b"]]]
+  end
+
+  it "parses if statements with else clauses" do
+    ast = RazorPit::Parser.parse("if (a) b; else c;")
+    ast.should == N::Program[N::If[N::Identifier["a"],
+                                   N::Identifier["b"],
+                                   N::Identifier["c"]]]
+  end
 end

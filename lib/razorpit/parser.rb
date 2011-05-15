@@ -284,7 +284,11 @@ class Parser
 
   def try_control_statement
     return nil unless try_consume_token(Tokens::RETURN)
-    ast = try_expression(MIN_BINDING_POWER)
+    ast = if consume_line_break
+            nil
+          else
+            try_expression(MIN_BINDING_POWER)
+          end
     Nodes::Return[ast]
   end
 
@@ -364,6 +368,13 @@ class Parser
 
   def program
     statement_list(Tokens::EOF) { |s| Nodes::Program[*s] }
+  end
+
+  def consume_line_break
+    lookahead_token
+    result = @line_break
+    @line_break = false
+    result
   end
 
   def lookahead_token

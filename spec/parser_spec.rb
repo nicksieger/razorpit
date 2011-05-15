@@ -26,6 +26,11 @@ describe RazorPit::Parser do
     ast.should == N::Program[N::Return[N::Number[3]]]
   end
 
+  it "terminates return statements with newlines" do
+    ast = RazorPit::Parser.parse("return\n3")
+    ast.should == N::Program[N::Return[], N::Number[3]]
+  end
+
   it "assumes semicolon before } and EOF" do
     ast = RazorPit::Parser.parse("1; 2")
     ast.should == N::Program[N::Number[1], N::Number[2]]

@@ -16,6 +16,11 @@ describe RazorPit::Parser do
     }.should raise_error(RazorPit::ParseError)
   end
 
+  it "parses a return statement without a value" do
+    ast = RazorPit::Parser.parse("return")
+    ast.should == N::Program[N::Return[]]
+  end
+
   it "parses a return statement with value" do
     ast = RazorPit::Parser.parse("return 3")
     ast.should == N::Program[N::Return[N::Number[3]]]

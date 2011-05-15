@@ -105,7 +105,17 @@ module Nodes
   class Block < StatementListNode
   end
 
-  class Return < UnaryOpNode
+  class Return < Node
+    attr_reader :expr
+
+    def initialize(expr=nil)
+      @expr = expr
+    end
+
+    def ==(other)
+      self.class == other.class &&
+      self.expr == other.expr
+    end
   end
 
   class Function < Node

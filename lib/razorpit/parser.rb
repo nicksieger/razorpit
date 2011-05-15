@@ -247,10 +247,11 @@ class Parser
     token.left_binding_power || MIN_BINDING_POWER
   end
 
-  def expression(right_binding_power)
-    function_expression ||
+  def try_expression(right_binding_power)
+    try_function_expression ||
     @lexer.with_infix(false) do
-      token = consume_token(PrefixToken)
+      token = try_consume_token(PrefixToken)
+      break unless token
       ast = token.prefix(self)
       @lexer.with_infix(true) do
         loop do
@@ -266,7 +267,11 @@ class Parser
     end
   end
 
-  def empty_statement
+  def expression(right_binding_power)
+    try_expression(right_binding_power) || error
+  end
+
+  def try_empty_statement
     return nil unless try_consume_token(Tokens::SEMICOLON)
     Nodes::EmptyStatement[]
   end
@@ -277,18 +282,18 @@ class Parser
     ast
   end
 
-  def control_statement
+  def try_control_statement
     return nil unless try_consume_token(Tokens::RETURN)
-    ast = expression(MIN_BINDING_POWER)
+    ast = try_expression(MIN_BINDING_POWER)
     Nodes::Return[ast]
   end
 
-  def block_statement
+  def try_block_statement
     return nil unless try_consume_token(Tokens::OPEN_BRACE)
     statement_list(Tokens::CLOSE_BRACE) { |s| Nodes::Block[*s] }
   end
 
-  def variable_statement
+  def try_variable_statement
     return nil unless try_consume_token(Tokens::VAR)
 
     decls = {}
@@ -306,7 +311,7 @@ class Parser
     Nodes::VariableStatement[decls]
   end
 
-  def function_definition(name_required)
+  def try_function_definition(name_required)
     return nil unless try_consume_token(Tokens::FUNCTION)
     name = try_consume_token(Tokens::IDENTIFIER)
     if name
@@ -328,23 +333,23 @@ class Parser
     }
   end
 
-  def function_expression
-    function_definition(false) do |name, args, s|
+  def try_function_expression
+    try_function_definition(false) do |name, args, s|
       Nodes::Function[name, args, *s]
     end
   end
 
-  def function_declaration
-    function_definition(true) do |name, args, s|
+  def try_function_declaration
+    try_function_definition(true) do |name, args, s|
       Nodes::FunctionDeclaration[name, args, *s]
     end
   end
 
   def statement
     @lexer.with_infix(false) do
-      empty_statement || control_statement ||
-      block_statement || variable_statement ||
-      function_declaration || expression_statement
+      try_empty_statement || try_control_statement ||
+      try_block_statement || try_variable_statement ||
+      try_function_declaration || expression_statement
     end
   end
 
@@ -376,6 +381,10 @@ class Parser
   def advance_token(override=nil)
     @line_break = false
     override || @lexer.next
+  end
+
+  def error
+    raise ParseError, "Unexpected token #{lookahead_token}"
   end
 
   def consume_token(kind)

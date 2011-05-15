@@ -154,7 +154,7 @@ class Parser
         end while parser.try_consume_token(Tokens::COMMA)
         parser.consume_token(Tokens::CLOSE_PAREN)
       end
-      N::FunctionCall[lhs, *args]
+      Nodes::FunctionCall[lhs, *args]
     end
   end
 

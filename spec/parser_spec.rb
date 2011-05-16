@@ -362,4 +362,16 @@ describe RazorPit::Parser do
                                    N::Identifier["b"],
                                    N::Identifier["c"]]]
   end
+
+  it "parses do/while statements" do
+    ast = RazorPit::Parser.parse("do a; while (b);")
+    ast.should == N::Program[N::DoWhile[N::Identifier["a"],
+                                        N::Identifier["b"]]]
+  end
+
+  it "parses while statements" do
+    ast = RazorPit::Parser.parse("while (a) b;")
+    ast.should == N::Program[N::While[N::Identifier["a"],
+                                      N::Identifier["b"]]]
+  end
 end

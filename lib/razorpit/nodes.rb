@@ -153,6 +153,38 @@ module Nodes
     end
   end
 
+  class DoWhile < Node
+    attr_reader :body
+    attr_reader :predicate
+
+    def initialize(body, predicate)
+      @body = body
+      @predicate = predicate
+    end
+
+    def ==(other)
+      self.class == other.class &&
+      self.body == other.body &&
+      self.predicate == other.predicate
+    end
+  end
+
+  class While < Node
+    attr_reader :predicate
+    attr_reader :body
+
+    def initialize(predicate, body)
+      @predicate = predicate
+      @body = body
+    end
+
+    def ==(other)
+      self.class == other.class &&
+      self.predicate == other.predicate &&
+      self.body == other.body
+    end
+  end
+
   class VariableStatement < Node
     attr_reader :decls
 

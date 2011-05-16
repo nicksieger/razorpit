@@ -311,6 +311,26 @@ class Parser
     Nodes::If[predicate, then_clause, else_clause]
   end
 
+  def try_loop_statement
+    if try_consume_token(Tokens::DO)
+      body = statement
+      consume_token(Tokens::WHILE)
+      consume_token(Tokens::OPEN_PAREN)
+      predicate = expression(MIN_BINDING_POWER)
+      consume_token(Tokens::CLOSE_PAREN)
+      consume_token(Tokens::SEMICOLON)
+      Nodes::DoWhile[body, predicate]
+    elsif try_consume_token(Tokens::WHILE)
+      consume_token(Tokens::OPEN_PAREN)
+      predicate = expression(MIN_BINDING_POWER)
+      consume_token(Tokens::CLOSE_PAREN)
+      body = statement
+      Nodes::While[predicate, body]
+    else
+      nil
+    end
+  end
+
   def try_variable_statement
     return nil unless try_consume_token(Tokens::VAR)
 
@@ -366,7 +386,7 @@ class Parser
   def statement
     @lexer.with_infix(false) do
       try_empty_statement || try_control_statement ||
-      try_if_statement ||
+      try_if_statement || try_loop_statement ||
       try_block_statement || try_variable_statement ||
       try_function_declaration || expression_statement
     end

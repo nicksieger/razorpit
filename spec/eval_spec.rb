@@ -439,6 +439,26 @@ describe "#{RazorPit::Eval}.evaluate" do
       x;
     }).should == 2
   end
+
+  it "implements do/while" do
+    program(%Q{
+      i = 1;
+      do {
+        i++;
+      } while (i < 1);
+      i;
+    }).should == 2
+  end
+
+  it "implements while" do
+    program(%Q{
+      i = 1;
+      while (i < 2) {
+        i++;
+      }
+      i;
+    }).should == 2
+  end
 end
 
 

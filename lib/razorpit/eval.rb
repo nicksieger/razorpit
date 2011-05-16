@@ -139,6 +139,24 @@ Nodes::If.class_eval do
   end
 end
 
+Nodes::DoWhile.class_eval do
+  def evaluate(env)
+    begin
+      body.evaluate(env)
+    end while Eval.to_boolean(predicate.evaluate(env))
+    nil
+  end
+end
+
+Nodes::While.class_eval do
+  def evaluate(env)
+    while Eval.to_boolean(predicate.evaluate(env))
+      body.evaluate(env)
+    end
+    nil
+  end
+end
+
 Nodes::Identifier.class_eval do
   def evaluate(env)
     env[name]

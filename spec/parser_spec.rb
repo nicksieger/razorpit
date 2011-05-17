@@ -21,6 +21,16 @@ describe RazorPit::Parser do
     ast.should == N::Program[N::Return[]]
   end
 
+  it "parses a continue statement without a label" do
+    ast = RazorPit::Parser.parse("continue")
+    ast.should == N::Program[N::Continue[]]
+  end
+
+  it "parses a break statement without a label" do
+    ast = RazorPit::Parser.parse("break")
+    ast.should == N::Program[N::Break[]]
+  end
+
   it "parses a return statement with value" do
     ast = RazorPit::Parser.parse("return 3")
     ast.should == N::Program[N::Return[N::Number[3]]]

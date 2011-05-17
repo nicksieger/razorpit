@@ -111,6 +111,18 @@ module Nodes
     end
   end
 
+  class Continue < Node
+    def ==(other)
+      self.class == other.class
+    end
+  end
+
+  class Break < Node
+    def ==(other)
+      self.class == other.class
+    end
+  end
+
   class Function < Node
     attr_reader :name
     attr_reader :args

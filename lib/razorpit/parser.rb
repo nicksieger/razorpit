@@ -283,13 +283,22 @@ class Parser
   end
 
   def try_control_statement
-    return nil unless try_consume_token(Tokens::RETURN)
-    ast = if consume_line_break
-            nil
-          else
-            try_expression(MIN_BINDING_POWER)
-          end
-    Nodes::Return[ast]
+    if try_consume_token(Tokens::RETURN)
+      ast = if consume_line_break
+              nil
+            else
+              try_expression(MIN_BINDING_POWER)
+            end
+      Nodes::Return[ast]
+    elsif try_consume_token(Tokens::CONTINUE)
+      consume_token(Tokens::SEMICOLON)
+      Nodes::Continue[]
+    elsif try_consume_token(Tokens::BREAK)
+      consume_token(Tokens::SEMICOLON)
+      Nodes::Break[]
+    else
+      nil
+    end
   end
 
   def try_block_statement

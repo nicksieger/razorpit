@@ -8,49 +8,77 @@ class Lexer
   class InvalidToken < Exception
   end
 
-  def initialize(string)
-    @string = string
-    @infix = false
-    @producer = produce
-  end
+  class Producer
+    include Enumerable
 
-  def with_infix(infix)
-    saved_infix = @infix
-    @infix = infix
-    begin
-      yield
-    ensure
-      @infix = saved_infix
+    def initialize(string)
+      @string = string
+      @infix = false
+      @offset = 0
+      @peeked = nil
     end
-  end
 
-  def produce
-    return enum_for(:produce) unless block_given?
+    def next
+      raise StopIteration, "stop" if @eof
 
-    offset = 0
-
-    until offset == @string.length
-      token, new_offset = if @infix
-                            Tokens.match_infix_token(@string, offset)
-                          else
-                            Tokens.match_prefix_token(@string, offset)
-                          end
-
-      case token
-      when Tokens::INVALID
-        raise InvalidToken, "invalid token at offset #{offset}"
-      when Tokens::WHITESPACE
-        # ignore
-      else
-        yield token
+      if @peeked
+        peeked, @peeked = @peeked, nil
+        return peeked
       end
 
-      offset = new_offset
+      loop do
+        unless @offset == @string.length
+          token, new_offset = if @infix
+                                Tokens.match_infix_token(@string, @offset)
+                              else
+                                Tokens.match_prefix_token(@string, @offset)
+                              end
+
+          case token
+          when Tokens::INVALID
+            raise InvalidToken, "invalid token at offset #{@offset}"
+          when Tokens::WHITESPACE
+            # ignore
+          else
+            return token
+          end
+
+          @offset = new_offset
+        else
+          @eof = true
+          return Tokens::EOF
+        end
+      end
     end
 
-    yield Tokens::EOF
+    def peek
+      @peeked = self.next
+    end
 
-    self
+    def with_infix(infix)
+      saved_infix = @infix
+      @infix = infix
+      begin
+        yield
+      ensure
+        @infix = saved_infix
+      end
+    end
+
+    def each
+      begin
+        loop { yield self.next }
+      rescue StopIteration
+      end
+    end
+  end
+
+  def initialize(string)
+    @producer = Producer.new(string)
+  end
+
+  def with_infix(&block)
+    @producer.with_infix(&block)
   end
 
   def next

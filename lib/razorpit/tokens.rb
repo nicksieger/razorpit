@@ -79,6 +79,8 @@ module Tokens
   # tokens which are identified by capture name
   @complex_tokens = {}
 
+  @all_tokens = []
+
   def define_token(name, pattern, &value_fn)
     re = case pattern
          when String
@@ -99,6 +101,8 @@ module Tokens
     else
       @complex_tokens[name] = token_type
     end
+
+    @all_tokens << token_type
 
     const_set(name, token_type)
   end
@@ -206,7 +210,7 @@ module Tokens
   undef define_keyword
 
   # reverse to put later-defined tokens first (i.e. higher priority)
-  token_types = constants.reverse.map { |token_name| const_get(token_name) }
+  token_types = @all_tokens.reverse
 
   def make_re(token_types)
     kept = token_types.select { |t| yield t }

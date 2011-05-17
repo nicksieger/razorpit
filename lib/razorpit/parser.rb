@@ -326,6 +326,19 @@ class Parser
       consume_token(Tokens::CLOSE_PAREN)
       body = statement
       Nodes::While[predicate, body]
+    elsif try_consume_token(Tokens::FOR)
+      consume_token(Tokens::OPEN_PAREN)
+      init = try_variable_statement
+      unless init
+        init = try_expression(MIN_BINDING_POWER)
+        consume_token(Tokens::SEMICOLON)
+      end
+      predicate = try_expression(MIN_BINDING_POWER)
+      consume_token(Tokens::SEMICOLON)
+      incr = try_expression(MIN_BINDING_POWER)
+      consume_token(Tokens::CLOSE_PAREN)
+      body = statement
+      Nodes::For[init, predicate, incr, body]
     else
       nil
     end

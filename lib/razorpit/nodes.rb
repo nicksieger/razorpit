@@ -185,6 +185,28 @@ module Nodes
     end
   end
 
+  class For < Node
+    attr_reader :init
+    attr_reader :predicate
+    attr_reader :incr
+    attr_reader :body
+
+    def initialize(init, predicate, incr, body)
+      @init = init
+      @predicate = predicate
+      @incr = incr
+      @body = body
+    end
+
+    def ==(other)
+      self.class == other.class &&
+      self.init == other.init &&
+      self.predicate == other.predicate &&
+      self.incr == other.incr &&
+      self.body == other.body
+    end
+  end
+
   class VariableStatement < Node
     attr_reader :decls
 

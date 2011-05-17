@@ -374,4 +374,25 @@ describe RazorPit::Parser do
     ast.should == N::Program[N::While[N::Identifier["a"],
                                       N::Identifier["b"]]]
   end
+
+  it "parses for statements" do
+    ast = RazorPit::Parser.parse("for (a; b; c) d;")
+    ast.should == N::Program[N::For[N::Identifier["a"],
+                                    N::Identifier["b"],
+                                    N::Identifier["c"],
+                                    N::Identifier["d"]]]
+  end
+
+  it "parses for statements with no expressions" do
+    ast = RazorPit::Parser.parse("for (;;) d;")
+    ast.should == N::Program[N::For[nil, nil, nil, N::Identifier["d"]]]
+  end
+
+  it "parses for statements with variable declarations" do
+    ast = RazorPit::Parser.parse("for (var a;b;c) d;")
+    ast.should == N::Program[N::For[N::VariableStatement[:a => nil],
+                                    N::Identifier["b"],
+                                    N::Identifier["c"],
+                                    N::Identifier["d"]]]
+  end
 end

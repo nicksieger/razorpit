@@ -459,6 +459,13 @@ describe "#{RazorPit::Eval}.evaluate" do
       i;
     }).should == 2
   end
+
+  it "implements for" do
+    program(%Q{
+      for (i = 0, j = 0; i < 4; i++) j++;
+      j;
+    }).should == 4
+  end
 end
 
 

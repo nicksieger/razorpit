@@ -157,6 +157,16 @@ Nodes::While.class_eval do
   end
 end
 
+Nodes::For.class_eval do
+  def evaluate(env)
+    init.evaluate(env) if init
+    while predicate ? Eval.to_boolean(predicate.evaluate(env)) : true
+      body.evaluate(env)
+      incr.evaluate(env) if incr
+    end
+  end
+end
+
 Nodes::Identifier.class_eval do
   def evaluate(env)
     env[name]
